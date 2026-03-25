@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Памятка-листалка: исторический контент и память о войне</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #eef2f5;
+            font-family: 'Segoe UI', 'Roboto', 'Georgia', 'Times New Roman', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 24px 16px;
+        }
+
+        .flipbook {
+            width: 800px;
+            max-width: 100%;
+            background: transparent;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .pages-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            border-radius: 32px;
+            gap: 24px;
+            padding: 12px 6px 24px 6px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+        }
+
+        .pages-container::-webkit-scrollbar {
+            height: 8px;
+            background: #d4dee6;
+            border-radius: 10px;
+        }
+        .pages-container::-webkit-scrollbar-thumb {
+            background: #c22b2b;
+            border-radius: 10px;
+        }
+
+        .page-card {
+            flex: 0 0 100%;
+            scroll-snap-align: start;
+            background: white;
+            border-radius: 40px;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.25);
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 3000px;
+            height: auto;
+            position: relative;
+        }
+
+        .page-inner {
+            padding: 36px 32px 48px;
+            flex: 1;
+        }
+
+        .page-title {
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: #0b2b3b;
+            border-left: 7px solid #c22b2b;
+            padding-left: 20px;
+            margin-bottom: 32px;
+        }
+
+        .original-text {
+            font-size: 1rem;
+            line-height: 1.55;
+            color: #000000;
+        }
+        .original-text p {
+            margin-bottom: 1.2em;
+        }
+        .section-block {
+            margin-bottom: 32px;
+        }
+        .section-title-small {
+            font-weight: 700;
+            font-size: 1.35rem;
+            margin-bottom: 14px;
+            color: #0b2b3b;
+            border-left: 4px solid #c22b2b;
+            padding-left: 16px;
+        }
+        .subsection-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin: 20px 0 12px 0;
+            color: #c22b2b;
+            padding-left: 8px;
+        }
+        .algorithm-list {
+            list-style: none;
+            margin: 12px 0 0 0;
+        }
+        .algorithm-list li {
+            margin-bottom: 14px;
+            padding-left: 26px;
+            position: relative;
+            line-height: 1.5;
+            color: #000000;
+        }
+        .algorithm-list li::before {
+            content: "•";
+            color: #c22b2b;
+            font-weight: bold;
+            font-size: 1.3rem;
+            position: absolute;
+            left: 4px;
+            top: -2px;
+        }
+
+        .institution-grid {
+            background: #d9f0cf30;
+            border-radius: 24px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-left: 4px solid #c22b2b;
+        }
+        .institution-item {
+            margin-bottom: 18px;
+        }
+        .institution-item strong {
+            color: #0b2b3b;
+            font-size: 1.05rem;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .flowchart {
+            background: #fefcf7;
+            border-radius: 32px;
+            padding: 28px 20px;
+            margin: 20px 0 20px;
+            border: 1px solid #d9f0cf;
+        }
+        .flow-node {
+            background: white;
+            border-radius: 60px;
+            padding: 12px 20px;
+            display: inline-block;
+            margin: 6px auto;
+            font-weight: 500;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+            border: 1px solid #d4dee6;
+            text-align: center;
+            color: #000;
+        }
+        .flow-decision {
+            background: #fef2e8;
+            border-left: 4px solid #c22b2b;
+        }
+        .arrow-symbol {
+            font-size: 1.8rem;
+            margin: 6px 0;
+            color: #c22b2b;
+        }
+        .flow-row-flex {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+        .answer-badge {
+            background: #d9f0cf;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-weight: 500;
+            color: #000;
+            border: 1px solid #bdd4ae;
+        }
+
+        .fine-card {
+            background: #fffaf5;
+            border-radius: 28px;
+            padding: 20px 24px;
+            margin-bottom: 28px;
+            border: 1px solid #f0cfb5;
+        }
+        .warning-note {
+            background: #c22b2b10;
+            border-left: 6px solid #c22b2b;
+            padding: 18px 22px;
+            border-radius: 24px;
+            margin-top: 24px;
+        }
+        .control-agencies {
+            background: #f3f9ef;
+            border-radius: 28px;
+            padding: 20px 24px;
+            border: 1px solid #d9f0cf;
+        }
+
+        .nav-controls {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin-top: 28px;
+            flex-wrap: wrap;
+        }
+        .nav-btn {
+            background: #0b2b3b;
+            border: none;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+        .nav-btn:hover {
+            background: #c22b2b;
+            transform: scale(0.97);
+        }
+        .page-indicator {
+            background: #ffffffcc;
+            backdrop-filter: blur(4px);
+            padding: 6px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0b2b3b;
+            align-self: center;
+        }
+        .pdf-btn {
+            background: #c22b2b;
+        }
+        .pdf-btn:hover {
+            background: #941f1f;
+        }
+        hr {
+            margin: 18px 0;
+            border: none;
+            border-top: 1px solid #d9f0cf;
+        }
+        footer {
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 20px;
+            color: #5a6f7e;
+        }
+
+        @media (max-width: 860px) {
+            .flipbook {
+                width: 100%;
+            }
+            .page-card {
+                min-height: auto;
+            }
+            .page-inner {
+                padding: 28px 20px 36px;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            .flipbook {
+                width: 100%;
+            }
+            .pages-container {
+                display: block;
+                overflow: visible;
+                scroll-snap-type: none;
+                gap: 0;
+            }
+            .page-card {
+                flex: none;
+                width: 100%;
+                page-break-after: always;
+                break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ccc;
+                margin-bottom: 20px;
+                min-height: auto;
+            }
+            .nav-controls, .pdf-btn, .nav-btn {
+                display: none;
+            }
+            .page-indicator {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="flipbook">
+    <div class="pages-container" id="pagesContainer">
+        <!-- СТРАНИЦА 1: СРАВНЕНИЕ + ПОДЗАДАЧИ ДЛЯ БИБЛИОТЕК, ТЕАТРОВ, МУЗЕЕВ -->
+        <div class="page-card">
+            <div class="page-inner">
+                <div class="page-title">Сравнение: обязанности раньше и новые задачи</div>
+                <div class="original-text">
+                    <div class="section-block">
+                        <div class="section-title-small">Обязанности раньше.</div>
+                        <p>Проводили общий фактчекинг исторического контента на соответствие государственной исторической трактовке.</p>
+                    </div>
+                    <div class="section-block">
+                        <div class="section-title-small">Новые задачи.</div>
+                        <ul class="algorithm-list">
+                            <li>Проведите ревизию контента к 9 Мая и другим памятным датам на предмет соответствия приговорам Нюрнбергского трибунала и современным судебным решениям о геноциде.</li>
+                            <li>Исключите из публичного пространства материалы, где действия нацистов и их пособников показаны нейтрально или позитивно, а жертвы среди мирного населения ставятся под сомнение.</li>
+                            <li>При подготовке лекций, экскурсий и уроков мужества используйте исключительно верифицированные исторические источники и ссылайтесь на официальные акты. При малейших сомнениях в трактовке — запрашивайте экспертизу в профильных исторических обществах до публикации контента.</li>
+                        </ul>
+                    </div>
+
+                    <div class="subsection-title">📚 Подзадачи для учреждений культуры</div>
+                    <div class="institution-grid">
+                        <div class="institution-item">
+                            <strong>Библиотеки</strong>
+                            <p>обязаны проверить фонды краеведческой и военно-исторической литературы на наличие книг, изданных в 1990−2000-е годы без грифов, где могут содержаться сомнительные трактовки событий.</p>
+                        </div>
+                        <div class="institution-item">
+                            <strong>Театры и кинозалы</strong>
+                            <p>при формировании репертуара ко Дню Победы и дням воинской славы должны исключить постановки и фильмы, где образ советского солдата или оценка событий расходится с позицией, закрепленной в Конституции и федеральных законах.</p>
+                        </div>
+                        <div class="institution-item">
+                            <strong>Музеи</strong>
+                            <p>обязаны проверить экспозиции, аудиогиды и выставочные аннотации: любая нейтральная или позитивная оценка действий нацистских пособников, например деятельность полицаев или власовцев, без акцента на их преступный характер теперь будет трактоваться как искажение правды.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- СТРАНИЦА 2: СХЕМА ДЕЙСТВИЙ ДЛЯ КОНТЕНТА С ОТРИЦАНИЕМ/ИСКАЖЕНИЕМ -->
+        <div class="page-card">
+            <div class="page-inner">
+                <div class="page-title">Схема действий: контент с отрицанием или искажением</div>
+                <div class="flowchart">
+                    <div class="flow-node">В контенте есть прямое отрицание геноцида и исторических фактов?</div>
+                    <div class="arrow-symbol">▼</div>
+                    <div class="flow-row-flex">
+                        <div class="answer-badge">✅ Да – Снять с публикации или представления</div>
+                        <div class="answer-badge">❌ Да, но у отрицательных героев</div>
+                        <div class="answer-badge">❌ Непонятно</div>
+                    </div>
+                    <div class="arrow-symbol">▼</div>
+                    <div class="flow-node flow-decision">В финале верная историческая оценка?</div>
+                    <div class="arrow-symbol">▼</div>
+                    <div class="flow-row-flex">
+                        <div class="answer-badge">✅ Да – Оставить</div>
+                        <div class="answer-badge">❌ Непонятно – обратиться за разъяснениями к эксперту</div>
+                    </div>
+                </div>
+                <div style="margin-top: 28px; background: #d9f0cf30; border-radius: 24px; padding: 16px 20px; border-left: 4px solid #c22b2b;">
+                    <p style="color: #000; font-size: 0.9rem;">📌 <strong>Важно:</strong> При сомнениях в трактовке исторических событий до публикации или показа запрашивайте экспертизу в профильных исторических обществах. Решение о снятии контента лучше принять на раннем этапе.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- СТРАНИЦА 3: ОТВЕТСТВЕННОСТЬ + ДОПОЛНИТЕЛЬНАЯ ВРЕЗКА -->
+        <div class="page-card">
+            <div class="page-inner">
+                <div class="page-title">Ответственность и надзор</div>
+                <div class="original-text">
+                    <div class="fine-card">
+                        <p style="font-weight: 700; margin-bottom: 12px; color:#0b2b3b;">Как оштрафуют за нарушение запретов</p>
+                        <p>Сейчас за отрицание фактов, установленных Нюрнбергским приговором, одобрение преступлений нацистов, публичное распространение ложных сведений о деятельности СССР в годы Второй мировой войны грозит штраф до 3 млн руб., либо принудительные работы на срок до трех лет (с запретом заниматься определенной деятельностью), либо лишение свободы на тот же срок. Схожим образом наказывается публичное осквернение символов воинской славы России, оскорбление памяти защитников Отечества либо унижение чести и достоинства ветерана Великой Отечественной войны. Согласно новому законопроекту, аналогично накажут за отрицание факта геноцида советского народа, а также оскорбление памяти жертв геноцида.</p>
+                    </div>
+
+                    <!-- ДОПОЛНИТЕЛЬНЫЙ ВРЕЗ: Главная сложность -->
+                    <div class="warning-note">
+                        <p style="font-weight: 800; margin-bottom: 10px; color:#c22b2b;">⚠️ Главная сложность для учреждений культуры</p>
+                        <p>Отсутствие утвержденного «списка запрещенных книг» или перечня нежелательных трактовок. На практике Генпрокуратура и Следственный комитет будут оценивать контент по факту жалоб или мониторинга. При этом критерии «искажения» могут быть оценочными: то, что один проверяющий сочтет творческой интерпретацией, другой может признать уголовно наказуемым деянием.</p>
+                    </div>
+
+                    <div class="control-agencies" style="margin-top: 20px;">
+                        <p style="font-weight: 700; margin-bottom: 12px;">Кто проверяет соблюдение запретов</p>
+                        <p>Генпрокуратура РФ, Следственный комитет, Роскомнадзор, а также органы местного самоуправления в рамках контроля за публичными мероприятиями и выставочной деятельностью. Проверки могут быть как плановыми, так и внеплановыми — по обращениям граждан, организаций или по результатам мониторинга СМИ и интернета. Роскомнадзор использует автоматизированные системы поиска для выявления контента с признаками искажения исторической правды.</p>
+                        <div style="margin-top: 16px;">
+                            <span class="badge-agency">Генпрокуратура</span>
+                            <span class="badge-agency">СК РФ</span>
+                            <span class="badge-agency">Роскомнадзор</span>
+                            <span class="badge-agency">ОМСУ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- навигация листалки + кнопка сохранить PDF -->
+    <div class="nav-controls">
+        <button class="nav-btn" id="prevBtn">◀ Предыдущая страница</button>
+        <span class="page-indicator" id="pageIndicator">Страница 1 / 3</span>
+        <button class="nav-btn" id="nextBtn">Следующая страница ▶</button>
+        <button class="nav-btn pdf-btn" id="savePdfBtn">📄 Сохранить как PDF</button>
+    </div>
+    <footer>Интерактивная памятка-листалка • исторический контент • листайте вправо/влево • сохраните в PDF</footer>
+</div>
+
+<script>
+    (function() {
+        const container = document.getElementById('pagesContainer');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const indicator = document.getElementById('pageIndicator');
+        let cards = Array.from(document.querySelectorAll('.page-card'));
+        
+        function updateIndicator() {
+            if (!container) return;
+            const scrollLeft = container.scrollLeft;
+            let currentIndex = 0;
+            for (let i = 0; i < cards.length; i++) {
+                const card = cards[i];
+                const cardLeft = card.offsetLeft;
+                if (cardLeft <= scrollLeft + 100) {
+                    currentIndex = i;
+                } else {
+                    break;
+                }
+            }
+            indicator.innerText = `Страница ${currentIndex+1} / ${cards.length}`;
+        }
+
+        function scrollToPage(index) {
+            if (index < 0) index = 0;
+            if (index >= cards.length) index = cards.length - 1;
+            const targetCard = cards[index];
+            if (targetCard) {
+                container.scrollTo({
+                    left: targetCard.offsetLeft - 12,
+                    behavior: 'smooth'
+                });
+                setTimeout(updateIndicator, 200);
+            }
+        }
+
+        function getCurrentVisibleIndex() {
+            if (!container) return 0;
+            const scrollLeft = container.scrollLeft;
+            let bestIdx = 0;
+            for (let i = 0; i < cards.length; i++) {
+                if (cards[i].offsetLeft <= scrollLeft + 70) {
+                    bestIdx = i;
+                } else break;
+            }
+            return bestIdx;
+        }
+
+        function nextPage() {
+            let idx = getCurrentVisibleIndex();
+            if (idx < cards.length - 1) {
+                scrollToPage(idx + 1);
+            } else {
+                scrollToPage(cards.length - 1);
+            }
+        }
+
+        function prevPage() {
+            let idx = getCurrentVisibleIndex();
+            if (idx > 0) {
+                scrollToPage(idx - 1);
+            } else {
+                scrollToPage(0);
+            }
+        }
+
+        container.addEventListener('scroll', () => {
+            updateIndicator();
+        });
+        window.addEventListener('resize', () => {
+            updateIndicator();
+        });
+        prevBtn.addEventListener('click', prevPage);
+        nextBtn.addEventListener('click', nextPage);
+        
+        setTimeout(() => {
+            updateIndicator();
+            if (cards.length) scrollToPage(0);
+        }, 120);
+
+        const savePdfBtn = document.getElementById('savePdfBtn');
+        if (savePdfBtn) {
+            savePdfBtn.addEventListener('click', () => {
+                const originalOverflow = container.style.overflow;
+                const originalScrollSnap = container.style.scrollSnapType;
+                container.style.overflow = 'visible';
+                container.style.scrollSnapType = 'none';
+                window.print();
+                setTimeout(() => {
+                    container.style.overflow = originalOverflow;
+                    container.style.scrollSnapType = originalScrollSnap;
+                }, 500);
+            });
+        }
+    })();
+</script>
+</body>
+</html>
