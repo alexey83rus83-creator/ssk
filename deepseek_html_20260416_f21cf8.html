@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Памятка: Продвижение в MAX для учреждений культуры</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #eef2f5;
+            font-family: 'Segoe UI', 'Roboto', 'Georgia', 'Times New Roman', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+        .flipbook {
+            width: 800px;
+            max-width: 100%;
+            background: transparent;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        /* Горизонтальная листалка для десктопа */
+        .pages-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            border-radius: 32px;
+            gap: 24px;
+            padding: 12px 6px 24px 6px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+        }
+
+        .pages-container::-webkit-scrollbar {
+            height: 8px;
+            background: #d4dee6;
+            border-radius: 10px;
+        }
+        .pages-container::-webkit-scrollbar-thumb {
+            background: #c22b2b;
+            border-radius: 10px;
+        }
+
+        .page-card {
+            flex: 0 0 100%;
+            scroll-snap-align: start;
+            background: white;
+            border-radius: 40px;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.25);
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: auto;
+            height: auto;
+            position: relative;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .page-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (min-width: 820px) {
+            .page-card {
+                flex: 0 0 calc(50% - 12px);
+            }
+        }
+
+        /* Вертикальный режим для мобильных */
+        @media (max-width: 640px) {
+            .pages-container {
+                flex-direction: column;
+                overflow-x: visible;
+                scroll-snap-type: y mandatory;
+                gap: 20px;
+            }
+            .page-card {
+                flex: none;
+                width: 100%;
+                scroll-snap-align: start;
+                margin-bottom: 0;
+            }
+        }
+
+        .page-inner {
+            padding: 36px 32px 48px;
+            flex: 1;
+        }
+
+        .page-title {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #0b2b3b;
+            border-left: 7px solid #c22b2b;
+            padding-left: 20px;
+            margin-bottom: 28px;
+            background: linear-gradient(90deg, #d9f0cf20, transparent);
+            border-radius: 0 20px 20px 0;
+        }
+
+        /* Шаги алгоритма */
+        .algorithm-step {
+            margin-bottom: 28px;
+            position: relative;
+            padding-left: 48px;
+        }
+
+        .algorithm-step-number {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 36px;
+            height: 36px;
+            background: #c22b2b;
+            color: white;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .algorithm-step h3 {
+            color: #0b2b3b;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .algorithm-step p {
+            color: #000000;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        /* Блоки с иконками */
+        .highlight {
+            background: #d9f0cf40;
+            border-left: 4px solid #c22b2b;
+            padding: 16px 20px;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+        .bullet-list {
+            list-style: none;
+            margin: 12px 0 0 0;
+        }
+        .bullet-list li {
+            margin-bottom: 12px;
+            padding-left: 30px;
+            position: relative;
+            line-height: 1.45;
+            color: #000000;
+        }
+        .bullet-list li::before {
+            content: "•";
+            color: #c22b2b;
+            font-weight: bold;
+            font-size: 1.3rem;
+            position: absolute;
+            left: 6px;
+            top: -4px;
+        }
+
+        /* Иконки для пунктов */
+        .icon-list li::before {
+            content: "✨";
+            font-size: 1rem;
+            top: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #0b2b3b;
+            color: white;
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            letter-spacing: 0.3px;
+        }
+
+        .two-columns {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        .col {
+            flex: 1;
+            background: linear-gradient(135deg, #f0f4fa, #ffffff);
+            border-radius: 24px;
+            padding: 18px;
+            border: 1px solid #d9f0cf;
+        }
+        .col h4 {
+            color: #0b2b3b;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        /* Чек-лист */
+        .checklist-block {
+            background: #fefcf7;
+            border-radius: 28px;
+            padding: 22px;
+            margin: 20px 0;
+            border: 1px solid #d9f0cf;
+        }
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+            padding: 8px 12px;
+            background: #ffffff;
+            border-radius: 16px;
+            transition: background 0.2s;
+        }
+        .checklist-item:hover {
+            background: #d9f0cf30;
+        }
+        .checklist-item input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #c22b2b;
+        }
+        .checklist-item label {
+            color: #000000;
+            font-size: 0.9rem;
+            cursor: pointer;
+            flex: 1;
+        }
+        .reset-checklist {
+            background: #0b2b3b;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: 0.2s;
+        }
+        .reset-checklist:hover {
+            background: #c22b2b;
+        }
+
+        /* Кнопки управления */
+        .nav-controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 28px;
+            flex-wrap: wrap;
+        }
+        .nav-btn {
+            background: #0b2b3b;
+            border: none;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+        .nav-btn:hover {
+            background: #c22b2b;
+            transform: scale(0.97);
+        }
+        .copy-btn {
+            background: #0b2b3b;
+        }
+        .copy-btn:hover {
+            background: #c22b2b;
+        }
+        .page-indicator {
+            background: #ffffffcc;
+            backdrop-filter: blur(4px);
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0b2b3b;
+            align-self: center;
+        }
+        .pdf-btn {
+            background: #c22b2b;
+        }
+        .pdf-btn:hover {
+            background: #941f1f;
+        }
+
+        /* Прогресс-бар */
+        .progress-bar {
+            height: 4px;
+            background: #d4dee6;
+            border-radius: 4px;
+            margin: 0 32px 16px 32px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #c22b2b;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        footer {
+            padding: 18px 32px 24px;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #5a6f7e;
+            border-top: 1px solid #e0eaf0;
+            background: white;
+            margin-top: 16px;
+            border-radius: 0 0 40px 40px;
+        }
+
+        /* Печатная версия */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            .flipbook {
+                width: 100%;
+            }
+            .pages-container {
+                display: block;
+                overflow: visible;
+                scroll-snap-type: none;
+                gap: 0;
+            }
+            .page-card {
+                flex: none;
+                width: 100%;
+                page-break-after: always;
+                break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ccc;
+                margin-bottom: 20px;
+                transform: none;
+            }
+            .nav-controls, .pdf-btn, .nav-btn, .copy-btn, .progress-bar {
+                display: none;
+            }
+            .page-indicator {
+                display: none;
+            }
+            .checklist-item input {
+                opacity: 0.5;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="flipbook">
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="pages-container" id="pagesContainer">
+        <!-- СТРАНИЦА 1: АЛГОРИТМ СОЗДАНИЯ КАНАЛА -->
+        <div class="page-card">
+            <div class="page-inner">
+                <div class="page-title">📢 Как начать продвижение в MAX</div>
+                <div class="badge">ШАГ 1. СОЗДАНИЕ КАНАЛА</div>
+                <div class="algorithm-step">
+                    <div class="algorithm-step-number">1</div>
+                    <h3>🔐 Верификация</h3>
+                    <p>Самый доступный путь для учреждений культуры – наличие подтвержденного статуса «А» (верифицированное сообщество) в Одноклассниках, Дзене или ВКонтакте. Если такого статуса нет, подойдет зарегистрированный в реестре Роскомнадзора Telegram-канал.</p>
+                </div>
+                <div class="algorithm-step">
+                    <div class="algorithm-step-number">2</div>
+                    <h3>🤖 Через бота @channel_bot</h3>
+                    <p>Отправляете ссылку на ваше сообщество с меткой «А» или временно размещаете выданный ботом хештег в описании вашего Telegram-канала, после чего ждете одобрения – обычно 1–3 рабочих дня.</p>
+                </div>
+                <div class="algorithm-step">
+                    <div class="algorithm-step-number">3</div>
+                    <h3>⚡ Автоматическое создание</h3>
+                    <p>После верификации канал создается автоматически, а его название и никнейм переносятся из реестра РКН и не подлежат изменению – это сделано для защиты официальных источников от подделки.</p>
+                </div>
+                <div class="highlight">
+                    <p>💡 <strong>Важно:</strong> Название будет автоматическим из реестра, поэтому при регистрации в РКН сразу указывайте понятное и информативное имя.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- СТРАНИЦА 2: ПЕРЕВОД АУДИТОРИИ И ОФОРМЛЕНИЕ -->
+        <div class="page-card">
+            <div class="page-inner">
+                <div class="page-title">🎯 Как перевести аудиторию и оформить канал</div>
+                
+                <div class="badge">📍 ШАГ 1. ОБОЗНАЧЬТЕ MAX ВО ВСЕХ ТОЧКАХ КОНТАКТА</div>
+                <ul class="bullet-list">
+                    <li>➕ Добавьте ссылку на канал в описание Telegram</li>
+                    <li>🌐 Разместите виджет на сайте</li>
+                    <li>📧 Включите упоминание в email-рассылки и печатные материалы</li>
+                </ul>
+
+                <div class="badge" style="margin-top: 20px;">🎲 ШАГ 2. ЗАПУСТИТЕ МЕХАНИКУ ВОВЛЕЧЕНИЯ</div>
+                <ul class="bullet-list">
+                    <li>🎯 Организуйте квиз, викторину или розыгрыш билетов</li>
+                    <li>✅ Условие участия — подписка на ваш канал в новом мессенджере</li>
+                </ul>
+
+                <div class="badge" style="margin-top: 20px;">⭐ ШАГ 3. ПОДГОТОВЬТЕ ЭКСКЛЮЗИВЫ</div>
+                <ul class="bullet-list icon-list">
+                    <li>🎬 Публикуйте в MAX материалы, которых нет в других соцсетях</li>
+                    <li>📸 Закулисные видео, ранние анонсы премьер, закрытые конкурсы</li>
+                </ul>
+
+                <div class="highlight" style="margin-top: 20px;">
+                    <p>🎨 <strong>Сделайте аватар</strong> – логотип учреждения или узнаваемый символ, хорошо читаемый в маленьком размере.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- СТРАНИЦА 3: ОФОРМЛЕНИЕ КАНАЛА + ХЕШТЕГИ -->
+        <div class="page-card">
+            <div class="page-inner">
+                <div class="page-title">✨ Оформление канала в MAX</div>
+                
+                <div class="two-columns">
+                    <div class="col">
+                        <h4>📝 Описание (до 200 символов)</h4>
+                        <p>Структура: для кого канал, какую проблему закрывает, периодичность публикаций и контакты.</p>
+                    </div>
+                    <div class="col">
+                        <h4>📌 Закрепленный пост</h4>
+                        <p>Должен представлять ваше учреждение — первое впечатление о канале.</p>
+                    </div>
+                </div>
+
+                <div class="badge">🏷️ Хештеги для навигации</div>
+                <ul class="bullet-list">
+                    <li>#Афиша</li>
+                    <li>#Экскурсии</li>
+                    <li>#Закулисье</li>
+                </ul>
+
+                <div class="highlight" style="margin-top: 20px;">
+                    <p>📊 <strong>Успешные госпаблики в MAX активно используют</strong> интерактивные форматы – опросы и викторины, которые стабильно собирают реакции аудитории.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- СТРАНИЦА 4: ЧЕК-ЛИСТ -->
+        <div class="page-card">
+            <div class="page-inner">
+                <div class="page-title">✅ Чек-лист готовности канала MAX</div>
+                
+                <div class="checklist-block">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check1"> <label for="check1">Верификация пройдена (статус «А» или канал в реестре РКН)</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check2"> <label for="check2">Канал создан через @channel_bot (одобрение получено)</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check3"> <label for="check3">Ссылка на MAX добавлена во все точки контакта (Telegram, сайт, рассылки)</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check4"> <label for="check4">Запущена механика вовлечения (квиз, викторина, розыгрыш)</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check5"> <label for="check5">Подготовлены эксклюзивные материалы для MAX</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check6"> <label for="check6">Аватар читается в миниатюре (логотип/символ)</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check7"> <label for="check7">Описание канала до 200 символов по структуре</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check8"> <label for="check8">Закрепленный пост презентует учреждение</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check9"> <label for="check9">Используются хештеги #Афиша #Экскурсии #Закулисье</label>
+                    </div>
+                    <button class="reset-checklist" id="resetChecklistBtn">Сбросить чек-лист</button>
+                </div>
+
+                <div style="background: #c22b2b10; border-radius: 20px; padding: 16px; margin-top: 16px; border-left: 4px solid #c22b2b;">
+                    <p style="color: #0b2b3b; font-weight: 600; margin-bottom: 8px;">📎 Короткий итог:</p>
+                    <p style="color: #000000; font-size: 0.85rem;">Верификация → создание канала → продвижение через точки контакта → эксклюзивный контент → оформление аватара и описания → хештеги + опросы.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-controls">
+        <button class="nav-btn" id="prevBtn">◀ Назад</button>
+        <span class="page-indicator" id="pageIndicator">Страница 1 / 4</span>
+        <button class="nav-btn" id="nextBtn">Вперед ▶</button>
+        <button class="nav-btn copy-btn" id="copyAlgorithmBtn">📋 Копировать алгоритм</button>
+        <button class="nav-btn pdf-btn" id="savePdfBtn">📄 Сохранить PDF</button>
+    </div>
+    <footer>
+        Памятка по продвижению в MAX • алгоритмы создания канала, перевода аудитории и оформления<br>
+        Фирменные цвета: красный (#c22b2b), бледно-салатовый (#d9f0cf), темно-синий (#0b2b3b)
+    </footer>
+</div>
+
+<script>
+    (function() {
+        const container = document.getElementById('pagesContainer');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const indicator = document.getElementById('pageIndicator');
+        const progressFill = document.getElementById('progressFill');
+        let cards = Array.from(document.querySelectorAll('.page-card'));
+        
+        function updateIndicatorAndProgress() {
+            if (!container) return;
+            const scrollLeft = container.scrollLeft;
+            let currentIndex = 0;
+            for (let i = 0; i < cards.length; i++) {
+                const card = cards[i];
+                const cardLeft = card.offsetLeft;
+                if (cardLeft <= scrollLeft + 100) {
+                    currentIndex = i;
+                } else {
+                    break;
+                }
+            }
+            indicator.innerText = `Страница ${currentIndex+1} / ${cards.length}`;
+            // Прогресс
+            const progress = ((currentIndex + 1) / cards.length) * 100;
+            progressFill.style.width = progress + '%';
+        }
+
+        function scrollToPage(index) {
+            if (index < 0) index = 0;
+            if (index >= cards.length) index = cards.length - 1;
+            const targetCard = cards[index];
+            if (targetCard) {
+                container.scrollTo({
+                    left: targetCard.offsetLeft - 12,
+                    behavior: 'smooth'
+                });
+                setTimeout(updateIndicatorAndProgress, 200);
+            }
+        }
+
+        function getCurrentVisibleIndex() {
+            if (!container) return 0;
+            const scrollLeft = container.scrollLeft;
+            let bestIdx = 0;
+            for (let i = 0; i < cards.length; i++) {
+                if (cards[i].offsetLeft <= scrollLeft + 70) {
+                    bestIdx = i;
+                } else break;
+            }
+            return bestIdx;
+        }
+
+        function nextPage() {
+            let idx = getCurrentVisibleIndex();
+            if (idx < cards.length - 1) {
+                scrollToPage(idx + 1);
+            }
+        }
+
+        function prevPage() {
+            let idx = getCurrentVisibleIndex();
+            if (idx > 0) {
+                scrollToPage(idx - 1);
+            }
+        }
+
+        // Клавиши ← →
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                prevPage();
+                e.preventDefault();
+            }
+            if (e.key === 'ArrowRight') {
+                nextPage();
+                e.preventDefault();
+            }
+        });
+
+        container.addEventListener('scroll', () => {
+            updateIndicatorAndProgress();
+        });
+        window.addEventListener('resize', () => {
+            updateIndicatorAndProgress();
+        });
+        prevBtn.addEventListener('click', prevPage);
+        nextBtn.addEventListener('click', nextPage);
+        
+        setTimeout(() => {
+            updateIndicatorAndProgress();
+            if (cards.length) scrollToPage(0);
+        }, 120);
+
+        // Кнопка копирования алгоритма
+        const copyBtn = document.getElementById('copyAlgorithmBtn');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', () => {
+                const steps = [];
+                document.querySelectorAll('.algorithm-step h3, .bullet-list li, .checklist-item label').forEach(el => {
+                    let text = el.innerText.trim();
+                    if (text && !steps.includes(text)) steps.push(text);
+                });
+                const textToCopy = steps.join('\n');
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    const originalText = copyBtn.innerText;
+                    copyBtn.innerText = '✅ Скопировано!';
+                    setTimeout(() => {
+                        copyBtn.innerText = originalText;
+                    }, 2000);
+                }).catch(() => {
+                    alert('Не удалось скопировать текст');
+                });
+            });
+        }
+
+        // Чек-лист: сброс
+        const resetChecklist = document.getElementById('resetChecklistBtn');
+        if (resetChecklist) {
+            resetChecklist.addEventListener('click', () => {
+                const checkboxes = document.querySelectorAll('.checklist-item input');
+                checkboxes.forEach(cb => cb.checked = false);
+            });
+        }
+
+        // Сохранение в PDF
+        const savePdfBtn = document.getElementById('savePdfBtn');
+        if (savePdfBtn) {
+            savePdfBtn.addEventListener('click', () => {
+                const originalOverflow = container.style.overflow;
+                const originalScrollSnap = container.style.scrollSnapType;
+                container.style.overflow = 'visible';
+                container.style.scrollSnapType = 'none';
+                window.print();
+                setTimeout(() => {
+                    container.style.overflow = originalOverflow;
+                    container.style.scrollSnapType = originalScrollSnap;
+                }, 500);
+            });
+        }
+    })();
+</script>
+</body>
+</html>
