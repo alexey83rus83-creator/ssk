@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Памятка MAX: канал, ID и готовые сообщения</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #eef2f5;
+            font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+        .flipbook {
+            width: 1000px;
+            max-width: 100%;
+            background: transparent;
+            margin: 0 auto;
+        }
+
+        .pages-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            border-radius: 32px;
+            gap: 24px;
+            padding: 12px 6px 24px 6px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+        }
+
+        .pages-container::-webkit-scrollbar {
+            height: 8px;
+            background: #d4dee6;
+            border-radius: 10px;
+        }
+        .pages-container::-webkit-scrollbar-thumb {
+            background: #c22b2b;
+            border-radius: 10px;
+        }
+
+        .page-card {
+            flex: 0 0 100%;
+            scroll-snap-align: start;
+            background: white;
+            border-radius: 40px;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.25);
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            max-height: 85vh;
+        }
+
+        @media (min-width: 820px) {
+            .page-card {
+                flex: 0 0 calc(50% - 12px);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .pages-container {
+                flex-direction: column;
+                overflow-x: visible;
+                scroll-snap-type: y mandatory;
+                gap: 20px;
+            }
+            .page-card {
+                flex: none;
+                width: 100%;
+                max-height: none;
+            }
+        }
+
+        .page-inner {
+            padding: 28px 28px 36px;
+            flex: 1;
+        }
+
+        .page-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #0b2b3b;
+            border-left: 6px solid #c22b2b;
+            padding-left: 18px;
+            margin-bottom: 24px;
+            background: linear-gradient(90deg, #d9f0cf20, transparent);
+            border-radius: 0 20px 20px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #0b2b3b;
+            color: white;
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .bullet-list {
+            list-style: none;
+            margin: 12px 0;
+        }
+        .bullet-list li {
+            padding-left: 24px;
+            position: relative;
+            margin-bottom: 12px;
+            color: #000;
+            line-height: 1.45;
+        }
+        .bullet-list li::before {
+            content: "•";
+            color: #c22b2b;
+            font-weight: bold;
+            font-size: 1.2rem;
+            position: absolute;
+            left: 4px;
+            top: -2px;
+        }
+
+        .step {
+            margin-bottom: 20px;
+            padding-left: 44px;
+            position: relative;
+        }
+        .step-num {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 32px;
+            height: 32px;
+            background: #c22b2b;
+            color: white;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .step h4 {
+            color: #0b2b3b;
+            margin-bottom: 6px;
+            font-size: 1rem;
+        }
+        .step p {
+            color: #000;
+            line-height: 1.45;
+            font-size: 0.92rem;
+        }
+
+        .checklist-block {
+            background: #fefcf7;
+            border-radius: 24px;
+            padding: 20px;
+            border: 1px solid #d9f0cf;
+            margin: 16px 0;
+        }
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+            padding: 6px 8px;
+            background: white;
+            border-radius: 16px;
+        }
+        .checklist-item input {
+            width: 18px;
+            height: 18px;
+            accent-color: #c22b2b;
+        }
+
+        .message-card {
+            background: #fefcf7;
+            border-radius: 28px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #e0e8ef;
+        }
+        .message-text {
+            font-size: 0.98rem;
+            line-height: 1.5;
+            color: #000;
+            background: white;
+            padding: 18px;
+            border-radius: 20px;
+            border-left: 4px solid #c22b2b;
+            margin-bottom: 16px;
+        }
+        .message-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .fake-link {
+            background: #d9f0cf;
+            padding: 5px 14px;
+            border-radius: 60px;
+            font-size: 0.75rem;
+            color: #0b2b3b;
+        }
+        .important-badge {
+            background: #c22b2b20;
+            color: #c22b2b;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+        }
+        .copy-btn {
+            background: #0b2b3b;
+            color: white;
+            border: none;
+            padding: 6px 20px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .copy-btn:hover {
+            background: #c22b2b;
+        }
+        .comment-box {
+            background: #f0f4fa;
+            border-radius: 20px;
+            padding: 14px 18px;
+            border-left: 3px solid #c22b2b;
+        }
+        .comment-box p {
+            color: #0b2b3b;
+            font-size: 0.85rem;
+            margin: 4px 0;
+        }
+
+        .reset-checklist {
+            background: #0b2b3b;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+
+        .nav-controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 20px 0 12px;
+            flex-wrap: wrap;
+        }
+        .nav-btn {
+            background: #0b2b3b;
+            border: none;
+            color: white;
+            padding: 10px 22px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-btn:hover {
+            background: #c22b2b;
+        }
+        .page-indicator {
+            background: #ffffffcc;
+            backdrop-filter: blur(4px);
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0b2b3b;
+        }
+        .progress-bar {
+            height: 4px;
+            background: #d4dee6;
+            border-radius: 4px;
+            margin: 0 20px 10px 20px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #c22b2b;
+            width: 0%;
+            transition: width 0.2s;
+        }
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #5a6f7e;
+            padding: 16px 0 20px;
+            border-top: 1px solid #e0eaf0;
+            margin-top: 10px;
+        }
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0b2b3b;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 60px;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .pages-container {
+                display: block;
+                overflow: visible;
+                gap: 0;
+            }
+            .page-card {
+                break-inside: avoid;
+                page-break-after: always;
+                box-shadow: none;
+                border: 1px solid #ccc;
+                max-height: none;
+            }
+            .nav-controls, .progress-bar, .copy-btn, .reset-checklist, .toast {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="flipbook">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="pages-container" id="pagesContainer">
+        <!-- СТР 1: Оформление канала и перевод аудитории -->
+        <div class="page-card">
+            <div class="page-inner">
+                <div class="page-title">🎯 Как перевести аудиторию и оформить канал</div>
+                <div class="badge">7 ШАГОВ</div>
+                <ul class="bullet-list">
+                    <li>Обозначьте MAX во всех точках контакта: ссылка в Telegram, виджет на сайте, email-рассылки, печатные материалы.</li>
+                    <li>Запустите механику вовлечения: квиз, викторина, розыгрыш билетов. Условие – подписка на канал в MAX.</li>
+                    <li>Публикуйте эксклюзивы: закулисные видео, ранние анонсы премьер, закрытые конкурсы.</li>
+                    <li>Создайте аватар – логотип учреждения или узнаваемый символ, читаемый в маленьком размере.</li>
+                    <li>Сделайте описание до 200 символов: для кого канал, что в нем публикуете, ваши контакты.</li>
+                    <li>Закрепленный пост представляет учреждение или самую важную информацию.</li>
+                    <li>Используйте хештеги для навигации: #Афиша #Экскурсии #Закулисье и интерактивные форматы (опросы, викторины).</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- СТР 2: Цифровой ID (алгоритм для сотрудника) -->
+        <div class="page-card">
+            <div class="page-inner">
+                <div class="page-title">🆔 Цифровой ID в MAX: памятка для сотрудника</div>
+                <div class="badge">ПРОВЕРКА ВОЗРАСТА ПО QR-КОДУ</div>
+                <div class="step"><div class="step-num">1</div><h4>Что такое цифровой ID</h4><p>С сентября 2025 года взрослые пользователи MAX могут подтвердить личность через QR-код. Код создаётся на основе данных с портала «Госуслуги».</p></div>
+                <div class="step"><div class="step-num">2</div><h4>Где применять</h4><p>Покупка товаров 18+, музеи, театры, учреждения культуры, проход в колледжи и вузы. Бумажные документы сохраняют силу – QR-код альтернатива.</p></div>
+                <div class="step"><div class="step-num">3</div><h4>Как проверять</h4><p>Сотрудник открывает служебное приложение «Госскан» или веб-сканер. На экране появляется статус: «Подтверждён» или «Не подтверждён». Личных данных проверяющий не видит.</p></div>
+                <div class="step"><div class="step-num">4</div><h4>Безопасность</h4><p>Код обновляется каждые 30 секунд. Система запрещает скриншот. Для просмотра документов нужен отпечаток пальца или Face ID. Код привязан к устройству пользователя.</p></div>
+                <div class="step"><div class="step-num">5</div><h4>Алгоритм действий</h4><p>1. Посетитель показывает QR-код в MAX.<br>2. Сотрудник открывает «Госскан» или веб-сканер.<br>3. На экране статус: «Подтверждён» / «Не подтверждён».<br>4. Если статус «Подтверждён» – возраст проверен. Личные данные скрыты.<br>5. Если статуса нет – попросите бумажный документ.</p></div>
+            </div>
+        </div>
+
+        <!-- СТР 3: Чек-лист готовности канала -->
+        <div class="page-card">
+            <div class="page-inner">
+                <div class="page-title">✅ Чек-лист готовности канала MAX</div>
+                <div class="checklist-block" id="checklistBlock">
+                    <div class="checklist-item"><input type="checkbox" id="ch1"> <label for="ch1">Прошли верификацию и создали канал через @channel_bot</label></div>
+                    <div class="checklist-item"><input type="checkbox" id="ch2"> <label for="ch2">Есть ссылка на MAX во всех точках контакта</label></div>
+                    <div class="checklist-item"><input type="checkbox" id="ch3"> <label for="ch3">Подготовлены эксклюзивные материалы для MAX</label></div>
+                    <div class="checklist-item"><input type="checkbox" id="ch4"> <label for="ch4">Аватар читается в миниатюре</label></div>
+                    <div class="checklist-item"><input type="checkbox" id="ch5"> <label for="ch5">Описание канала до 200 символов по структуре</label></div>
+                    <div class="checklist-item"><input type="checkbox" id="ch6"> <label for="ch6">Закрепленный пост презентует учреждение</label></div>
+                    <div class="checklist-item"><input type="checkbox" id="ch7"> <label for="ch7">В канале публикуете вовлекающие и информативные посты</label></div>
+                    <div class="checklist-item"><input type="checkbox" id="ch8"> <label for="ch8">Используете хештеги, например #Афиша #Экскурсии #Закулисье</label></div>
+                    <button class="reset-checklist" id="resetChecklist">Сбросить чек-лист</button>
+                    <button class="reset-checklist copy-btn" id="copyChecklistBtn" style="margin-left: 12px;">📋 Скопировать чек-лист</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- СТР 4: Анонс с билетной ссылкой -->
+        <div class="page-card">
+            <div class="page-inner">
+                <div class="page-title">🎭 Анонс с билетной ссылкой</div>
+                <div class="message-card">
+                    <div class="message-text" id="msg1">
+                        🎭 Премьера! "Вишневый сад" в эту субботу, 12 апреля, в 19:00. 🎟️ Билеты уже в продаже — оплатить можно картой или Пушкинской картой прямо здесь, без перехода на сайт. ⏰ Количество мест ограниченно. 💳 Ссылка на покупку: <strong>[внутренняя ссылка с платежной формой]</strong>
+                    </div>
+                    <div class="message-meta">
+                        <span class="fake-link">🔗 [внутренняя ссылка]</span>
+                        <button class="copy-btn" data-target="msg1">📋 Скопировать текст</button>
+                    </div>
+                </div>
+                <div class="comment-box">
+                    <p>💡 <strong>Зачем использовать:</strong> Прямая ссылка на оплату внутри MAX сокращает путь зрителя, повышает конверсию.</p>
+                    <p>📅 <strong>Когда применять:</strong> За 1–2 недели до мероприятия, при старте продаж билетов.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- СТР 5: Оперативное оповещение -->
+        <div class="page-card">
+            <div class="page-inner">
+                <div class="page-title">⚡ Оперативное оповещение</div>
+                <div class="message-card">
+                    <div class="message-text" id="msg2">
+                        ⚡ Внимание! Сегодняшняя экскурсия "Тайны музейных подвалов" переносится с 15:00 на 17:00 в связи с техническими работами. 🏛️ Приносим извинения за неудобства. Все купленные билеты действительны, возврат — по запросу в личные сообщения ✉️.
+                    </div>
+                    <div class="message-meta">
+                        <span class="important-badge">Срочное сообщение</span>
+                        <button class="copy-btn" data-target="msg2">📋 Скопировать текст</button>
+                    </div>
+                </div>
+                <div class="comment-box">
+                    <p>💡 <strong>Зачем использовать:</strong> Быстро донести изменения до посетителей, снизить поток звонков.</p>
+                    <p>📢 <strong>Когда применять:</strong> При отмене/переносе мероприятий, изменении графика работы.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- СТР 6: Вовлекающий контент -->
+        <div class="page-card">
+            <div class="page-inner">
+                <div class="page-title">🔍 Вовлекающий контент</div>
+                <div class="message-card">
+                    <div class="message-text" id="msg3">
+                        🔍 Угадайте книгу по отрывку. Пишите версии в реакциях 📖 — правильный ответ опубликуем завтра в 10:00. 🎧 Первому угадавшему — бесплатный билет на лекцию месяца! 🎁
+                    </div>
+                    <div class="message-meta">
+                        <span class="fake-link">❤️ 24 реакции</span>
+                        <button class="copy-btn" data-target="msg3">📋 Скопировать текст</button>
+                    </div>
+                </div>
+                <div class="comment-box">
+                    <p>💡 <strong>Зачем использовать:</strong> Растёт вовлечённость, подписчики проводят больше времени в канале.</p>
+                    <p>🎯 <strong>Когда применять:</strong> В периоды затишья между событиями, для разогрева аудитории.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-controls">
+        <button class="nav-btn" id="prevBtn">◀ Назад</button>
+        <span class="page-indicator" id="pageIndicator">1 / 6</span>
+        <button class="nav-btn" id="nextBtn">Вперёд ▶</button>
+        <button class="nav-btn pdf-btn" id="savePdfBtn">📄 Сохранить PDF</button>
+    </div>
+    <footer>Фирменные цвета MAX • Памятка по каналу, цифровому ID и готовым сообщениям</footer>
+</div>
+<div id="toast" class="toast">✅ Скопировано</div>
+
+<script>
+    (function() {
+        const container = document.getElementById('pagesContainer');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const indicator = document.getElementById('pageIndicator');
+        const progressFill = document.getElementById('progressFill');
+        let cards = Array.from(document.querySelectorAll('.page-card'));
+
+        function updateProgress() {
+            if (!container) return;
+            const scrollLeft = container.scrollLeft;
+            let current = 0;
+            for (let i = 0; i < cards.length; i++) {
+                const leftEdge = cards[i].offsetLeft;
+                if (leftEdge <= scrollLeft + 80) current = i;
+                else break;
+            }
+            indicator.innerText = `${current+1} / ${cards.length}`;
+            const percent = ((current + 1) / cards.length) * 100;
+            progressFill.style.width = percent + '%';
+        }
+
+        function scrollToPage(index) {
+            if (index < 0) index = 0;
+            if (index >= cards.length) index = cards.length - 1;
+            const target = cards[index];
+            if (target) {
+                container.scrollTo({ left: target.offsetLeft - 12, behavior: 'smooth' });
+                setTimeout(updateProgress, 150);
+            }
+        }
+
+        function getCurrentIndex() {
+            if (!container) return 0;
+            const scrollLeft = container.scrollLeft;
+            for (let i = 0; i < cards.length; i++) {
+                if (cards[i].offsetLeft <= scrollLeft + 70) continue;
+                return Math.max(0, i-1);
+            }
+            return cards.length-1;
+        }
+
+        function nextPage() { let idx = getCurrentIndex(); if (idx < cards.length-1) scrollToPage(idx+1); }
+        function prevPage() { let idx = getCurrentIndex(); if (idx > 0) scrollToPage(idx-1); }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') { prevPage(); e.preventDefault(); }
+            if (e.key === 'ArrowRight') { nextPage(); e.preventDefault(); }
+        });
+
+        container.addEventListener('scroll', updateProgress);
+        window.addEventListener('resize', updateProgress);
+        prevBtn.addEventListener('click', prevPage);
+        nextBtn.addEventListener('click', nextPage);
+
+        setTimeout(() => { updateProgress(); scrollToPage(0); }, 100);
+
+        // Копирование сообщений
+        const toast = document.getElementById('toast');
+        function showToast(msg) {
+            toast.textContent = msg || '✅ Скопировано';
+            toast.style.opacity = '1';
+            setTimeout(() => toast.style.opacity = '0', 2000);
+        }
+        document.querySelectorAll('.copy-btn[data-target]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('data-target');
+                const el = document.getElementById(targetId);
+                if (el) {
+                    let text = el.innerText.replace(/\n\s+/g, ' ').trim();
+                    navigator.clipboard.writeText(text).then(() => showToast('📋 Текст скопирован')).catch(() => showToast('❌ Ошибка'));
+                }
+            });
+        });
+
+        // Чек-лист: сброс и копирование
+        const resetBtn = document.getElementById('resetChecklist');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                document.querySelectorAll('.checklist-item input').forEach(cb => cb.checked = false);
+            });
+        }
+        const copyCheckBtn = document.getElementById('copyChecklistBtn');
+        if (copyCheckBtn) {
+            copyCheckBtn.addEventListener('click', () => {
+                let items = [];
+                document.querySelectorAll('.checklist-item').forEach(item => {
+                    const label = item.querySelector('label')?.innerText;
+                    if (label) items.push('□ ' + label);
+                });
+                const text = items.join('\n');
+                navigator.clipboard.writeText(text).then(() => {
+                    const old = copyCheckBtn.innerText;
+                    copyCheckBtn.innerText = '✅ Готово!';
+                    setTimeout(() => copyCheckBtn.innerText = old, 1500);
+                });
+            });
+        }
+
+        // PDF
+        const pdfBtn = document.getElementById('savePdfBtn');
+        if (pdfBtn) {
+            pdfBtn.addEventListener('click', () => {
+                window.print();
+            });
+        }
+    })();
+</script>
+</body>
+</html>
