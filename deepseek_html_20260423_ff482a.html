@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Памятка ОК: страница, трансляции, готовые сообщения</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #eef2f5;
+            font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+        .flipbook {
+            width: 1000px;
+            max-width: 100%;
+            background: transparent;
+            margin: 0 auto;
+        }
+
+        .pages-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            border-radius: 32px;
+            gap: 24px;
+            padding: 12px 6px 24px 6px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+        }
+
+        .pages-container::-webkit-scrollbar {
+            height: 8px;
+            background: #d4dee6;
+            border-radius: 10px;
+        }
+        .pages-container::-webkit-scrollbar-thumb {
+            background: #c22b2b;
+            border-radius: 10px;
+        }
+
+        .page-card {
+            flex: 0 0 100%;
+            scroll-snap-align: start;
+            background: white;
+            border-radius: 40px;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.25);
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            max-height: 85vh;
+        }
+
+        @media (min-width: 820px) {
+            .page-card {
+                flex: 0 0 calc(50% - 12px);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .pages-container {
+                flex-direction: column;
+                overflow-x: visible;
+                scroll-snap-type: y mandatory;
+                gap: 20px;
+            }
+            .page-card {
+                flex: none;
+                width: 100%;
+                max-height: none;
+            }
+        }
+
+        .page-inner {
+            padding: 28px 28px 36px;
+            flex: 1;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0b2b3b;
+            border-left: 6px solid #c22b2b;
+            padding-left: 18px;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #d9f0cf20, transparent);
+            border-radius: 0 20px 20px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #0b2b3b;
+            color: white;
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .bullet-list {
+            list-style: none;
+            margin: 8px 0;
+        }
+        .bullet-list li {
+            padding-left: 24px;
+            position: relative;
+            margin-bottom: 12px;
+            color: #000;
+            line-height: 1.45;
+            font-size: 0.92rem;
+        }
+        .bullet-list li::before {
+            content: "•";
+            color: #c22b2b;
+            font-weight: bold;
+            font-size: 1.2rem;
+            position: absolute;
+            left: 4px;
+            top: -2px;
+        }
+
+        .step-list {
+            margin: 10px 0;
+        }
+        .step-item {
+            margin-bottom: 14px;
+            padding-left: 28px;
+            position: relative;
+            color: #000;
+            line-height: 1.45;
+            font-size: 0.92rem;
+        }
+        .step-item::before {
+            content: "→";
+            color: #c22b2b;
+            font-weight: bold;
+            position: absolute;
+            left: 4px;
+        }
+
+        .checklist-block {
+            background: #fefcf7;
+            border-radius: 24px;
+            padding: 20px;
+            border: 1px solid #d9f0cf;
+            margin: 12px 0;
+        }
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding: 6px 8px;
+            background: white;
+            border-radius: 16px;
+        }
+        .checklist-item input {
+            width: 18px;
+            height: 18px;
+            accent-color: #c22b2b;
+        }
+        .checklist-item label {
+            font-size: 0.88rem;
+            color: #000;
+        }
+
+        .message-card {
+            background: #fefcf7;
+            border-radius: 28px;
+            padding: 18px;
+            margin-bottom: 18px;
+            border: 1px solid #e0e8ef;
+        }
+        .message-text {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #000;
+            background: white;
+            padding: 16px;
+            border-radius: 20px;
+            border-left: 4px solid #c22b2b;
+            margin-bottom: 14px;
+        }
+        .message-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .important-badge {
+            background: #c22b2b20;
+            color: #c22b2b;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+        }
+        .copy-btn {
+            background: #0b2b3b;
+            color: white;
+            border: none;
+            padding: 6px 20px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .copy-btn:hover {
+            background: #c22b2b;
+        }
+        .comment-box {
+            background: #f0f4fa;
+            border-radius: 20px;
+            padding: 14px 18px;
+            border-left: 3px solid #c22b2b;
+        }
+        .comment-box p {
+            color: #0b2b3b;
+            font-size: 0.85rem;
+            margin: 4px 0;
+        }
+
+        .reset-checklist {
+            background: #0b2b3b;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+
+        .nav-controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 20px 0 12px;
+            flex-wrap: wrap;
+        }
+        .nav-btn {
+            background: #0b2b3b;
+            border: none;
+            color: white;
+            padding: 10px 22px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-btn:hover {
+            background: #c22b2b;
+        }
+        .page-indicator {
+            background: #ffffffcc;
+            backdrop-filter: blur(4px);
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0b2b3b;
+        }
+        .progress-bar {
+            height: 4px;
+            background: #d4dee6;
+            border-radius: 4px;
+            margin: 0 20px 10px 20px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #c22b2b;
+            width: 0%;
+            transition: width 0.2s;
+        }
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #5a6f7e;
+            padding: 16px 0 20px;
+            border-top: 1px solid #e0eaf0;
+            margin-top: 10px;
+        }
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0b2b3b;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 60px;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .pages-container {
+                display: block;
+                overflow: visible;
+                gap: 0;
+            }
+            .page-card {
+                break-inside: avoid;
+                page-break-after: always;
+                box-shadow: none;
+                border: 1px solid #ccc;
+                max-height: none;
+            }
+            .nav-controls, .progress-bar, .copy-btn, .reset-checklist, .toast {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="flipbook">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="pages-container" id="pagesContainer">
+        <!-- СТР 1: Как создать или обновить страницу и перевести аудиторию -->
+        <div class="page-card">
+            <div class="page-inner">
+                <div class="page-title">📄 Как создать страницу в ОК и перевести аудиторию</div>
+                <div class="badge">АЛГОРИТМ</div>
+                <ul class="bullet-list">
+                    <li>Создайте группу или публичную страницу учреждения. Личную страницу для организации создавать нельзя — это нарушает правила соцсети.</li>
+                    <li>Нажмите «Группы» в левом меню, затем «Создать группу», выберите тип «Публичная или бизнес-страница».</li>
+                    <li>Укажите название — краткое и ёмкое, без аббревиатур. Оно должно соответствовать официальному наименованию учреждения.</li>
+                    <li>Загрузите обложку (размер 1944×600 px) и аватар — логотип учреждения, читаемый в миниатюре.</li>
+                    <li>Заполните описание: для кого страница, что публикуете, контакты. Используйте ключевые слова для поиска.</li>
+                    <li>В настройках группы подключите кнопку действия: «Купить билет», «Записаться» или «Позвонить».</li>
+                    <li>Обозначьте ОК во всех точках контакта: ссылка в Telegram, виджет на сайте, email-рассылки, печатные материалы.</li>
+                    <li>Запустите механику вовлечения: викторину или розыгрыш абонементов с условием подписки на страницу в ОК.</li>
+                    <li>Публикуйте эксклюзивы для зрелой аудитории: архивные фотографии, ретроспективы выставок, интервью с заслуженными деятелями культуры.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- СТР 2: Алгоритм запуска культурной трансляции для сотрудника -->
+        <div class="page-card">
+            <div class="page-inner">
+                <div class="page-title">📹 Алгоритм запуска культурной трансляции</div>
+                <div class="badge">ПРЯМОЙ ЭФИР</div>
+                <div class="step-item">Зайдите в сообщество учреждения на компьютере — функция трансляции с мобильного пока ограничена.</div>
+                <div class="step-item">Нажмите на поле создания публикации и выберите иконку видеокамеры или пункт «Прямой эфир».</div>
+                <div class="step-item">Укажите название трансляции — оно появится в ленте подписчиков и в уведомлениях.</div>
+                <div class="step-item">Проверьте подключение веб-камеры и микрофона. Платформа поддерживает HD-качество.</div>
+                <div class="step-item">В описании трансляции разместите ссылку на покупку билетов или сайт учреждения.</div>
+                <div class="step-item">Нажмите «Начать трансляцию». Эфир увидят подписчики в ленте, также запись сохранится в разделе «Видео».</div>
+                <div class="step-item">Во время эфира отвечайте на комментарии — это повышает вовлечённость и охват.</div>
+                <div class="step-item">После завершения запись остаётся доступной. Закрепите её в карусели важных публикаций.</div>
+            </div>
+        </div>
+
+        <!-- СТР 3: Чек-лист готовности страницы в Одноклассниках -->
+        <div class="page-card">
+            <div class="page-inner">
+                <div class="page-title">✅ Чек-лист готовности страницы в ОК</div>
+                <div class="checklist-block" id="checklistBlock">
+                    <div class="checklist-item"><input type="checkbox" id="ch1"> <label for="ch1">Создали группу или публичную страницу учреждения</label></div>
+                    <div class="checklist-item"><input type="checkbox" id="ch2"> <label for="ch2">Название краткое и ёмкое, без аббревиатур</label></div>
+                    <div class="checklist-item"><input type="checkbox" id="ch3"> <label for="ch3">Загружена обложка 1944×600 px</label></div>
+                    <div class="checklist-item"><input type="checkbox" id="ch4"> <label for="ch4">Аватар читается в миниатюре</label></div>
+                    <div class="checklist-item"><input type="checkbox" id="ch5"> <label for="ch5">Описание заполнено: для кого страница, что публикуете, контакты</label></div>
+                    <div class="checklist-item"><input type="checkbox" id="ch6"> <label for="ch6">Настроена кнопка действия: «Купить билет», «Записаться» или «Позвонить»</label></div>
+                    <div class="checklist-item"><input type="checkbox" id="ch7"> <label for="ch7">Есть ссылка на ОК в описании Telegram и на сайте</label></div>
+                    <div class="checklist-item"><input type="checkbox" id="ch8"> <label for="ch8">Подготовлены эксклюзивные материалы для зрелой аудитории</label></div>
+                    <div class="checklist-item"><input type="checkbox" id="ch9"> <label for="ch9">Закреплён пост с навигацией по рубрикам через хештеги #Афиша #Экскурсии #Закулисье</label></div>
+                    <div class="checklist-item"><input type="checkbox" id="ch10"> <label for="ch10">Публикуете не менее трёх постов в неделю</label></div>
+                    <div class="checklist-item"><input type="checkbox" id="ch11"> <label for="ch11">Настроена возможность звонков в группу и сообщения от подписчиков</label></div>
+                    <button class="reset-checklist" id="resetChecklist">Сбросить чек-лист</button>
+                    <button class="reset-checklist copy-btn" id="copyChecklistBtn" style="margin-left: 12px;">📋 Скопировать чек-лист</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- СТР 4: Анонс с лид-формой + вовлекающий контент для зрелой аудитории -->
+        <div class="page-card">
+            <div class="page-inner">
+                <div class="page-title">🎭 Анонс и вовлекающий контент</div>
+                <div class="message-card">
+                    <div class="message-text" id="msg1">
+                        🎭 Премьера сезона! «Вишневый сад» 12 апреля в 19:00. 🎟️ Билеты уже в продаже — оставьте заявку в форме ниже, и мы забронируем лучшие места. ⏳ Количество мест ограниченно.
+                    </div>
+                    <div class="message-meta">
+                        <button class="copy-btn" data-target="msg1">📋 Скопировать текст</button>
+                    </div>
+                </div>
+                <div class="comment-box">
+                    <p>💡 <strong>Зачем использовать:</strong> Лид-форма собирает контакты зрителей, помогает бронировать места без лишних звонков.</p>
+                    <p>📅 <strong>Когда применять:</strong> При старте продаж на премьерные спектакли и концерты.</p>
+                </div>
+
+                <div class="message-card" style="margin-top: 16px;">
+                    <div class="message-text" id="msg2">
+                        🏛️ Вспомните: этот экспонат был символом эпохи. Кто угадает его название — получит бесплатный аудиогид. ✍️ Пишите версии в комментариях, правильный ответ опубликуем завтра!
+                    </div>
+                    <div class="message-meta">
+                        <button class="copy-btn" data-target="msg2">📋 Скопировать текст</button>
+                    </div>
+                </div>
+                <div class="comment-box">
+                    <p>💡 <strong>Зачем использовать:</strong> Викторины вовлекают зрелую аудиторию, повышают активность в комментариях.</p>
+                    <p>🎯 <strong>Когда применять:</strong> В периоды между выставками, для разогрева аудитории.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- СТР 5: Оперативное оповещение -->
+        <div class="page-card">
+            <div class="page-inner">
+                <div class="page-title">⚡ Оперативное оповещение</div>
+                <div class="message-card">
+                    <div class="message-text" id="msg3">
+                        ⚡ Внимание! Экскурсия «Тайны музейных подвалов» переносится с 15:00 на 17:00. 🏛️ Приносим извинения за неудобства. Все купленные билеты действительны, возврат — по телефону кассы ☎️.
+                    </div>
+                    <div class="message-meta">
+                        <span class="important-badge">Важно</span>
+                        <button class="copy-btn" data-target="msg3">📋 Скопировать текст</button>
+                    </div>
+                </div>
+                <div class="comment-box">
+                    <p>💡 <strong>Зачем использовать:</strong> Быстро донести изменения до подписчиков, снизить поток звонков.</p>
+                    <p>📢 <strong>Когда применять:</strong> При отмене или переносе мероприятий, изменении графика работы.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- СТР 6: Эксклюзив для подписчиков + приглашение на трансляцию -->
+        <div class="page-card">
+            <div class="page-inner">
+                <div class="page-title">🎁 Эксклюзив и трансляции</div>
+                <div class="message-card">
+                    <div class="message-text" id="msg4">
+                        🎁 Только для наших подписчиков в «Одноклассниках»: розыгрыш двух абонементов на майские концерты филармонии. Условия: поставьте «Класс!» этому посту и подпишитесь на страницу. 📅 Итоги — 25 апреля в прямом эфире.
+                    </div>
+                    <div class="message-meta">
+                        <button class="copy-btn" data-target="msg4">📋 Скопировать текст</button>
+                    </div>
+                </div>
+                <div class="comment-box">
+                    <p>💡 <strong>Зачем использовать:</strong> Эксклюзивы мотивируют подписываться и повышают лояльность зрителей.</p>
+                    <p>🎯 <strong>Когда применять:</strong> Для удержания аудитории и награды активных подписчиков.</p>
+                </div>
+
+                <div class="message-card" style="margin-top: 16px;">
+                    <div class="message-text" id="msg5">
+                        📹 20 апреля в 12:00 — прямая трансляция из залов постоянной экспозиции. 🖼️ Искусствовед проведет экскурсию и ответит на ваши вопросы в реальном времени. Подключайтесь к эфиру прямо здесь, на нашей странице.
+                    </div>
+                    <div class="message-meta">
+                        <button class="copy-btn" data-target="msg5">📋 Скопировать текст</button>
+                    </div>
+                </div>
+                <div class="comment-box">
+                    <p>💡 <strong>Зачем использовать:</strong> Прямые эфиры дают эффект присутствия, повышают доверие и охват.</p>
+                    <p>🎯 <strong>Когда применять:</strong> Для онлайн-экскурсий, открытых репетиций, встреч с деятелями культуры.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-controls">
+        <button class="nav-btn" id="prevBtn">◀ Назад</button>
+        <span class="page-indicator" id="pageIndicator">1 / 6</span>
+        <button class="nav-btn" id="nextBtn">Вперёд ▶</button>
+        <button class="nav-btn" id="savePdfBtn">📄 Сохранить PDF</button>
+    </div>
+    <footer>Фирменные цвета • Памятка по странице в ОК, трансляциям и готовым сообщениям</footer>
+</div>
+<div id="toast" class="toast">✅ Скопировано</div>
+
+<script>
+    (function() {
+        const container = document.getElementById('pagesContainer');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const indicator = document.getElementById('pageIndicator');
+        const progressFill = document.getElementById('progressFill');
+        let cards = Array.from(document.querySelectorAll('.page-card'));
+
+        function updateProgress() {
+            if (!container) return;
+            const scrollLeft = container.scrollLeft;
+            let current = 0;
+            for (let i = 0; i < cards.length; i++) {
+                const leftEdge = cards[i].offsetLeft;
+                if (leftEdge <= scrollLeft + 80) current = i;
+                else break;
+            }
+            indicator.innerText = `${current+1} / ${cards.length}`;
+            const percent = ((current + 1) / cards.length) * 100;
+            progressFill.style.width = percent + '%';
+        }
+
+        function scrollToPage(index) {
+            if (index < 0) index = 0;
+            if (index >= cards.length) index = cards.length - 1;
+            const target = cards[index];
+            if (target) {
+                container.scrollTo({ left: target.offsetLeft - 12, behavior: 'smooth' });
+                setTimeout(updateProgress, 150);
+            }
+        }
+
+        function getCurrentIndex() {
+            if (!container) return 0;
+            const scrollLeft = container.scrollLeft;
+            for (let i = 0; i < cards.length; i++) {
+                if (cards[i].offsetLeft <= scrollLeft + 70) continue;
+                return Math.max(0, i-1);
+            }
+            return cards.length-1;
+        }
+
+        function nextPage() { let idx = getCurrentIndex(); if (idx < cards.length-1) scrollToPage(idx+1); }
+        function prevPage() { let idx = getCurrentIndex(); if (idx > 0) scrollToPage(idx-1); }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') { prevPage(); e.preventDefault(); }
+            if (e.key === 'ArrowRight') { nextPage(); e.preventDefault(); }
+        });
+
+        container.addEventListener('scroll', updateProgress);
+        window.addEventListener('resize', updateProgress);
+        prevBtn.addEventListener('click', prevPage);
+        nextBtn.addEventListener('click', nextPage);
+
+        setTimeout(() => { updateProgress(); scrollToPage(0); }, 100);
+
+        // Копирование сообщений
+        const toast = document.getElementById('toast');
+        function showToast(msg) {
+            toast.textContent = msg || '✅ Скопировано';
+            toast.style.opacity = '1';
+            setTimeout(() => toast.style.opacity = '0', 2000);
+        }
+        document.querySelectorAll('.copy-btn[data-target]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('data-target');
+                const el = document.getElementById(targetId);
+                if (el) {
+                    let text = el.innerText.replace(/\n\s+/g, ' ').trim();
+                    navigator.clipboard.writeText(text).then(() => showToast('📋 Текст скопирован')).catch(() => showToast('❌ Ошибка'));
+                }
+            });
+        });
+
+        // Чек-лист: сброс и копирование
+        const resetBtn = document.getElementById('resetChecklist');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                document.querySelectorAll('.checklist-item input').forEach(cb => cb.checked = false);
+            });
+        }
+        const copyCheckBtn = document.getElementById('copyChecklistBtn');
+        if (copyCheckBtn) {
+            copyCheckBtn.addEventListener('click', () => {
+                let items = [];
+                document.querySelectorAll('.checklist-item').forEach(item => {
+                    const label = item.querySelector('label')?.innerText;
+                    if (label) items.push('□ ' + label);
+                });
+                const text = items.join('\n');
+                navigator.clipboard.writeText(text).then(() => {
+                    const old = copyCheckBtn.innerText;
+                    copyCheckBtn.innerText = '✅ Готово!';
+                    setTimeout(() => copyCheckBtn.innerText = old, 1500);
+                });
+            });
+        }
+
+        // PDF
+        const pdfBtn = document.getElementById('savePdfBtn');
+        if (pdfBtn) {
+            pdfBtn.addEventListener('click', () => {
+                window.print();
+            });
+        }
+    })();
+</script>
+</body>
+</html>
