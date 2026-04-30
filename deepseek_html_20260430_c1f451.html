@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Стоп-фактор: проверка публикации на запрещённые слова</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #eef2f5;
+            font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+        .moderator {
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 48px;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #0b2b3b;
+            padding: 24px 32px;
+            color: white;
+            border-bottom: 6px solid #c22b2b;
+        }
+        .header h1 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .header h1 span {
+            background: #c22b2b;
+            font-size: 0.7rem;
+            padding: 4px 14px;
+            border-radius: 60px;
+        }
+        .header p {
+            opacity: 0.85;
+            font-size: 0.9rem;
+            margin-top: 6px;
+        }
+
+        .content {
+            padding: 28px 32px 32px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            border-radius: 60px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            background: #f0f4fa;
+            color: #0b2b3b;
+        }
+
+        .textarea-wrapper {
+            margin-bottom: 24px;
+        }
+        textarea {
+            width: 100%;
+            padding: 18px 20px;
+            font-size: 1rem;
+            line-height: 1.5;
+            font-family: inherit;
+            border: 1px solid #d9f0cf;
+            border-radius: 28px;
+            resize: vertical;
+            background: #fefcf7;
+            transition: 0.2s;
+            color: #000;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #c22b2b;
+            box-shadow: 0 0 0 3px #c22b2b20;
+        }
+
+        .highlight-view {
+            background: #fefcf7;
+            border: 1px solid #d9f0cf;
+            border-radius: 28px;
+            padding: 18px 20px;
+            margin-bottom: 24px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background: #0b2b3b;
+            border: none;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn:hover {
+            background: #c22b2b;
+            transform: scale(0.97);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #0b2b3b;
+            color: #0b2b3b;
+        }
+        .btn-outline:hover {
+            background: #c22b2b;
+            border-color: #c22b2b;
+            color: white;
+        }
+
+        footer {
+            padding: 16px 32px 24px;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #5a6f7e;
+            border-top: 1px solid #e0eaf0;
+        }
+
+        @media (max-width: 640px) {
+            .content {
+                padding: 20px;
+            }
+            .button-group {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="moderator">
+    <div class="header">
+        <h1>🛡️ Стоп-фактор <span>контроль публикаций</span></h1>
+        <p>Автоматическая проверка черновика на стоп-слова (наркотики, мат, ЛГБТ, смена пола, педофилия, экстремизм, дискредитация ВС РФ, чайлдфри/пропаганда бездетности)</p>
+    </div>
+    <div class="content">
+        <div class="status-badge" id="statusBadge">
+            ⚪ Безопасность не проверена
+        </div>
+
+        <div class="textarea-wrapper">
+            <textarea id="postText" rows="7" placeholder="Вставьте черновик поста для проверки..."></textarea>
+        </div>
+
+        <div class="button-group">
+            <button class="btn" id="checkBtn">🔍 Проверить публикацию</button>
+            <button class="btn btn-outline" id="clearBtn">🧹 Очистить</button>
+            <button class="btn btn-outline" id="copySafeBtn">📋 Скопировать очищенный текст</button>
+        </div>
+
+        <div id="highlightContainer" class="highlight-view" style="display: none;">
+            <strong>📌 Подсветка найденных рисков:</strong><br>
+            <div id="highlightedText" style="margin-top: 8px;"></div>
+        </div>
+    </div>
+    <footer>⚠️ Алгоритм выделяет стоп-слова. Решение о публикации всегда принимает редакция. Цвета: 🔴 критически опасно, 🟠 высокий риск, 🟡 нецензурная лексика.</footer>
+</div>
+
+<script>
+    // -------------------- СЛОВАРИ ЗАПРЕЩЁННЫХ ВЫРАЖЕНИЙ --------------------
+    // 1. НАРКОТИКИ (расширенный список)
+    const narcoticSet = new Set([
+        "героин", "герыч", "белый", "смак", "маковая соломка", "ацетилированный опий", "опий-сырец", "ханка", "жмых", "опиуха", "метадон",
+        "конопля", "марихуана", "травка", "анаша", "шмаль", "зелье", "марьиванна", "гашиш", "дурь", "чернуха", "амфетамин", "экстази",
+        "эфедрон", "джеф", "эфедрин", "первитин", "кокаин", "кокс", "кока", "галлюциногены", "лсд", "промокашка", "красный дракон",
+        "псилоцин", "псилобицин", "колеса", "барбитураты", "барбитура", "феназепам", "реланиум", "реладорм", "ингалянт", "синтетические наркотики",
+        "мефедрон", "4-метилэфедрон", "меф", "спайсы", "соль", "скорость", "винт", "петрушка", "марки", "акт", "фен"
+    ]);
+
+    // 2. НЕЦЕНЗУРНАЯ ЛЕКСИКА (корни и производные)
+    const profanitySet = new Set([
+        "еб", "блядь", "бля", "хуй", "хуя", "пизд", "манда", "муд", "гандон", "ебаный", "ебанутый"
+    ]);
+
+    // 3. ЛГБТ / смена пола / нетрадиционные отношения
+    const lgbtSet = new Set([
+        "лгбт", "гей", "лесбиянка", "бисексуал", "трансгендер", "транссексуал", "педераст", "гомосексуализм", "нетрадиционная ориентация",
+        "сексменьшинство", "квир", "асексуал", "транс", "транс-переход", "операции по смене пола", "гендерный переход", "небинарность",
+        "мтф", "фтм", "однополые браки", "гей-прайд", "гендерфлюид", "пансексуал", "минет"
+    ]);
+
+    // 4. ПЕДОФИЛИЯ (прямые маркеры)
+    const pedoSet = new Set([
+        "педофилия", "растление малолетних", "детское порно", "мапс", "педофил"
+    ]);
+
+    // 5. ЭКСТРЕМИЗМ / ДИСКРЕДИТАЦИЯ ВС РФ
+    const extremismSet = new Set([
+        "свержение власти", "насильственное изменение границ", "оправдание терроризма", "ваххабит", "скинхед", "дискредитация армии",
+        "фейки о вс рф", "наемник сво", "дискредитируем", "нацизм", "фашизм", "z-патриоты", "революция", "дискредитаци", "рейх"
+    ]);
+
+    // 6. КАТЕГОРИЯ: ЧАЙЛДФРИ / ЧАЙЛДХЕЙТ / ПРОПАГАНДА БЕЗДЕТНОСТИ (высокий риск)
+    const childfreeSet = new Set([
+        "чайлдфри", "чайлдхейт", "пропаганда бездетности", "childfree", "child hate", "бездетность", "сознательная бездетность"
+    ]);
+
+    // Функция поиска и классификации
+    function findRisks(text) {
+        if (!text || text.trim() === "") return [];
+        const lowerText = text.toLowerCase();
+        const risks = [];
+
+        function includesWord(textLower, phrase) {
+            return textLower.includes(phrase.toLowerCase());
+        }
+
+        // 1. Наркотики
+        for (let term of narcoticSet) {
+            if (includesWord(lowerText, term)) {
+                risks.push({ text: term, type: "narcotic", level: "high", riskName: "Наркотики" });
+            }
+        }
+
+        // 2. Матерные корни (проверяем каждое слово на наличие корней)
+        const words = lowerText.split(/\s+/);
+        for (let word of words) {
+            for (let prof of profanitySet) {
+                if (word.includes(prof)) {
+                    risks.push({ text: word, type: "profanity", level: "mid", riskName: "Нецензурная брань" });
+                    break;
+                }
+            }
+        }
+
+        // 3. ЛГБТ / смена пола
+        for (let term of lgbtSet) {
+            if (includesWord(lowerText, term)) {
+                risks.push({ text: term, type: "lgbt", level: "high", riskName: "ЛГБТ / смена пола" });
+            }
+        }
+
+        // 4. Педофилия — критический уровень
+        for (let term of pedoSet) {
+            if (includesWord(lowerText, term)) {
+                risks.push({ text: term, type: "pedo", level: "critical", riskName: "Педофилия" });
+            }
+        }
+
+        // 5. Экстремизм / дискредитация
+        for (let term of extremismSet) {
+            if (includesWord(lowerText, term)) {
+                risks.push({ text: term, type: "extremism", level: "critical", riskName: "Экстремизм / Дискредитация ВС РФ" });
+            }
+        }
+
+        // 6. Чайлдфри / пропаганда бездетности
+        for (let term of childfreeSet) {
+            if (includesWord(lowerText, term)) {
+                risks.push({ text: term, type: "childfree", level: "high", riskName: "Чайлдфри / пропаганда бездетности" });
+            }
+        }
+
+        // удаляем дубликаты по тексту и типу
+        const unique = [];
+        const map = new Map();
+        for (let r of risks) {
+            const key = r.text + '|' + r.type;
+            if (!map.has(key)) {
+                map.set(key, r);
+                unique.push(r);
+            }
+        }
+        return unique;
+    }
+
+    // Подсветка текста с цветовым кодированием
+    function highlightRisks(originalText, risks) {
+        let text = originalText;
+        const sorted = [...risks].sort((a,b) => b.text.length - a.text.length);
+        for (let risk of sorted) {
+            const term = risk.text;
+            let color;
+            if (risk.level === 'critical') {
+                color = '#c22b2b';   // красный
+            } else if (risk.level === 'high') {
+                color = '#e67e22';   // оранжевый
+            } else if (risk.level === 'mid') {
+                color = '#e6a017';   // жёлто-оранжевый 
+            } else {
+                color = '#5a6f7e';
+            }
+            const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+            text = text.replace(regex, `<mark style="background: ${color}20; color: ${color}; font-weight: 500; padding: 0px 4px; border-radius: 12px;">$1</mark>`);
+        }
+        return text;
+    }
+
+    // Функция для удаления всей запрещенной лексики (очищенный текст)
+    function getSafeText(originalText, risks) {
+        let safe = originalText;
+        const sortedRisks = [...risks].sort((a,b) => b.text.length - a.text.length);
+        for (let r of sortedRisks) {
+            const regex = new RegExp(`\\b${r.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
+            safe = safe.replace(regex, '[УДАЛЕНО]');
+            safe = safe.replace(new RegExp(r.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), '[УДАЛЕНО]');
+        }
+        return safe;
+    }
+
+    // оценка общего статуса
+    function evaluateOverallStatus(risks) {
+        if (risks.some(r => r.level === 'critical')) return { level: 'critical', text: '🔴 Обнаружены КРИТИЧЕСКИЕ нарушения (экстремизм/педофилия/дискредитация). Публикация НЕДОПУСТИМА!' };
+        if (risks.some(r => r.level === 'high')) return { level: 'high', text: '🟠 Высокий риск! Найдены запрещённые слова (наркотики/ЛГБТ/смена пола/чайлдфри/пропаганда бездетности). Перед публикацией требуется согласование с юристом.' };
+        if (risks.some(r => r.level === 'mid')) return { level: 'mid', text: '🟡 Нецензурная лексика. Публикация может быть заблокирована или понижен охват. Рекомендуем отредактировать.' };
+        return { level: 'ok', text: '✅ Нарушений не найдено. Текст безопасен.' };
+    }
+
+    // Основной рендеринг
+    function runCheck() {
+        const textarea = document.getElementById('postText');
+        const rawText = textarea.value;
+        if (!rawText.trim()) {
+            document.getElementById('highlightContainer').style.display = 'none';
+            document.getElementById('statusBadge').innerHTML = '⚡ Нет текста для проверки. Вставьте черновик.';
+            return;
+        }
+
+        const risks = findRisks(rawText);
+        const status = evaluateOverallStatus(risks);
+
+        const badgeDiv = document.getElementById('statusBadge');
+        if (status.level === 'critical') badgeDiv.innerHTML = `🔴 КРИТИЧЕСКИЙ: ${status.text}`;
+        else if (status.level === 'high') badgeDiv.innerHTML = `🟠 ВЫСОКИЙ РИСК: ${status.text}`;
+        else if (status.level === 'mid') badgeDiv.innerHTML = `🟡 ВНИМАНИЕ: ${status.text}`;
+        else badgeDiv.innerHTML = `✅ ${status.text}`;
+
+        // подсветка текста
+        if (risks.length > 0) {
+            const highlighted = highlightRisks(rawText, risks);
+            document.getElementById('highlightedText').innerHTML = highlighted;
+            document.getElementById('highlightContainer').style.display = 'block';
+        } else {
+            document.getElementById('highlightedText').innerHTML = '<span style="color: #2c6e4f;">🎉 Запрещённых слов не найдено. Текст безопасен.</span>';
+            document.getElementById('highlightContainer').style.display = 'block';
+        }
+
+        // сохраняем риски для кнопки очистки
+        window.lastRisks = risks;
+        window.lastRaw = rawText;
+    }
+
+    function clearAll() {
+        document.getElementById('postText').value = '';
+        document.getElementById('highlightedText').innerHTML = '';
+        document.getElementById('highlightContainer').style.display = 'none';
+        document.getElementById('statusBadge').innerHTML = '⚪ Безопасность не проверена';
+        window.lastRisks = [];
+        window.lastRaw = '';
+    }
+
+    function copySafe() {
+        if (!window.lastRaw || !window.lastRisks) {
+            const curText = document.getElementById('postText').value;
+            if (!curText.trim()) {
+                alert('Нет текста для очистки.');
+                return;
+            }
+            const risksTmp = findRisks(curText);
+            const safeText = getSafeText(curText, risksTmp);
+            navigator.clipboard.writeText(safeText).then(() => alert('✅ Очищенный текст скопирован в буфер.')).catch(() => alert('Ошибка копирования'));
+            return;
+        }
+        const safeVersion = getSafeText(window.lastRaw, window.lastRisks);
+        navigator.clipboard.writeText(safeVersion).then(() => alert('✅ Очищенный от запрещённых слов текст скопирован.')).catch(() => alert('Не удалось скопировать'));
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('checkBtn').addEventListener('click', runCheck);
+        document.getElementById('clearBtn').addEventListener('click', clearAll);
+        document.getElementById('copySafeBtn').addEventListener('click', copySafe);
+    });
+</script>
+</body>
+</html>
