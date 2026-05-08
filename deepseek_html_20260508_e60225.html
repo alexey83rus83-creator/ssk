@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Памятка: пропаганда наркотиков в искусстве</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #eef2f5;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 24px 16px;
+        }
+
+        /* главный контейнер */
+        .memobook {
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        /* панель навигации */
+        .nav-bar {
+            background: #0b2b3b;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            border-bottom: 3px solid #c22b2b;
+        }
+
+        .progress-area {
+            flex: 2;
+            min-width: 140px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .progress-bg {
+            flex: 1;
+            height: 8px;
+            background: rgba(255,255,240,0.3);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 33.33%;
+            height: 100%;
+            background: #d9f0cf;
+            border-radius: 20px;
+            transition: width 0.2s ease;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background: #d9f0cf;
+            border: none;
+            font-size: 1.3rem;
+            font-weight: bold;
+            padding: 6px 14px;
+            border-radius: 60px;
+            cursor: pointer;
+            color: #0b2b3b;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+
+        .nav-btn:hover {
+            background: #c22b2b;
+            color: white;
+        }
+
+        .page-indicator {
+            background: #c22b2b;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        /* контейнер страниц (горизонтальный скролл) */
+        .pages-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            background: #ffffff;
+            scrollbar-width: thin;
+        }
+
+        .pages-container::-webkit-scrollbar {
+            height: 6px;
+            background: #e2e8f0;
+        }
+        .pages-container::-webkit-scrollbar-thumb {
+            background: #c22b2b;
+            border-radius: 10px;
+        }
+
+        /* каждая страница */
+        .page {
+            flex: 0 0 100%;
+            scroll-snap-align: start;
+            padding: 28px 32px;
+            background: white;
+            min-height: 520px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .page-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* типографика */
+        h1 {
+            font-size: 1.7rem;
+            border-left: 6px solid #c22b2b;
+            padding-left: 16px;
+            color: #0b2b3b;
+            margin-bottom: 8px;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            color: #c22b2b;
+            margin: 16px 0 8px 0;
+            border-bottom: 2px solid #d9f0cf;
+            display: inline-block;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #0b2b3b;
+            margin-top: 12px;
+        }
+
+        .compare-block {
+            background: #d9f0cf;
+            padding: 16px 20px;
+            border-radius: 24px;
+            margin: 16px 0;
+        }
+
+        .old-duty, .new-duty {
+            padding: 8px 12px;
+            margin: 12px 0;
+            background: white;
+            border-radius: 20px;
+        }
+
+        .badge-old {
+            background: #c22b2b;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 30px;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .badge-new {
+            background: #0b2b3b;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 30px;
+            color: white;
+            font-size: 0.75rem;
+            margin-bottom: 8px;
+        }
+
+        .task-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        .task-list li {
+            margin: 12px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .task-list li::before {
+            content: "▹";
+            color: #c22b2b;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* блок-схема */
+        .flowchart {
+            background: #f9fafb;
+            border-radius: 28px;
+            padding: 20px;
+            border: 1px solid #d9f0cf;
+        }
+
+        .flow-step {
+            padding: 12px 16px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            position: relative;
+            border-left: 5px solid #c22b2b;
+        }
+
+        .flow-decision {
+            margin-left: 24px;
+            padding-left: 16px;
+            border-left: 2px dashed #0b2b3b;
+        }
+
+        .flow-yes {
+            color: #2b6e2b;
+            font-weight: 600;
+        }
+
+        .flow-no {
+            color: #c22b2b;
+            font-weight: 600;
+        }
+
+        /* таблица штрафов */
+        .fine-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff6e5;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 16px 0;
+        }
+        .fine-table th, .fine-table td {
+            border: 1px solid #e2d5c0;
+            padding: 12px 10px;
+            text-align: left;
+        }
+        .fine-table th {
+            background: #0b2b3b;
+            color: white;
+            font-weight: 600;
+        }
+        .fine-table td {
+            background: white;
+        }
+
+        .copy-btn {
+            background: #0b2b3b;
+            border: none;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 60px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            transition: 0.2s;
+            font-family: inherit;
+            margin-top: 8px;
+        }
+
+        .copy-btn:hover {
+            background: #c22b2b;
+        }
+
+        .footer-pdf {
+            background: #f1f5f9;
+            padding: 14px 24px;
+            text-align: right;
+            border-top: 1px solid #d4dfe9;
+        }
+
+        .pdf-btn {
+            background: #c22b2b;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+
+        .pdf-btn:hover {
+            background: #9e1f1f;
+        }
+
+        .warning-note {
+            background: #fcf4e8;
+            padding: 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            border-left: 4px solid #c22b2b;
+        }
+
+        /* Мобильная версия */
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+            }
+            .pages-container {
+                display: block;
+                overflow-y: visible;
+                overflow-x: visible;
+                scroll-snap-type: none;
+            }
+            .page {
+                flex: none;
+                width: 100%;
+                scroll-snap-align: none;
+                max-height: none;
+                overflow-y: visible;
+                border-bottom: 2px solid #d9f0cf;
+                padding: 24px 20px;
+            }
+            .nav-buttons {
+                display: none;
+            }
+            .progress-area {
+                width: 100%;
+            }
+        }
+
+        button:active {
+            transform: scale(0.97);
+        }
+    </style>
+</head>
+<body>
+<div class="memobook" id="memobook">
+    <!-- панель навигации -->
+    <div class="nav-bar">
+        <div class="progress-area">
+            <span>📋 Прогресс</span>
+            <div class="progress-bg">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <span class="page-indicator" id="pageIndicator">1 / 3</span>
+        </div>
+        <div class="nav-buttons">
+            <button class="nav-btn" id="prevPageBtn" aria-label="Предыдущая">←</button>
+            <button class="nav-btn" id="nextPageBtn" aria-label="Следующая">→</button>
+        </div>
+    </div>
+
+    <div class="pages-container" id="pagesContainer">
+        <!-- СТРАНИЦА 1: сравнение обязанностей -->
+        <div class="page" data-page="1">
+            <div class="page-content">
+                <h1>📚 Обязанности: было → стало</h1>
+                <div class="compare-block">
+                    <div class="old-duty">
+                        <div class="badge-old">РАНЬШЕ</div>
+                        <p>📖 Книги и другие произведения искусства, в которых упоминались наркотики, должны были иметь возрастную маркировку <strong>16+ и 18+</strong>.</p>
+                    </div>
+                    <div class="new-duty">
+                        <div class="badge-new">СЕЙЧАС (новые задачи)</div>
+                        <ul class="task-list" id="tasksForCopy">
+                            <li>Проинструктируйте сотрудников с помощью короткой презентации, что относится к наркотикам и что сочтут их пропагандой в художественных произведениях и в интернете.</li>
+                            <li>Ежемесячно сверяйте фонды открытого доступа, библиотечные и выставочные экспозиции с обновляемым перечнем РКС.</li>
+                            <li>Маркируйте найденные произведения наклейками на печатные издания и отметками в электронной базе.</li>
+                            <li>При сомнениях в трактовке печатного издания направляйте запрос в РКС.</li>
+                            <li>Проведите ревизию сценариев текущего репертуара и выставочных планов.</li>
+                            <li>При сомнениях, можно ли счесть упоминание пропагандой, направляйте запрос учредителю или получите профильную консультацию у юриста до момента официального разъяснения от Минкультуры.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: flex-end;">
+                    <button class="copy-btn" id="copyTasksBtn">📋 Скопировать новые обязанности</button>
+                </div>
+                <div class="warning-note">
+                    ⚠️ <strong>Важно:</strong> Ежемесячная сверка с перечнем РКС — обязательная процедура. Не пропускайте!
+                </div>
+            </div>
+        </div>
+
+        <!-- СТРАНИЦА 2: схема действий для проверки книги -->
+        <div class="page" data-page="2">
+            <div class="page-content">
+                <h1>🔍 Схема действий: проверка книги</h1>
+                <div class="flowchart" id="flowchartForCopy">
+                    <div class="flow-step">
+                        📘 <strong>В тексте упомянуты наркотики</strong>
+                    </div>
+                    <div class="flow-step">
+                        ❓ <strong>Он издан до 1 августа 1990 года?</strong><br>
+                        <span class="flow-yes">✅ Да → Оставить без маркировки</span><br>
+                        <span class="flow-no">❌ Нет → ⬇️</span>
+                    </div>
+                    <div class="flow-step">
+                        ❓ <strong>Текст есть в списке РКС?</strong><br>
+                        <span class="flow-yes">✅ Да → Нанести маркировку</span><br>
+                        <span class="flow-no">❌ Нет → Обратиться за разъяснениями в РКС</span>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: flex-end;">
+                    <button class="copy-btn" id="copyFlowchartBtn">📋 Скопировать схему действий</button>
+                </div>
+                <div class="warning-note">
+                    💡 <strong>Совет:</strong> При любых сомнениях направляйте запрос в РКС — это снизит риски штрафа.
+                </div>
+            </div>
+        </div>
+
+        <!-- СТРАНИЦА 3: штрафы и проверки -->
+        <div class="page" data-page="3">
+            <div class="page-content">
+                <h1>⚖️ Ответственность за отсутствие маркировки</h1>
+                <p>За нарушение назначат <strong>штраф и конфискацию материалов</strong>. Штрафы за пропаганду наркотиков в литературе и искусстве по КоАП:</p>
+                
+                <table class="fine-table" id="finesTableForCopy">
+                    <thead>
+                        <tr><th>Кого оштрафуют</th><th>Минимальный размер, руб.</th><th>Максимальный размер, руб.</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Должностное лицо</td><td>10 000</td><td>30 000</td></tr>
+                        <tr><td>Организация</td><td>300 000</td><td>600 000</td></tr>
+                    </tbody>
+                </table>
+                
+                <div class="warning-note">
+                    ⚠️ <strong>Дополнительные санкции:</strong><br>
+                    • За пропаганду наркотиков должностных лиц могут <strong>дисквалифицировать на срок до двух лет</strong>.<br>
+                    • Для иностранцев и лиц без гражданства минимальный штраф увеличен с 4 000 до <strong>5 000 руб.</strong>
+                </div>
+                
+                <h2>👁️ Кто проверяет?</h2>
+                <p>Контролируют соблюдение запрета пропаганды наркотиков: <strong>Роскомнадзор, МВД, прокуратура, Роспотребнадзор</strong>, а также органы местного самоуправления. Проверки могут быть плановыми и внеплановыми (по жалобам).</p>
+                
+                <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
+                    <button class="copy-btn" id="copyFinesBtn">📋 Скопировать информацию о штрафах</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-pdf">
+        <button class="pdf-btn" id="savePdfBtn">🖨️ Сохранить всю памятку в PDF</button>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const container = document.getElementById('pagesContainer');
+        const prevBtn = document.getElementById('prevPageBtn');
+        const nextBtn = document.getElementById('nextPageBtn');
+        const progressFill = document.getElementById('progressFill');
+        const pageIndicatorSpan = document.getElementById('pageIndicator');
+        const pages = document.querySelectorAll('.page');
+        const totalPages = pages.length;
+        let currentIndex = 0;
+
+        function updateProgressAndIndicator() {
+            const percent = ((currentIndex + 1) / totalPages) * 100;
+            progressFill.style.width = `${percent}%`;
+            pageIndicatorSpan.innerText = `${currentIndex + 1} / ${totalPages}`;
+        }
+
+        function scrollToPage(index) {
+            if (index < 0) index = 0;
+            if (index >= totalPages) index = totalPages - 1;
+            if (container && pages[index]) {
+                container.scrollTo({ left: pages[index].offsetLeft, behavior: 'smooth' });
+                currentIndex = index;
+                updateProgressAndIndicator();
+            }
+        }
+
+        function onScrollHandler() {
+            if (!container) return;
+            const scrollLeft = container.scrollLeft;
+            let newIndex = 0;
+            let minDiff = Infinity;
+            for (let i = 0; i < pages.length; i++) {
+                const diff = Math.abs(scrollLeft - pages[i].offsetLeft);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    newIndex = i;
+                }
+            }
+            if (newIndex !== currentIndex) {
+                currentIndex = newIndex;
+                updateProgressAndIndicator();
+            }
+        }
+
+        if (container) {
+            container.addEventListener('scroll', onScrollHandler);
+        }
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                if (currentIndex > 0) scrollToPage(currentIndex - 1);
+            });
+        }
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                if (currentIndex < totalPages - 1) scrollToPage(currentIndex + 1);
+            });
+        }
+
+        // клавиши ← →
+        window.addEventListener('keydown', (e) => {
+            if (window.innerWidth <= 768) return;
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                if (currentIndex > 0) scrollToPage(currentIndex - 1);
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                if (currentIndex < totalPages - 1) scrollToPage(currentIndex + 1);
+            }
+        });
+
+        function init() {
+            if (container) {
+                container.scrollLeft = 0;
+                currentIndex = 0;
+                updateProgressAndIndicator();
+            }
+        }
+        init();
+
+        // --- Кнопки копирования ---
+        // 1. Скопировать новые обязанности
+        const copyTasksBtn = document.getElementById('copyTasksBtn');
+        if (copyTasksBtn) {
+            copyTasksBtn.addEventListener('click', () => {
+                const tasksList = document.getElementById('tasksForCopy');
+                if (tasksList) {
+                    const items = tasksList.querySelectorAll('li');
+                    let text = "НОВЫЕ ОБЯЗАННОСТИ СОТРУДНИКОВ:\n";
+                    items.forEach((li, idx) => {
+                        text += `${idx+1}. ${li.innerText.trim()}\n`;
+                    });
+                    navigator.clipboard.writeText(text).then(() => alert("✅ Новые обязанности скопированы"));
+                }
+            });
+        }
+
+        // 2. Скопировать схему действий
+        const copyFlowBtn = document.getElementById('copyFlowchartBtn');
+        if (copyFlowBtn) {
+            copyFlowBtn.addEventListener('click', () => {
+                const schema = `🔍 СХЕМА ДЕЙСТВИЙ ДЛЯ ПРОВЕРКИ КНИГИ:
+1. В тексте упомянуты наркотики
+2. Он издан до 1 августа 1990 года?
+   → ДА: Оставить без маркировки
+   → НЕТ: перейти к пункту 3
+3. Текст есть в списке РКС?
+   → ДА: Нанести маркировку
+   → НЕТ: Обратиться за разъяснениями в РКС`;
+                navigator.clipboard.writeText(schema).then(() => alert("📋 Схема действий скопирована"));
+            });
+        }
+
+        // 3. Скопировать информацию о штрафах
+        const copyFinesBtn = document.getElementById('copyFinesBtn');
+        if (copyFinesBtn) {
+            copyFinesBtn.addEventListener('click', () => {
+                const finesText = `ШТРАФЫ ЗА ПРОПАГАНДУ НАРКОТИКОВ В ЛИТЕРАТУРЕ И ИСКУССТВЕ:
+- Должностное лицо: от 10 000 до 30 000 руб.
+- Организация: от 300 000 до 600 000 руб.
+
+Дополнительно:
+• Дисквалификация должностных лиц до 2 лет
+• Для иностранцев штраф от 5 000 руб.
+• Конфискация материалов обязательна
+
+Контролируют: Роскомнадзор, МВД, прокуратура, Роспотребнадзор.`;
+                navigator.clipboard.writeText(finesText).then(() => alert("⚖️ Информация о штрафах скопирована"));
+            });
+        }
+
+        // --- Сохранить в PDF ---
+        const pdfBtn = document.getElementById('savePdfBtn');
+        if (pdfBtn) {
+            pdfBtn.addEventListener('click', () => {
+                const originalBook = document.querySelector('.memobook');
+                const cloneBook = originalBook.cloneNode(true);
+                
+                // удаляем интерактивные элементы из клона
+                cloneBook.querySelectorAll('.copy-btn, .nav-buttons, .pdf-btn').forEach(el => el.remove());
+                
+                const stylePrint = document.createElement('style');
+                stylePrint.textContent = `
+                    @media print {
+                        body { background: white; margin: 0; padding: 20px; }
+                        .memobook { max-width: 100%; box-shadow: none; margin: 0; }
+                        .nav-bar, .footer-pdf { display: none !important; }
+                        .pages-container { display: block !important; overflow: visible !important; }
+                        .page { max-height: none !important; overflow: visible; page-break-after: always; break-inside: avoid; }
+                        .copy-btn, .nav-buttons { display: none; }
+                    }
+                `;
+                cloneBook.appendChild(stylePrint);
+                
+                const printWindow = window.open('', '_blank');
+                if (printWindow) {
+                    printWindow.document.write('<!DOCTYPE html><html><head><title>Памятка - Пропаганда наркотиков в искусстве</title><meta charset="UTF-8">');
+                    const originalStyles = document.querySelectorAll('style');
+                    originalStyles.forEach(style => {
+                        printWindow.document.write('<style>' + style.innerHTML + '</style>');
+                    });
+                    printWindow.document.write('</head><body>');
+                    printWindow.document.write(cloneBook.innerHTML);
+                    printWindow.document.write('</body></html>');
+                    printWindow.document.close();
+                    printWindow.focus();
+                    printWindow.print();
+                } else {
+                    alert("Разрешите всплывающие окна для печати");
+                }
+            });
+        }
+
+        // реинициализация при ресайзе
+        window.addEventListener('resize', () => {
+            if (window.innerWidth <= 768) {
+                if (container) container.style.overflowX = 'visible';
+            } else {
+                if (container) container.style.overflowX = 'auto';
+            }
+        });
+    })();
+</script>
+</body>
+</html>
