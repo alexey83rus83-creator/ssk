@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Памятка-листалка: иностранные слова в культуре</title>
+    <title>Памятка: иностранные слова в культуре</title>
     <style>
         * {
             margin: 0;
@@ -18,21 +18,24 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 24px 16px;
+            padding: 20px;
         }
 
-        /* главный контейнер памятки */
+        /* основной контейнер — строго 1000px ширина, 700px высота */
         .memobook {
-            max-width: 1000px;
             width: 100%;
+            max-width: 1000px;
+            height: 700px;
             background: white;
-            border-radius: 32px;
-            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.2);
+            border-radius: 24px;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
             overflow: hidden;
-            transition: all 0.2s;
+            position: relative;
         }
 
-        /* панель управления (навигация + прогресс) */
+        /* Верхняя панель — фиксирована вверху */
         .nav-bar {
             background: #0b2b3b;
             padding: 12px 20px;
@@ -42,6 +45,7 @@
             flex-wrap: wrap;
             gap: 12px;
             border-bottom: 3px solid #c22b2b;
+            flex-shrink: 0;
         }
 
         .progress-area {
@@ -103,15 +107,15 @@
             color: white;
         }
 
-        /* контейнер страниц (горизонтальный скролл) */
+        /* контейнер страниц — горизонтальный скролл */
         .pages-container {
             display: flex;
             overflow-x: auto;
             scroll-snap-type: x mandatory;
             scroll-behavior: smooth;
             background: #ffffff;
-            transition: all 0.2s;
-            /* скрываем скроллбар, но оставляем возможность скролла */
+            flex: 1;
+            /* скрываем полосу, но оставляем возможность скролла */
             scrollbar-width: thin;
         }
 
@@ -124,58 +128,64 @@
             border-radius: 10px;
         }
 
-        /* каждая страница */
+        /* каждая страница — фиксированная высота, внутренний вертикальный скролл */
         .page {
             flex: 0 0 100%;
             scroll-snap-align: start;
-            padding: 28px 32px;
+            padding: 20px 28px;
             background: white;
-            min-height: 550px;
-            max-height: 70vh;
+            height: 100%;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* вертикальная прокрутка внутри страницы */
+        /* кастомизация вертикального скролла внутри страницы */
+        .page::-webkit-scrollbar {
+            width: 6px;
+        }
+        .page::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+        .page::-webkit-scrollbar-thumb {
+            background: #c22b2b;
+            border-radius: 10px;
+        }
+
         .page-content {
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 20px;
         }
 
         /* типографика */
         h1 {
-            font-size: 1.7rem;
+            font-size: 1.6rem;
             border-left: 6px solid #c22b2b;
             padding-left: 16px;
             color: #0b2b3b;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
 
         h2 {
-            font-size: 1.3rem;
+            font-size: 1.25rem;
             color: #c22b2b;
-            margin: 16px 0 8px 0;
+            margin: 12px 0 6px 0;
             border-bottom: 2px solid #d9f0cf;
             display: inline-block;
         }
 
-        h3 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #0b2b3b;
-            margin-top: 12px;
-        }
-
         .compare-block {
             background: #d9f0cf;
-            padding: 16px 20px;
+            padding: 14px 18px;
             border-radius: 24px;
-            margin: 16px 0;
+            margin: 8px 0;
         }
 
         .old-duty, .new-duty {
             padding: 8px 12px;
-            margin: 12px 0;
+            margin: 10px 0;
             background: white;
             border-radius: 20px;
         }
@@ -186,7 +196,7 @@
             padding: 4px 12px;
             border-radius: 30px;
             color: white;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: bold;
             margin-bottom: 8px;
         }
@@ -197,7 +207,7 @@
             padding: 4px 12px;
             border-radius: 30px;
             color: white;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             margin-bottom: 8px;
         }
 
@@ -206,9 +216,10 @@
             padding-left: 0;
         }
         .algorithm-list li {
-            margin: 12px 0;
-            padding-left: 24px;
+            margin: 10px 0;
+            padding-left: 22px;
             position: relative;
+            font-size: 0.9rem;
         }
         .algorithm-list li::before {
             content: "▹";
@@ -220,45 +231,44 @@
 
         .flowchart {
             background: #f9fafb;
-            border-radius: 28px;
-            padding: 20px;
+            border-radius: 24px;
+            padding: 18px;
             border: 1px solid #d9f0cf;
             font-family: monospace;
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
 
         .flow-step {
-            padding: 10px 16px;
-            margin: 8px 0;
+            padding: 8px 14px;
+            margin: 6px 0;
             border-left: 4px solid #c22b2b;
             background: white;
-            border-radius: 16px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            border-radius: 14px;
         }
 
         .fine-card {
             background: #fff6e5;
             border-left: 6px solid #c22b2b;
-            padding: 18px;
+            padding: 16px;
             border-radius: 20px;
-            margin: 18px 0;
+            margin: 12px 0;
         }
 
         .copy-btn {
             background: #0b2b3b;
             border: none;
             color: white;
-            padding: 10px 18px;
+            padding: 8px 16px;
             border-radius: 60px;
             font-weight: 600;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             transition: 0.2s;
-            margin-top: 8px;
             font-family: inherit;
+            align-self: flex-end;
         }
 
         .copy-btn:hover {
@@ -267,33 +277,48 @@
 
         .footer-pdf {
             background: #f1f5f9;
-            padding: 14px 24px;
+            padding: 10px 20px;
             text-align: right;
             border-top: 1px solid #d4dfe9;
+            flex-shrink: 0;
         }
 
         .pdf-btn {
             background: #c22b2b;
             color: white;
             border: none;
-            padding: 10px 24px;
+            padding: 8px 20px;
             border-radius: 40px;
             font-weight: bold;
             cursor: pointer;
             font-family: inherit;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             transition: 0.2s;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
 
         .pdf-btn:hover {
             background: #9e1f1f;
         }
 
-        /* Мобильная версия: скрываем горизонтальную навигацию и превращаем в вертикальный блок */
+        .note-text {
+            background: #fcf4e8;
+            padding: 10px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+        }
+
+        button:active {
+            transform: scale(0.97);
+        }
+
+        /* мобильный режим — когда экран уже 768px, перестраиваем в вертикальный блок без горизонтальной навигации */
         @media (max-width: 768px) {
             body {
                 padding: 12px;
+            }
+            .memobook {
+                height: auto;
+                max-width: 100%;
             }
             .pages-container {
                 display: block;
@@ -305,39 +330,27 @@
                 flex: none;
                 width: 100%;
                 scroll-snap-align: none;
-                max-height: none;
+                height: auto;
                 overflow-y: visible;
                 border-bottom: 2px solid #d9f0cf;
-                padding: 24px 20px;
+                padding: 20px;
             }
             .nav-buttons {
-                display: none;  /* ← → кнопки не нужны в вертикальном режиме */
+                display: none;
             }
             .progress-area {
                 width: 100%;
             }
-            .page-indicator {
-                font-size: 0.75rem;
+            .footer-pdf {
+                position: relative;
+                bottom: auto;
             }
-            .memobook {
-                border-radius: 28px;
-            }
-        }
-
-        button:active {
-            transform: scale(0.97);
-        }
-        .note-text {
-            background: #fcf4e8;
-            padding: 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
         }
     </style>
 </head>
 <body>
 <div class="memobook" id="memobook">
-    <!-- панель навигации с прогрессом -->
+    <!-- Панель управления — всегда вверху -->
     <div class="nav-bar">
         <div class="progress-area">
             <span>📄 Прогресс</span>
@@ -354,13 +367,13 @@
 
     <!-- контейнер для горизонтального скролла (страницы) -->
     <div class="pages-container" id="pagesContainer">
-        <!-- СТРАНИЦА 1: обязанности и алгоритм -->
+        <!-- СТРАНИЦА 1: сравнение обязанностей + алгоритм -->
         <div class="page" data-page="1">
             <div class="page-content">
-                <h1>📌 Обязанности ответственных: было → стало</h1>
+                <h1>📌 Обязанности: было → стало</h1>
                 <div class="compare-block">
                     <div class="old-duty">
-                        <div class="badge-old">РАНЬШЕ (до изменений)</div>
+                        <div class="badge-old">РАНЬШЕ</div>
                         <p>📢 Требование писать на русском языке до 1 марта касалось только <strong>рекламы и информации для потребителя</strong>: сведения о продавце, режим работы, перечень товаров и услуг.</p>
                     </div>
                     <div class="new-duty">
@@ -379,19 +392,17 @@
                         </ul>
                     </div>
                 </div>
-                <div style="display: flex; justify-content: flex-end;">
-                    <button class="copy-btn" id="copyAlgorithmBtn">📋 Копировать алгоритм действий</button>
-                </div>
+                <button class="copy-btn" id="copyAlgorithmBtn">📋 Копировать алгоритм действий</button>
                 <div class="note-text">
                     💡 <strong>Важно:</strong> информация на русском языке должна быть в приоритете, ее нельзя делать незаметнее на фоне иностранных вставок.
                 </div>
             </div>
         </div>
 
-        <!-- СТРАНИЦА 2: блок-схема проверки слова -->
+        <!-- СТРАНИЦА 2: блок-схема -->
         <div class="page" data-page="2">
             <div class="page-content">
-                <h1>🔍 Блок-схема: как проверить иностранное слово</h1>
+                <h1>🔍 Блок-схема: как проверить слово</h1>
                 <div class="flowchart" id="flowchartForCopy">
                     <div class="flow-step">📌 <strong>Нашли иностранное слово</strong></div>
                     <div class="flow-step">➡️ <strong>Оно входит в словари РАН?</strong><br> 
@@ -404,38 +415,34 @@
                         ↳ Да → ✂️ <span style="color:#c22b2b;">Удалить или заменить русским аналогом</span><br>
                         ↳ Нет → 🔄 <span style="color:#0b2b3b;">Дать перевод слова</span></div>
                 </div>
-                <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
-                    <button class="copy-btn" id="copyFlowchartBtn">📋 Копировать блок-схему (текст)</button>
-                </div>
+                <button class="copy-btn" id="copyFlowchartBtn">📋 Копировать блок-схему (текст)</button>
                 <div class="note-text">
                     💡 Совет: Всегда фиксируйте решение — исключение, замена или перевод. Это поможет при проверках.
                 </div>
             </div>
         </div>
 
-        <!-- СТРАНИЦА 3: штрафы и кто проверяет -->
+        <!-- СТРАНИЦА 3: штрафы и проверяющие -->
         <div class="page" data-page="3">
             <div class="page-content">
                 <h1>⚖️ Ответственность за иностранные слова</h1>
                 <div class="fine-card">
                     <p>Отдельной статьи «за использование иностранных слов» в КоАП пока не предусмотрено. За нарушение могут привлекать по статьям:</p>
-                    <ul style="margin: 12px 0 0 24px;">
+                    <ul style="margin: 12px 0 12px 24px;">
                         <li><strong>14.8 КоАП</strong> – нарушение прав потребителей на получение необходимой и достоверной информации. Штрафы: <strong>от 500 до 1000 ₽</strong> (должностные), <strong>от 5000 до 10 000 ₽</strong> (юридические).</li>
                         <li><strong>14.3 КоАП</strong> – нарушение законодательства о рекламе. Штрафы: <strong>от 2000 до 2500 ₽</strong> (должностные), <strong>от 4000 до 20 000 ₽</strong> (ИП), <strong>от 100 000 до 500 000 ₽</strong> (юр. лица).</li>
                     </ul>
-                    <p style="margin-top: 12px;">⚠️ Важно: по ст.14.8 КоАП могут привлечь за <strong>каждый факт нарушения</strong> (например, ценник и скидка = два штрафа).</p>
+                    <p style="margin-top: 10px;">⚠️ Важно: по ст.14.8 КоАП могут привлечь за <strong>каждый факт нарушения</strong> (например, ценник и скидка = два штрафа).</p>
                     <p>Дополнительные санкции: приостановка рекламной кампании, блокировка сайта, демонтаж вывески.</p>
                 </div>
                 <h2>👁️ Кто проверяет?</h2>
                 <p><strong>Роспотребнадзор, Банк России, ФАС, Роскомнадзор и местные органы власти</strong> – могут проводить проверки по своей инициативе, а также работать с жалобами. Роскомнадзор использует автоматизированные системы поиска + ИИ для сканирования сайтов и блогов.</p>
-                <div style="display: flex; justify-content: flex-end; margin-top: 18px;">
-                    <button class="copy-btn" id="copyFinesBtn">📋 Копировать информацию о штрафах</button>
-                </div>
+                <button class="copy-btn" id="copyFinesBtn">📋 Копировать информацию о штрафах</button>
             </div>
         </div>
     </div>
 
-    <!-- нижняя кнопка PDF (печать всей памятки) -->
+    <!-- Нижняя панель с кнопкой PDF — всегда видна -->
     <div class="footer-pdf">
         <button class="pdf-btn" id="savePdfBtn">🖨️ Сохранить всю памятку в PDF</button>
     </div>
@@ -443,7 +450,7 @@
 
 <script>
     (function() {
-        // DOM элементы
+        // Элементы управления
         const container = document.getElementById('pagesContainer');
         const prevBtn = document.getElementById('prevPageBtn');
         const nextBtn = document.getElementById('nextPageBtn');
@@ -453,21 +460,18 @@
         const totalPages = pages.length;
         let currentIndex = 0;
 
-        // функция обновления прогресса и индикатора
         function updateProgressAndIndicator() {
             const percent = ((currentIndex + 1) / totalPages) * 100;
             progressFill.style.width = `${percent}%`;
             pageIndicatorSpan.innerText = `${currentIndex + 1} / ${totalPages}`;
         }
 
-        // скролл к нужной странице (горизонтальный)
         function scrollToPage(index) {
             if (index < 0) index = 0;
             if (index >= totalPages) index = totalPages - 1;
             if (container && pages[index]) {
-                const scrollPos = pages[index].offsetLeft;
                 container.scrollTo({
-                    left: scrollPos,
+                    left: pages[index].offsetLeft,
                     behavior: 'smooth'
                 });
                 currentIndex = index;
@@ -475,15 +479,14 @@
             }
         }
 
-        // обработчик скролла (обновление индекса при ручном свайпе)
+        // Обновление активной страницы при скролле
         function onScrollHandler() {
             if (!container) return;
             const scrollLeft = container.scrollLeft;
             let newIndex = 0;
             let minDiff = Infinity;
             for (let i = 0; i < pages.length; i++) {
-                const pageOffset = pages[i].offsetLeft;
-                const diff = Math.abs(scrollLeft - pageOffset);
+                const diff = Math.abs(scrollLeft - pages[i].offsetLeft);
                 if (diff < minDiff) {
                     minDiff = diff;
                     newIndex = i;
@@ -497,9 +500,13 @@
 
         if (container) {
             container.addEventListener('scroll', onScrollHandler);
+            // начальная установка
+            container.scrollLeft = 0;
+            currentIndex = 0;
+            updateProgressAndIndicator();
         }
 
-        // кнопки навигации
+        // Навигация по кнопкам
         if (prevBtn) {
             prevBtn.addEventListener('click', () => {
                 if (currentIndex > 0) scrollToPage(currentIndex - 1);
@@ -511,11 +518,10 @@
             });
         }
 
-        // клавиши ← и →
+        // Клавиши ←  →
         window.addEventListener('keydown', (e) => {
-            // проверяем, что не активен input / textarea и ширина экрана > 768 (на мобильных клавиши не должны конфликтовать)
             const isMobile = window.innerWidth <= 768;
-            if (isMobile) return; // на мобильном вертикальном режиме не используем клавиши для навигации между страницами
+            if (isMobile) return;
             if (e.key === 'ArrowLeft') {
                 e.preventDefault();
                 if (currentIndex > 0) scrollToPage(currentIndex - 1);
@@ -525,19 +531,7 @@
             }
         });
 
-        // инициализация отображения
-        function init() {
-            if (container) {
-                // корректно установим начальную позицию
-                container.scrollLeft = 0;
-                currentIndex = 0;
-                updateProgressAndIndicator();
-            }
-        }
-        init();
-
-        // --- КНОПКИ КОПИРОВАНИЯ (разные тексты) ---
-        // 1. Копировать алгоритм (со страницы 1)
+        // 1. Копирование алгоритма
         const copyAlgorithmBtn = document.getElementById('copyAlgorithmBtn');
         if (copyAlgorithmBtn) {
             copyAlgorithmBtn.addEventListener('click', () => {
@@ -546,7 +540,7 @@
                     const items = algoList.querySelectorAll('li');
                     let textToCopy = "Алгоритм действий для проверки контента:\n";
                     items.forEach((li, idx) => {
-                        textToCopy += `${idx+1}. ${li.innerText.trim()}\n`;
+                        textToCopy += `${li.innerText.trim()}\n`;
                     });
                     navigator.clipboard.writeText(textToCopy).then(() => {
                         alert("✅ Алгоритм скопирован в буфер");
@@ -555,7 +549,7 @@
             });
         }
 
-        // 2. Копировать блок-схему (со страницы 2) в виде текста
+        // 2. Копирование блок-схемы
         const copyFlowBtn = document.getElementById('copyFlowchartBtn');
         if (copyFlowBtn) {
             copyFlowBtn.addEventListener('click', () => {
@@ -576,7 +570,7 @@
             });
         }
 
-        // 3. Копировать информацию о штрафах (страница 3)
+        // 3. Копирование штрафов
         const copyFinesBtn = document.getElementById('copyFinesBtn');
         if (copyFinesBtn) {
             copyFinesBtn.addEventListener('click', () => {
@@ -591,48 +585,35 @@
             });
         }
 
-        // --- Сохранить в PDF (печать всей памятки целиком) ---
+        // Сохранить в PDF (вся памятка целиком)
         const pdfBtn = document.getElementById('savePdfBtn');
         if (pdfBtn) {
             pdfBtn.addEventListener('click', () => {
-                // создаем временный элемент для печати: клонируем все страницы (но без лишних элементов навигации)
-                const originalContainer = document.querySelector('.memobook');
-                const cloneBook = originalContainer.cloneNode(true);
-                // Удаляем из клона кнопки навигации и кнопки копирования, чтобы при печати не дублировались, но оставляем контент
-                const cloneNavBar = cloneBook.querySelector('.nav-bar');
-                if (cloneNavBar) {
-                    // оставляем только индикатор прогресса, но убираем кнопки влево/вправо для чистоты pdf
-                    const btnsWrapper = cloneNavBar.querySelector('.nav-buttons');
-                    if (btnsWrapper) btnsWrapper.style.display = 'none';
-                }
-                // Удаляем все кнопки копирования (чтобы не мешались в печатной версии)
-                cloneBook.querySelectorAll('.copy-btn').forEach(btn => btn.remove());
-                // Убираем интерактивные элементы JS (оставляем только стиль)
-                // Добавляем стили для печати: белый фон, черный текст, без теней
+                const originalBook = document.querySelector('.memobook');
+                const cloneBook = originalBook.cloneNode(true);
+                // Удаляем интерактивные элементы, чтобы не дублировались
+                cloneBook.querySelectorAll('.copy-btn, .nav-buttons, .pdf-btn').forEach(el => el.remove());
+                // Добавляем печатные стили
                 const stylePrint = document.createElement('style');
                 stylePrint.textContent = `
                     @media print {
-                        body { background: white; padding: 0; margin: 0; }
-                        .memobook { max-width: 100%; box-shadow: none; margin: 0; border-radius: 0; }
-                        .nav-bar, .footer-pdf, .pdf-btn, .nav-buttons, .copy-btn { display: none !important; }
-                        .page { max-height: none; overflow: visible; page-break-after: always; break-inside: avoid; }
-                        .pages-container { display: block; overflow: visible; }
-                        .compare-block, .flowchart, .fine-card { break-inside: avoid; }
+                        body { background: white; margin: 0; padding: 0; }
+                        .memobook { max-width: 100%; height: auto; box-shadow: none; }
+                        .nav-bar, .footer-pdf { display: none; }
+                        .pages-container { display: block !important; overflow: visible !important; }
+                        .page { height: auto !important; overflow: visible !important; page-break-after: always; break-inside: avoid; }
                         .copy-btn { display: none; }
                     }
                 `;
                 cloneBook.appendChild(stylePrint);
-
-                // Временно заменяем документ для печати
+                
                 const printWindow = window.open('', '_blank');
                 if (printWindow) {
                     printWindow.document.write('<!DOCTYPE html><html><head><title>Памятка - Контроль иностранных слов</title><meta charset="UTF-8">');
-                    // копируем все стили из оригинала
                     const originalStyles = document.querySelectorAll('style');
                     originalStyles.forEach(style => {
                         printWindow.document.write('<style>' + style.innerHTML + '</style>');
                     });
-                    printWindow.document.write('<style> body { padding: 20px; } .nav-bar, .footer-pdf, .pdf-btn, .copy-btn, .nav-buttons { display: none !important; } .pages-container { display: block !important; overflow: visible; } .page { max-height: none; overflow: visible; page-break-after: always; }</style>');
                     printWindow.document.write('</head><body>');
                     printWindow.document.write(cloneBook.innerHTML);
                     printWindow.document.write('</body></html>');
@@ -645,72 +626,15 @@
             });
         }
 
-        // реинициализация при изменении размера окна (для мобильной проверки)
+        // Адаптив: при изменении размера окна не теряем горизонтальную навигацию
         window.addEventListener('resize', () => {
-            if (window.innerWidth <= 768) {
-                // ничего не делаем, просто убеждаемся что навигация не сломана
-                if (container) container.style.overflowX = 'visible';
-            } else {
-                if (container) container.style.overflowX = 'auto';
-                // синхронизируем текущую позицию
-                const currentScroll = container.scrollLeft;
-                let closest = 0;
-                for (let i=0; i<pages.length; i++) {
-                    if (Math.abs(pages[i].offsetLeft - currentScroll) < Math.abs(pages[closest].offsetLeft - currentScroll)) closest = i;
+            if (window.innerWidth > 768) {
+                if (container && pages[currentIndex]) {
+                    container.scrollLeft = pages[currentIndex].offsetLeft;
                 }
-                currentIndex = closest;
-                updateProgressAndIndicator();
             }
         });
     })();
-    // ===== ФИКС ДЛЯ WINDOWS 10 + CHROME ВНУТРИ IFRAME =====
-(function fixIframeScrolling() {
-    // Проверяем, находимся ли мы внутри iframe
-    const isInIframe = window.self !== window.top;
-    
-    if (isInIframe) {
-        console.log('Памятка внутри iframe — применяем фикс скроллов');
-        
-        // Принудительно задаём стили для вертикального скролла
-        const style = document.createElement('style');
-        style.textContent = `
-            .page {
-                max-height: 60vh !important;
-                overflow-y: auto !important;
-            }
-            /* Показываем полосу прокрутки всегда (для Windows) */
-            .page::-webkit-scrollbar {
-                width: 10px;
-                background: #f0f0f0;
-            }
-            .page::-webkit-scrollbar-thumb {
-                background: #c22b2b;
-                border-radius: 5px;
-            }
-            .page::-webkit-scrollbar-thumb:hover {
-                background: #0b2b3b;
-            }
-            /* Горизонтальный скролл между страницами */
-            .pages-container {
-                overflow-x: auto !important;
-                scroll-behavior: smooth;
-            }
-        `;
-        document.head.appendChild(style);
-        
-        // Если нужно — сбрасываем скролл у body
-        document.body.style.overflow = 'hidden';
-        
-        // Пересчитываем высоту после загрузки
-        window.addEventListener('load', () => {
-            const pages = document.querySelectorAll('.page');
-            pages.forEach(page => {
-                // Убеждаемся, что скролл активен
-                page.style.overflowY = 'auto';
-            });
-        });
-    }
-})();
 </script>
 </body>
 </html>
