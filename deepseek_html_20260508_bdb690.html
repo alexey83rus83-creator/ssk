@@ -663,6 +663,54 @@
             }
         });
     })();
+    // ===== ФИКС ДЛЯ WINDOWS 10 + CHROME ВНУТРИ IFRAME =====
+(function fixIframeScrolling() {
+    // Проверяем, находимся ли мы внутри iframe
+    const isInIframe = window.self !== window.top;
+    
+    if (isInIframe) {
+        console.log('Памятка внутри iframe — применяем фикс скроллов');
+        
+        // Принудительно задаём стили для вертикального скролла
+        const style = document.createElement('style');
+        style.textContent = `
+            .page {
+                max-height: 60vh !important;
+                overflow-y: auto !important;
+            }
+            /* Показываем полосу прокрутки всегда (для Windows) */
+            .page::-webkit-scrollbar {
+                width: 10px;
+                background: #f0f0f0;
+            }
+            .page::-webkit-scrollbar-thumb {
+                background: #c22b2b;
+                border-radius: 5px;
+            }
+            .page::-webkit-scrollbar-thumb:hover {
+                background: #0b2b3b;
+            }
+            /* Горизонтальный скролл между страницами */
+            .pages-container {
+                overflow-x: auto !important;
+                scroll-behavior: smooth;
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Если нужно — сбрасываем скролл у body
+        document.body.style.overflow = 'hidden';
+        
+        // Пересчитываем высоту после загрузки
+        window.addEventListener('load', () => {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => {
+                // Убеждаемся, что скролл активен
+                page.style.overflowY = 'auto';
+            });
+        });
+    }
+})();
 </script>
 </body>
 </html>
