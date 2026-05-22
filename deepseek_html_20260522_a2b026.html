@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=2.0">
+    <title>Памятка-листалка · Независимая оценка качества (НОК)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #eef2f5;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+            color: #000000;
+        }
+
+        .memorandum {
+            width: 100%;
+            max-width: 1000px;
+            min-width: 800px;
+            height: 1000px;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 6px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .toolbar {
+            background: #ffffff;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #d9f0cf;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 2px 8px rgba(11, 43, 59, 0.04);
+        }
+
+        .nav-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            background: #ffffff;
+            border: 1px solid #ccdce6;
+            color: #0b2b3b;
+            font-weight: 600;
+            font-size: 1.2rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            user-select: none;
+        }
+
+        .nav-btn:hover {
+            background: #d9f0cf;
+            border-color: #c22b2b;
+            color: #0b2b3b;
+            box-shadow: 0 4px 10px rgba(194, 43, 43, 0.15);
+        }
+
+        .nav-btn:active {
+            background: #c22b2b;
+            color: white;
+            border-color: #c22b2b;
+            transform: scale(0.96);
+        }
+
+        .progress-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f8fafc;
+            padding: 8px 18px;
+            border-radius: 40px;
+            border: 1px solid #d9f0cf;
+        }
+
+        .page-indicator {
+            font-weight: 600;
+            color: #0b2b3b;
+            background: #d9f0cf;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar-bg {
+            width: 120px;
+            height: 8px;
+            background: #e9edf2;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #c22b2b;
+            border-radius: 20px;
+            transition: width 0.25s ease;
+        }
+
+        .pdf-btn {
+            background: #c22b2b;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(194, 43, 43, 0.3);
+            transition: 0.2s;
+            letter-spacing: 0.3px;
+            border: 1px solid #a02020;
+        }
+
+        .pdf-btn:hover {
+            background: #a02020;
+            box-shadow: 0 8px 16px rgba(194, 43, 43, 0.4);
+        }
+
+        .pages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px;
+            scroll-behavior: smooth;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .page {
+            display: none;
+            animation: fade 0.25s ease;
+            flex-direction: column;
+            gap: 20px;
+            height: fit-content;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0.6;
+                transform: translateY(5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #d9f0cf;
+            border-radius: 24px;
+            padding: 20px 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        }
+
+        .intro-card {
+            background: #f9fbf9;
+            border-left: 5px solid #c22b2b;
+        }
+
+        h2 {
+            color: #0b2b3b;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        h3 {
+            font-weight: 700;
+            color: #0b2b3b;
+            margin: 16px 0 8px;
+            font-size: 1.15rem;
+            border-bottom: 1px solid #d9f0cf;
+            padding-bottom: 4px;
+        }
+
+        .check-item {
+            margin-bottom: 18px;
+        }
+
+        .check-item p {
+            margin: 6px 0 6px 8px;
+            line-height: 1.5;
+        }
+
+        .copy-btn {
+            background: white;
+            border: 1px solid #0b2b3b;
+            color: #0b2b3b;
+            padding: 10px 18px;
+            border-radius: 24px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.15s;
+            margin-top: 12px;
+        }
+
+        .copy-btn:hover {
+            background: #d9f0cf;
+            border-color: #c22b2b;
+        }
+
+        .highlight {
+            background: #fff6f5;
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-weight: 600;
+            color: #c22b2b;
+        }
+
+        hr {
+            border: 0.5px solid #d9f0cf;
+            margin: 16px 0;
+        }
+
+        @media (max-width: 850px) {
+            .memorandum {
+                min-width: 320px;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="memorandum">
+        <!-- Верхняя панель -->
+        <div class="toolbar">
+            <div class="nav-section">
+                <div class="nav-buttons">
+                    <button class="nav-btn" id="prevPageBtn" title="Предыдущая страница (←)">←</button>
+                    <button class="nav-btn" id="nextPageBtn" title="Следующая страница (→)">→</button>
+                </div>
+                <div class="progress-area">
+                    <span class="page-indicator" id="pageIndicator">1 / 2</span>
+                    <div class="progress-bar-bg">
+                        <div class="progress-fill" id="progressFill" style="width: 50%;"></div>
+                    </div>
+                </div>
+            </div>
+            <button class="pdf-btn" id="savePdfBtn">
+                <span>📄</span> Сохранить в PDF
+            </button>
+        </div>
+
+        <!-- Страницы -->
+        <div class="pages-container" id="pagesContainer">
+            <!-- Страница 1: Введение, результаты НОК, план мероприятий -->
+            <div class="page active" id="page1">
+                <div class="card intro-card">
+                    <h2>📊 Независимая оценка качества</h2>
+                    <p>НОК – это форма общественного контроля, чтобы обеспечить открытость деятельности учреждения и дать потребителям объективную картину реального уровня качества предоставляемых услуг. Раздел 8.3. приказа Минкультуры от 20.02.2015 № 277 описывает, что именно публиковать. Рекомендуем создать для НОК отдельный пункт меню.</p>
+                </div>
+                <div class="card">
+                    <div class="check-item">
+                        <h3>📋 Информация о результатах НОК</h3>
+                        <p>Сюда входит три блока информации:</p>
+                        <p><strong>Сводка результатов.</strong> Документ, где указано, какие оценки по всем утвержденным критериям получило учреждение.</p>
+                        <p><strong>Аналитический отчет.</strong> Полный отчет организации-оператора, который собирал и обобщал информацию для проведения НОК. Это более полный документ, в котором детально расписаны сильные и слабые стороны работы учреждения.</p>
+                        <p><strong>Рейтинг учреждения.</strong> Сводные данные о месте вашего учреждения в региональном или муниципальном рейтинге, если такой формируется.</p>
+                    </div>
+                    <div class="check-item">
+                        <h3>📝 План мероприятий по устранению недостатков</h3>
+                        <p>Если по итогам НОК нашли недостатки, на их устранение у вас есть ровно три месяца. Закон требует разместить на сайте конкретный план мероприятий, где каждый пункт должен быть измеримым. Например, вместо формулировки «улучшить работу с информацией» нужно писать: «разместить на сайте актуальную версию Устава до 1 июня».</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Страница 2: Отчет, сроки, общественный совет -->
+            <div class="page" id="page2">
+                <div class="card">
+                    <div class="check-item">
+                        <h3>✅ Отчет о выполнении плана</h3>
+                        <p>Это ваш публичный отчет о проделанной работе. Его создают по окончании срока выполнения плана мероприятий. Он должен подтверждать, что все недостатки из плана были реально устранены. Как правило, он содержит таблицу со ссылками на пункты плана и отметками о фактическом исполнении.</p>
+                    </div>
+                    <div class="check-item">
+                        <h3>📅 Сроки проведения НОК в текущем периоде</h3>
+                        <p>Важно информировать посетителей о том, когда в следующий раз будет проводиться оценка качества. Это помогает привлечь больше участников анкетирования и повысить прозрачность процесса. Разместите объявление о планируемых сроках проведения следующего этапа НОК с указанием периода сбора анкет.</p>
+                    </div>
+                    <div class="check-item">
+                        <h3>🏛️ Информация об общественном совете</h3>
+                        <p>НОК проводится под контролем общественного совета при учредителе. Рекомендуем указать состав, задачи и полномочия такого совета в вашем регионе.</p>
+                    </div>
+                    <button class="copy-btn" id="copyChecklistBtn">
+                        📋 Скопировать весь чек-лист
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const pages = document.querySelectorAll('.page');
+            const prevBtn = document.getElementById('prevPageBtn');
+            const nextBtn = document.getElementById('nextPageBtn');
+            const pageIndicator = document.getElementById('pageIndicator');
+            const progressFill = document.getElementById('progressFill');
+            const container = document.getElementById('pagesContainer');
+
+            let currentPage = 0;
+            const totalPages = pages.length;
+
+            function updatePage(index) {
+                if (index < 0) index = 0;
+                if (index >= totalPages) index = totalPages - 1;
+
+                pages.forEach((page, i) => {
+                    page.classList.toggle('active', i === index);
+                });
+
+                currentPage = index;
+                pageIndicator.textContent = `${currentPage + 1} / ${totalPages}`;
+                const percent = ((currentPage + 1) / totalPages) * 100;
+                progressFill.style.width = `${percent}%`;
+
+                if (container) {
+                    container.scrollTop = 0;
+                }
+            }
+
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 0) updatePage(currentPage - 1);
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentPage < totalPages - 1) updatePage(currentPage + 1);
+            });
+
+            window.addEventListener('keydown', (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
+                if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    if (currentPage > 0) updatePage(currentPage - 1);
+                } else if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    if (currentPage < totalPages - 1) updatePage(currentPage + 1);
+                }
+            });
+
+            // Копирование всего чек-листа
+            document.getElementById('copyChecklistBtn')?.addEventListener('click', () => {
+                const checklistText = `Независимая оценка качества (НОК) — п. 8.3 Приказа №277:
+
+Информация о результатах НОК:
+- Сводка результатов (оценки по критериям)
+- Аналитический отчет организации-оператора
+- Рейтинг учреждения (региональный/муниципальный)
+
+План мероприятий по устранению недостатков:
+- Срок выполнения — 3 месяца
+- Измеримые формулировки (например: «разместить Устав до 1 июня»)
+
+Отчет о выполнении плана:
+- Публичный отчет с отметками о фактическом исполнении
+
+Сроки проведения НОК в текущем периоде:
+- Объявление о следующем этапе с периодом сбора анкет
+
+Информация об общественном совете:
+- Состав, задачи и полномочия совета при учредителе`;
+                navigator.clipboard.writeText(checklistText).then(() => {
+                    alert('✅ Чек-лист скопирован в буфер обмена.');
+                }).catch(() => {
+                    alert('⚠️ Не удалось скопировать текст.');
+                });
+            });
+
+            // Сохранение в PDF
+            document.getElementById('savePdfBtn')?.addEventListener('click', () => {
+                const styleId = 'print-temp-style';
+                let styleEl = document.getElementById(styleId);
+                if (!styleEl) {
+                    styleEl = document.createElement('style');
+                    styleEl.id = styleId;
+                    document.head.appendChild(styleEl);
+                }
+                styleEl.textContent = `
+                    @media print {
+                        body { background: white; }
+                        .memorandum { box-shadow: none; max-width: 100%; width: 100%; height: auto; }
+                        .toolbar { display: none; }
+                        .pages-container { overflow: visible; height: auto; }
+                        .page { display: block !important; margin-bottom: 30px; page-break-after: always; }
+                        .page:last-child { page-break-after: auto; }
+                    }
+                `;
+                window.print();
+                setTimeout(() => {
+                    const tempStyle = document.getElementById(styleId);
+                    if (tempStyle) tempStyle.remove();
+                    updatePage(currentPage);
+                }, 200);
+            });
+
+            updatePage(0);
+        })();
+    </script>
+</body>
+</html>
