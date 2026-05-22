@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=2.0">
+    <title>Интерактивный чек-лист · Полная проверка сайта учреждения культуры</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #eef2f5;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+            color: #000000;
+        }
+
+        .checklist-container {
+            width: 100%;
+            max-width: 1000px;
+            min-width: 800px;
+            height: 1000px;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 6px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .toolbar {
+            background: #ffffff;
+            padding: 20px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #d9f0cf;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 2px 8px rgba(11, 43, 59, 0.04);
+        }
+
+        .toolbar h2 {
+            color: #0b2b3b;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toolbar-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn {
+            border: none;
+            padding: 11px 22px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        .btn-pdf {
+            background: #c22b2b;
+            color: white;
+            border: 1px solid #a02020;
+            box-shadow: 0 4px 10px rgba(194, 43, 43, 0.3);
+        }
+
+        .btn-pdf:hover {
+            background: #a02020;
+            box-shadow: 0 8px 16px rgba(194, 43, 43, 0.4);
+        }
+
+        .btn-copy {
+            background: white;
+            border: 1px solid #0b2b3b;
+            color: #0b2b3b;
+        }
+
+        .btn-copy:hover {
+            background: #d9f0cf;
+            border-color: #c22b2b;
+        }
+
+        .btn-reset {
+            background: #f5f5f5;
+            border: 1px solid #ccdce6;
+            color: #0b2b3b;
+        }
+
+        .btn-reset:hover {
+            background: #e8e8e8;
+        }
+
+        .table-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 28px;
+            background: #ffffff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        thead th {
+            background: #0b2b3b;
+            color: white;
+            font-weight: 700;
+            padding: 16px 18px;
+            text-align: left;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        thead th:first-child {
+            border-radius: 12px 0 0 0;
+        }
+
+        thead th:last-child {
+            border-radius: 0 12px 0 0;
+        }
+
+        tbody td {
+            padding: 14px 18px;
+            border-bottom: 1px solid #d9f0cf;
+            vertical-align: middle;
+            line-height: 1.5;
+        }
+
+        tbody tr {
+            transition: background 0.15s ease;
+        }
+
+        tbody tr:hover {
+            background: #f9fdf7;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .checkbox-cell {
+            width: 50px;
+            text-align: center;
+        }
+
+        .custom-checkbox {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .custom-checkbox input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 26px;
+            height: 26px;
+            border: 2px solid #c22b2b;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            background: white;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .custom-checkbox input[type="checkbox"]:checked {
+            background: #c22b2b;
+            border-color: #c22b2b;
+        }
+
+        .custom-checkbox input[type="checkbox"]:checked::after {
+            content: "";
+            position: absolute;
+            left: 5px;
+            top: 1px;
+            width: 7px;
+            height: 13px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            transform: rotate(45deg);
+        }
+
+        .custom-checkbox input[type="checkbox"]:hover {
+            border-color: #a02020;
+            box-shadow: 0 0 0 3px rgba(194, 43, 43, 0.1);
+        }
+
+        .check-item {
+            font-weight: 600;
+            color: #0b2b3b;
+        }
+
+        .doc-reference {
+            font-size: 0.85rem;
+            color: #c22b2b;
+            font-weight: 600;
+            background: #fff6f5;
+            padding: 2px 8px;
+            border-radius: 12px;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .progress-summary {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: #f8fafc;
+            padding: 10px 20px;
+            border-radius: 40px;
+            border: 1px solid #d9f0cf;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #0b2b3b;
+        }
+
+        .progress-mini-bar {
+            width: 100px;
+            height: 7px;
+            background: #e9edf2;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-mini-fill {
+            height: 100%;
+            width: 0%;
+            background: #c22b2b;
+            border-radius: 20px;
+            transition: width 0.2s ease;
+        }
+
+        @media (max-width: 850px) {
+            .checklist-container {
+                min-width: 320px;
+                max-width: 100%;
+            }
+            .toolbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            table {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="checklist-container">
+        <!-- Верхняя панель -->
+        <div class="toolbar">
+            <h2>✅ Чек-лист проверки сайта учреждения культуры</h2>
+            <div class="toolbar-actions">
+                <div class="progress-summary" id="progressSummary">
+                    <span id="checkedCount">0</span>/<span id="totalCount">24</span>
+                    <div class="progress-mini-bar">
+                        <div class="progress-mini-fill" id="progressMiniFill" style="width: 0%;"></div>
+                    </div>
+                </div>
+                <button class="btn btn-copy" id="copyTableBtn">
+                    📋 Копировать таблицу
+                </button>
+                <button class="btn btn-reset" id="resetBtn">
+                    🔄 Сбросить
+                </button>
+                <button class="btn btn-pdf" id="savePdfBtn">
+                    📄 Сохранить в PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- Таблица -->
+        <div class="table-wrapper" id="tableWrapper">
+            <table id="checklistTable">
+                <thead>
+                    <tr>
+                        <th style="width:50px;">✔️</th>
+                        <th>Что проверить</th>
+                        <th>На что обратить внимание</th>
+                        <th>Нормативный документ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="checkbox-cell"><label class="custom-checkbox"><input type="checkbox" class="row-checkbox"></label></td>
+                        <td class="check-item">Полное и сокращенное наименование</td>
+                        <td>Соответствует уставу, указаны оба варианта</td>
+                        <td><span class="doc-reference">Приказ Минкультуры № 277, п. 8.1</span></td>
+                    </tr>
+                    <tr>
+                        <td class="checkbox-cell"><label class="custom-checkbox"><input type="checkbox" class="row-checkbox"></label></td>
+                        <td class="check-item">Место нахождения (юридический и почтовый адрес)</td>
+                        <td>Указаны оба адреса, если они различаются</td>
+                        <td><span class="doc-reference">Приказ Минкультуры № 277, п. 8.1</span></td>
+                    </tr>
+                    <tr>
+                        <td class="checkbox-cell"><label class="custom-checkbox"><input type="checkbox" class="row-checkbox"></label></td>
+                        <td class="check-item">Схема проезда</td>
+                        <td>Интерактивная карта или понятное текстовое описание маршрута</td>
+                        <td><span class="doc-reference">Приказ Минкультуры № 277, п. 8.1</span></td>
+                    </tr>
+                    <tr>
+                        <td class="checkbox-cell"><label class="custom-checkbox"><input type="checkbox" class="row-checkbox"></label></td>
+                        <td class="check-item">Дата создания организации</td>
+                        <td>Указан год (или точная дата) основания</td>
+                        <td><span class="doc-reference">Приказ Минкультуры № 277, п. 8.1</span></td>
+                    </tr>
+                    <tr>
+                        <td class="checkbox-cell"><label class="custom-checkbox"><input type="checkbox" class="row-checkbox"></label></td>
+                        <td class="check-item">Сведения об учредителе (учредителях)</td>
+                        <td>Полное наименование вышестоящего органа власти</td>
+                        <td><span class="doc-reference">Приказ Минкультуры № 277, п. 8.1</span></td>
+                    </tr>
+                    <tr>
+                        <td class="checkbox-cell"><label class="custom-checkbox"><input type="checkbox" class="row-checkbox"></label></td>
+                        <td class="check-item">Учредительные документы</td>
+                        <td>Копии устава, свидетельства о регистрации, решения о создании</td>
+                        <td><span class="doc-reference">Приказ Минкультуры № 277, п. 8.1</span></td>
+                    </tr>
+                    <tr>
+                        <td class="checkbox-cell"><label class="custom-checkbox"><input type="checkbox" class="row-checkbox"></label></td>
+                        <td class="check-item">Структура и органы управления</td>
+                        <td>Схема или список отделов и подразделений</td>
+                        <td><span class="doc-reference">Приказ Минкультуры № 277, п. 8.1</span></td>
+                    </tr>
+                    <tr>
+                        <td class="checkbox-cell"><label class="custom-checkbox"><input type="checkbox" class="row-checkbox"></label></td>
+                        <td class="check-item">Режим, график работы</td>
+                        <td>По дням недели, время перерыва, санитарные дни</td>
+                        <td><span class="doc-reference">Приказ Минкультуры № 277, п. 8.1</span></td>
+                    </tr>
+                    <tr>
+                        <td class="checkbox-cell"><label class="custom-checkbox"><input type="checkbox" class="row-checkbox"></label></td>
+                        <td class="check-item">Контактные телефоны и e-mail</td>
+                        <td>Номера с кодом города, актуальность, работают ли</td>
+                        <td><span class="doc-reference">Приказ Минкультуры № 277, п. 8.1</span></td>
+                    </tr>
+                    <tr>
+                        <td class="checkbox-cell"><label class="custom-checkbox"><input type="checkbox" class="row-checkbox"></label></td>
+                        <td class="check-item">ФИО и должности руководства</td>
+                        <td>Директор, замы, главный бухгалтер, руководители филиалов</td>
+                        <td><span class="doc-reference">Приказ Минкультуры № 277, п. 8.1</span></td>
+                    </tr>
+                    <tr>
+                        <td class="checkbox-cell"><label class="custom-checkbox"><input type="checkbox" class="row-checkbox"></label></td>
+                        <td class="check-item">Филиалы (при наличии)</td>
+                        <td>По каждому: наименование, адрес, режим работы, контакты, ФИО руководителя</td>
+                        <td><span class="doc-reference">Приказ Минкультуры № 277, п. 8.1</span></td>
+                    </tr>
+                    <tr>
+                        <td class="checkbox-cell"><label class="custom-checkbox"><input type="checkbox" class="row-checkbox"></label></td>
+                        <td class="check-item">Перечень услуг (бесплатных и платных)</td>
+                        <td>Четкое разделение, описания</td>
+                        <td><span class="doc-reference">Приказ Минкультуры № 277, п. 8.2</span></td>
+                    </tr>
+                    <tr>
+                        <td class="checkbox-cell"><label class="custom-checkbox"><input type="checkbox" class="row-checkbox"></label></td>
+                        <td class="check-item">Цены (тарифы) на услуги</td>
+                        <td>Ссылка на приказ, актуальность</td>
+                        <td><span class="doc-reference">Приказ Минкультуры № 277, п. 8.2</span></td>
+                    </tr>
+                    <tr>
+                        <td class="checkbox-cell"><label class="custom-checkbox"><input type="checkbox" class="row-checkbox"></label></td>
+                        <td class="check-item">План финансово-хозяйственной деятельности</td>
+                        <td>На текущий год и плановый период</td>
+                        <td><span class="doc-reference">Приказ Минкультуры № 277, п. 8.2</span></td>
+                    </tr>
+                    <tr>
+                        <td class="checkbox-cell"><label class="custom-checkbox"><input type="checkbox" class="row-checkbox"></label></td>
+                        <td class="check-item">Отчет о результатах деятельности</td>
+                        <td>За прошлый год, подписан</td>
+                        <td><span class="doc-reference">Приказ Минкультуры № 277, п. 8.2</span></td>
+                    </tr>
+                    <tr>
+                        <td class="checkbox-cell"><label class="custom-checkbox"><input type="checkbox" class="row-checkbox"></label></td>
+                        <td class="check-item">Отчет о выполнении госзадания</td>
+                        <td>За отчетный период</td>
+                        <td><span class="doc-reference">Приказ Минкультуры № 277, п. 8.2</span></td>
+                    </tr>
+                    <tr>
+                        <td class="checkbox-cell"><label class="custom-checkbox"><input type="checkbox" class="row-checkbox"></label></td>
+                        <td class="check-item">Информация о материально-техническом обеспечении</td>
+                        <td>Помещения, оборудование, библиотеки и т.д.</td>
+                        <td><span class="doc-reference">Приказ Минкультуры № 277, п. 8.2</span></td>
+                    </tr>
+                    <tr>
+                        <td class="checkbox-cell"><label class="custom-checkbox"><input type="checkbox" class="row-checkbox"></label></td>
+                        <td class="check-item">Копии лицензий</td>
+                        <td>На все лицензируемые виды деятельности</td>
+                        <td><span class="doc-reference">Приказ Минкультуры № 277, п. 8.2</span></td>
+                    </tr>
+                    <tr>
+                        <td class="checkbox-cell"><label class="custom-checkbox"><input type="checkbox" class="row-checkbox"></label></td>
+                        <td class="check-item">Информация о планируемых мероприятиях</td>
+                        <td>Актуальная афиша с датами</td>
+                        <td><span class="doc-reference">Приказ Минкультуры № 277, п. 8.2</span></td>
+                    </tr>
+                    <tr>
+                        <td class="checkbox-cell"><label class="custom-checkbox"><input type="checkbox" class="row-checkbox"></label></td>
+                        <td class="check-item">Результаты НОК</td>
+                        <td>Аналитический отчет, баллы, рейтинг</td>
+                        <td><span class="doc-reference">Приказ Минкультуры № 277, п. 8.3</span></td>
+                    </tr>
+                    <tr>
+                        <td class="checkbox-cell"><label class="custom-checkbox"><input type="checkbox" class="row-checkbox"></label></td>
+                        <td class="check-item">План мероприятий по устранению недостатков</td>
+                        <td>Конкретные действия, сроки, ответственные</td>
+                        <td><span class="doc-reference">Приказ Минкультуры № 277, п. 8.3</span></td>
+                    </tr>
+                    <tr>
+                        <td class="checkbox-cell"><label class="custom-checkbox"><input type="checkbox" class="row-checkbox"></label></td>
+                        <td class="check-item">Отчет о выполнении плана</td>
+                        <td>Подтверждение устранения недостатков</td>
+                        <td><span class="doc-reference">Приказ Минкультуры № 277, п. 8.3</span></td>
+                    </tr>
+                    <tr>
+                        <td class="checkbox-cell"><label class="custom-checkbox"><input type="checkbox" class="row-checkbox"></label></td>
+                        <td class="check-item">Публикация на bus.gov.ru</td>
+                        <td>Вся информация о НОК в карточке учреждения на официальном сайте</td>
+                        <td><span class="doc-reference">Приказ Минфина № 66н</span></td>
+                    </tr>
+                    <tr>
+                        <td class="checkbox-cell"><label class="custom-checkbox"><input type="checkbox" class="row-checkbox"></label></td>
+                        <td class="check-item">Обязательный публичный отчет</td>
+                        <td>По форме, утвержденной Постановлением № 457</td>
+                        <td><span class="doc-reference">Постановление № 457</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const checkboxes = document.querySelectorAll('.row-checkbox');
+            const checkedCountEl = document.getElementById('checkedCount');
+            const totalCountEl = document.getElementById('totalCount');
+            const progressMiniFill = document.getElementById('progressMiniFill');
+            const totalRows = checkboxes.length;
+
+            totalCountEl.textContent = totalRows;
+
+            function updateProgress() {
+                const checked = document.querySelectorAll('.row-checkbox:checked').length;
+                checkedCountEl.textContent = checked;
+                const percent = totalRows > 0 ? (checked / totalRows) * 100 : 0;
+                progressMiniFill.style.width = `${percent}%`;
+            }
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateProgress);
+            });
+
+            document.getElementById('resetBtn')?.addEventListener('click', () => {
+                checkboxes.forEach(cb => {
+                    cb.checked = false;
+                });
+                updateProgress();
+            });
+
+            document.getElementById('copyTableBtn')?.addEventListener('click', () => {
+                const rows = document.querySelectorAll('#checklistTable tbody tr');
+                let text = 'Что проверить\tНа что обратить внимание\tНормативный документ\tСтатус\n';
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    const item = cells[1]?.textContent.trim() || '';
+                    const attention = cells[2]?.textContent.trim() || '';
+                    const document = cells[3]?.textContent.trim() || '';
+                    const isChecked = row.querySelector('.row-checkbox')?.checked ? '✅ Выполнено' : '⬜ Не выполнено';
+                    text += `${item}\t${attention}\t${document}\t${isChecked}\n`;
+                });
+                navigator.clipboard.writeText(text.trim()).then(() => {
+                    alert('✅ Таблица скопирована в буфер обмена.');
+                }).catch(() => {
+                    alert('⚠️ Не удалось скопировать таблицу.');
+                });
+            });
+
+            document.getElementById('savePdfBtn')?.addEventListener('click', () => {
+                const styleId = 'print-temp-style';
+                let styleEl = document.getElementById(styleId);
+                if (!styleEl) {
+                    styleEl = document.createElement('style');
+                    styleEl.id = styleId;
+                    document.head.appendChild(styleEl);
+                }
+                styleEl.textContent = `
+                    @media print {
+                        body { background: white; }
+                        .checklist-container { box-shadow: none; max-width: 100%; width: 100%; height: auto; }
+                        .toolbar { display: none; }
+                        .table-wrapper { overflow: visible; height: auto; }
+                        table { box-shadow: none; }
+                        thead th { background: #0b2b3b !important; color: white !important; }
+                        .custom-checkbox input[type="checkbox"] {
+                            -webkit-appearance: checkbox !important;
+                            appearance: checkbox !important;
+                            width: 16px;
+                            height: 16px;
+                            border: 1px solid #000;
+                            border-radius: 3px;
+                            background: white;
+                        }
+                        .custom-checkbox input[type="checkbox"]:checked::after {
+                            display: none;
+                        }
+                        .doc-reference { background: #f0f0f0; color: #000; }
+                    }
+                `;
+                window.print();
+                setTimeout(() => {
+                    const tempStyle = document.getElementById(styleId);
+                    if (tempStyle) tempStyle.remove();
+                }, 200);
+            });
+
+            updateProgress();
+        })();
+    </script>
+</body>
+</html>
