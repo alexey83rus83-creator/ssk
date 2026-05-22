@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=2.0">
+    <title>Интерактивный чек-лист · Быстрая проверка доступности сайта</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #eef2f5;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+            color: #000000;
+        }
+
+        .checklist-container {
+            width: 100%;
+            max-width: 1000px;
+            min-width: 800px;
+            height: 1000px;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 6px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .toolbar {
+            background: #ffffff;
+            padding: 20px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #d9f0cf;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 2px 8px rgba(11, 43, 59, 0.04);
+        }
+
+        .toolbar h2 {
+            color: #0b2b3b;
+            font-weight: 700;
+            font-size: 1.4rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toolbar-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn {
+            border: none;
+            padding: 11px 22px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        .btn-pdf {
+            background: #c22b2b;
+            color: white;
+            border: 1px solid #a02020;
+            box-shadow: 0 4px 10px rgba(194, 43, 43, 0.3);
+        }
+
+        .btn-pdf:hover {
+            background: #a02020;
+            box-shadow: 0 8px 16px rgba(194, 43, 43, 0.4);
+        }
+
+        .btn-copy {
+            background: white;
+            border: 1px solid #0b2b3b;
+            color: #0b2b3b;
+        }
+
+        .btn-copy:hover {
+            background: #d9f0cf;
+            border-color: #c22b2b;
+        }
+
+        .btn-reset {
+            background: #f5f5f5;
+            border: 1px solid #ccdce6;
+            color: #0b2b3b;
+        }
+
+        .btn-reset:hover {
+            background: #e8e8e8;
+        }
+
+        .content-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 28px;
+            background: #ffffff;
+        }
+
+        .intro-card {
+            background: #f9fbf9;
+            border-left: 5px solid #c22b2b;
+            border-radius: 20px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+        }
+
+        .intro-card h3 {
+            color: #0b2b3b;
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 6px;
+        }
+
+        .intro-card p {
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .steps-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .step-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 18px;
+            background: #ffffff;
+            border: 1px solid #d9f0cf;
+            border-radius: 20px;
+            padding: 20px 24px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .step-card:hover {
+            border-color: #c22b2b;
+            box-shadow: 0 4px 14px rgba(194, 43, 43, 0.08);
+        }
+
+        .step-card.checked {
+            background: #f9fdf7;
+            border-color: #d9f0cf;
+        }
+
+        .checkbox-area {
+            flex-shrink: 0;
+            padding-top: 2px;
+        }
+
+        .custom-checkbox input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 28px;
+            height: 28px;
+            border: 2px solid #c22b2b;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            background: white;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .custom-checkbox input[type="checkbox"]:checked {
+            background: #c22b2b;
+            border-color: #c22b2b;
+        }
+
+        .custom-checkbox input[type="checkbox"]:checked::after {
+            content: "";
+            position: absolute;
+            left: 6px;
+            top: 2px;
+            width: 8px;
+            height: 14px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            transform: rotate(45deg);
+        }
+
+        .custom-checkbox input[type="checkbox"]:hover {
+            border-color: #a02020;
+            box-shadow: 0 0 0 3px rgba(194, 43, 43, 0.1);
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #0b2b3b;
+            color: white;
+            font-weight: 700;
+            font-size: 0.8rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .step-title {
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: #0b2b3b;
+            margin-bottom: 6px;
+        }
+
+        .step-description {
+            color: #333;
+            line-height: 1.5;
+            margin-bottom: 4px;
+        }
+
+        .step-result {
+            font-weight: 600;
+            color: #c22b2b;
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        .progress-summary {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: #f8fafc;
+            padding: 10px 20px;
+            border-radius: 40px;
+            border: 1px solid #d9f0cf;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #0b2b3b;
+        }
+
+        .progress-mini-bar {
+            width: 100px;
+            height: 7px;
+            background: #e9edf2;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-mini-fill {
+            height: 100%;
+            width: 0%;
+            background: #c22b2b;
+            border-radius: 20px;
+            transition: width 0.2s ease;
+        }
+
+        @media (max-width: 850px) {
+            .checklist-container {
+                min-width: 320px;
+                max-width: 100%;
+            }
+            .toolbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .step-card {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="checklist-container">
+        <!-- Верхняя панель -->
+        <div class="toolbar">
+            <h2>♿ Чек-лист доступности сайта</h2>
+            <div class="toolbar-actions">
+                <div class="progress-summary" id="progressSummary">
+                    <span id="checkedCount">0</span>/<span id="totalCount">4</span>
+                    <div class="progress-mini-bar">
+                        <div class="progress-mini-fill" id="progressMiniFill" style="width: 0%;"></div>
+                    </div>
+                </div>
+                <button class="btn btn-copy" id="copyBtn">
+                    📋 Копировать алгоритм
+                </button>
+                <button class="btn btn-reset" id="resetBtn">
+                    🔄 Сбросить
+                </button>
+                <button class="btn btn-pdf" id="savePdfBtn">
+                    📄 Сохранить в PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- Контент -->
+        <div class="content-wrapper" id="contentWrapper">
+            <div class="intro-card">
+                <h3>Алгоритм быстрой проверки сайта учреждения культуры</h3>
+                <p>Проверьте базовую доступность сайта за четыре шага. Каждый шаг — конкретное действие с чётким критерием нарушения.</p>
+            </div>
+
+            <div class="steps-list">
+                <!-- Шаг 1 -->
+                <div class="step-card" id="step1">
+                    <div class="checkbox-area">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" class="step-checkbox" data-step="1">
+                        </label>
+                    </div>
+                    <div class="step-content">
+                        <span class="step-number">ШАГ 1</span>
+                        <div class="step-title">Проверьте навигацию с клавиатуры</div>
+                        <p class="step-description">Отключите мышь. Перейдите по всем основным разделам сайта, используя только клавишу <strong>Tab</strong>.</p>
+                        <p class="step-result">Застряли? Значит, нарушение.</p>
+                    </div>
+                </div>
+
+                <!-- Шаг 2 -->
+                <div class="step-card" id="step2">
+                    <div class="checkbox-area">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" class="step-checkbox" data-step="2">
+                        </label>
+                    </div>
+                    <div class="step-content">
+                        <span class="step-number">ШАГ 2</span>
+                        <div class="step-title">Проверьте озвучивание страницы</div>
+                        <p class="step-description">Включите встроенный экранный диктор. В Windows: «Экранный диктор» в разделе «Специальные возможности». Закройте глаза и послушайте, как озвучивается главная страница.</p>
+                        <p class="step-result">Ничего не понятно? Значит, нарушение.</p>
+                    </div>
+                </div>
+
+                <!-- Шаг 3 -->
+                <div class="step-card" id="step3">
+                    <div class="checkbox-area">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" class="step-checkbox" data-step="3">
+                        </label>
+                    </div>
+                    <div class="step-content">
+                        <span class="step-number">ШАГ 3</span>
+                        <div class="step-title">Проверьте масштабирование</div>
+                        <p class="step-description">Увеличьте страницу до <strong>200%</strong>.</p>
+                        <p class="step-result">Появилась горизонтальная полоса прокрутки и уехал текст? Это нарушение.</p>
+                    </div>
+                </div>
+
+                <!-- Шаг 4 -->
+                <div class="step-card" id="step4">
+                    <div class="checkbox-area">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" class="step-checkbox" data-step="4">
+                        </label>
+                    </div>
+                    <div class="step-content">
+                        <span class="step-number">ШАГ 4</span>
+                        <div class="step-title">Проверьте PDF-документы</div>
+                        <p class="step-description">Откройте любой PDF-файл, например правила приёма. Выделите весь текст — <strong>Ctrl + A</strong>.</p>
+                        <p class="step-result">Текст выделяется? Документ доступен. Выделяется бессмысленный набор символов или ничего? Это нарушение.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const checkboxes = document.querySelectorAll('.step-checkbox');
+            const checkedCountEl = document.getElementById('checkedCount');
+            const totalCountEl = document.getElementById('totalCount');
+            const progressMiniFill = document.getElementById('progressMiniFill');
+            const totalSteps = checkboxes.length;
+
+            totalCountEl.textContent = totalSteps;
+
+            function updateProgress() {
+                const checked = document.querySelectorAll('.step-checkbox:checked').length;
+                checkedCountEl.textContent = checked;
+                const percent = totalSteps > 0 ? (checked / totalSteps) * 100 : 0;
+                progressMiniFill.style.width = `${percent}%`;
+
+                checkboxes.forEach(cb => {
+                    const card = cb.closest('.step-card');
+                    if (card) {
+                        card.classList.toggle('checked', cb.checked);
+                    }
+                });
+            }
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateProgress);
+            });
+
+            document.getElementById('resetBtn')?.addEventListener('click', () => {
+                checkboxes.forEach(cb => {
+                    cb.checked = false;
+                });
+                updateProgress();
+            });
+
+            document.getElementById('copyBtn')?.addEventListener('click', () => {
+                const algorithmText = `Алгоритм быстрой проверки сайта учреждения культуры
+
+ШАГ 1. Проверьте навигацию с клавиатуры
+Отключите мышь. Перейдите по всем основным разделам сайта, используя только клавишу Tab.
+Застряли? Значит, нарушение.
+
+ШАГ 2. Проверьте озвучивание страницы
+Включите встроенный экранный диктор. В Windows: «Экранный диктор» в разделе «Специальные возможности». Закройте глаза и послушайте, как озвучивается главная страница.
+Ничего не понятно? Значит, нарушение.
+
+ШАГ 3. Проверьте масштабирование
+Увеличьте страницу до 200%.
+Появилась горизонтальная полоса прокрутки и уехал текст? Это нарушение.
+
+ШАГ 4. Проверьте PDF-документы
+Откройте любой PDF-файл, например правила приёма. Выделите весь текст — Ctrl + A.
+Текст выделяется? Документ доступен. Выделяется бессмысленный набор символов или ничего? Это нарушение.`;
+                navigator.clipboard.writeText(algorithmText).then(() => {
+                    alert('✅ Алгоритм скопирован в буфер обмена.');
+                }).catch(() => {
+                    alert('⚠️ Не удалось скопировать текст.');
+                });
+            });
+
+            document.getElementById('savePdfBtn')?.addEventListener('click', () => {
+                const styleId = 'print-temp-style';
+                let styleEl = document.getElementById(styleId);
+                if (!styleEl) {
+                    styleEl = document.createElement('style');
+                    styleEl.id = styleId;
+                    document.head.appendChild(styleEl);
+                }
+                styleEl.textContent = `
+                    @media print {
+                        body { background: white; }
+                        .checklist-container { box-shadow: none; max-width: 100%; width: 100%; height: auto; }
+                        .toolbar { display: none; }
+                        .content-wrapper { overflow: visible; height: auto; }
+                        .step-card { break-inside: avoid; page-break-inside: avoid; }
+                        .custom-checkbox input[type="checkbox"] {
+                            -webkit-appearance: checkbox !important;
+                            appearance: checkbox !important;
+                            width: 16px;
+                            height: 16px;
+                            border: 1px solid #000;
+                            border-radius: 3px;
+                            background: white;
+                        }
+                        .custom-checkbox input[type="checkbox"]:checked::after {
+                            display: none;
+                        }
+                    }
+                `;
+                window.print();
+                setTimeout(() => {
+                    const tempStyle = document.getElementById(styleId);
+                    if (tempStyle) tempStyle.remove();
+                }, 200);
+            });
+
+            updateProgress();
+        })();
+    </script>
+</body>
+</html>
