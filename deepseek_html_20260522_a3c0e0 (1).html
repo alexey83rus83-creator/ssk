@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=2.0">
+    <title>Интерактивный чек-лист · Документы для размещения на сайте</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #eef2f5;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+            color: #000000;
+        }
+
+        .checklist-container {
+            width: 100%;
+            max-width: 1000px;
+            min-width: 800px;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 6px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .toolbar {
+            background: #ffffff;
+            padding: 20px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #d9f0cf;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 2px 8px rgba(11, 43, 59, 0.04);
+        }
+
+        .toolbar h2 {
+            color: #0b2b3b;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toolbar-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn {
+            border: none;
+            padding: 11px 22px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        .btn-pdf {
+            background: #c22b2b;
+            color: white;
+            border: 1px solid #a02020;
+            box-shadow: 0 4px 10px rgba(194, 43, 43, 0.3);
+        }
+
+        .btn-pdf:hover {
+            background: #a02020;
+            box-shadow: 0 8px 16px rgba(194, 43, 43, 0.4);
+        }
+
+        .btn-copy {
+            background: white;
+            border: 1px solid #0b2b3b;
+            color: #0b2b3b;
+        }
+
+        .btn-copy:hover {
+            background: #d9f0cf;
+            border-color: #c22b2b;
+        }
+
+        .btn-reset {
+            background: #f5f5f5;
+            border: 1px solid #ccdce6;
+            color: #0b2b3b;
+        }
+
+        .btn-reset:hover {
+            background: #e8e8e8;
+        }
+
+        .table-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 28px;
+            background: #ffffff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        thead th {
+            background: #0b2b3b;
+            color: white;
+            font-weight: 700;
+            padding: 16px 18px;
+            text-align: left;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+        }
+
+        thead th:first-child {
+            border-radius: 12px 0 0 0;
+        }
+
+        thead th:last-child {
+            border-radius: 0 12px 0 0;
+        }
+
+        tbody td {
+            padding: 16px 18px;
+            border-bottom: 1px solid #d9f0cf;
+            vertical-align: top;
+            line-height: 1.5;
+        }
+
+        tbody tr {
+            transition: background 0.15s ease;
+        }
+
+        tbody tr:hover {
+            background: #f9fdf7;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .checkbox-cell {
+            width: 60px;
+            text-align: center;
+        }
+
+        .custom-checkbox {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .custom-checkbox input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 28px;
+            height: 28px;
+            border: 2px solid #c22b2b;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            background: white;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .custom-checkbox input[type="checkbox"]:checked {
+            background: #c22b2b;
+            border-color: #c22b2b;
+        }
+
+        .custom-checkbox input[type="checkbox"]:checked::after {
+            content: "";
+            position: absolute;
+            left: 6px;
+            top: 2px;
+            width: 8px;
+            height: 14px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            transform: rotate(45deg);
+        }
+
+        .custom-checkbox input[type="checkbox"]:hover {
+            border-color: #a02020;
+            box-shadow: 0 0 0 3px rgba(194, 43, 43, 0.1);
+        }
+
+        .category-label {
+            font-weight: 700;
+            color: #0b2b3b;
+        }
+
+        .progress-summary {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: #f8fafc;
+            padding: 10px 20px;
+            border-radius: 40px;
+            border: 1px solid #d9f0cf;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #0b2b3b;
+        }
+
+        .progress-mini-bar {
+            width: 100px;
+            height: 7px;
+            background: #e9edf2;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-mini-fill {
+            height: 100%;
+            width: 0%;
+            background: #c22b2b;
+            border-radius: 20px;
+            transition: width 0.2s ease;
+        }
+
+        @media (max-width: 850px) {
+            .checklist-container {
+                min-width: 320px;
+                max-width: 100%;
+            }
+            .toolbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            table {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="checklist-container">
+        <!-- Верхняя панель -->
+        <div class="toolbar">
+            <h2>📋 Чек-лист документов для сайта</h2>
+            <div class="toolbar-actions">
+                <div class="progress-summary" id="progressSummary">
+                    <span id="checkedCount">0</span>/<span id="totalCount">3</span>
+                    <div class="progress-mini-bar">
+                        <div class="progress-mini-fill" id="progressMiniFill" style="width: 0%;"></div>
+                    </div>
+                </div>
+                <button class="btn btn-copy" id="copyTableBtn">
+                    📋 Копировать таблицу
+                </button>
+                <button class="btn btn-reset" id="resetBtn">
+                    🔄 Сбросить
+                </button>
+                <button class="btn btn-pdf" id="savePdfBtn">
+                    📄 Сохранить в PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- Таблица -->
+        <div class="table-wrapper" id="tableWrapper">
+            <table id="checklistTable">
+                <thead>
+                    <tr>
+                        <th style="width:50px;">✔️</th>
+                        <th>Категория документов</th>
+                        <th>Что это значит для учреждения</th>
+                        <th>Какие документы размещать на сайте</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-row="0">
+                        <td class="checkbox-cell">
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="row-checkbox">
+                            </label>
+                        </td>
+                        <td><span class="category-label">По требованию закона</span></td>
+                        <td>Эти документы обязательно должны быть в открытом доступе</td>
+                        <td>Сведения о доходах руководителя, коллективный договор, антикоррупционные документы</td>
+                    </tr>
+                    <tr data-row="1">
+                        <td class="checkbox-cell">
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="row-checkbox">
+                            </label>
+                        </td>
+                        <td><span class="category-label">По требованию учредителя</span></td>
+                        <td>Размещайте, если этого требует учредитель</td>
+                        <td>Итоги проверок, отчеты по грантам, протоколы совещаний с учредителем</td>
+                    </tr>
+                    <tr data-row="2">
+                        <td class="checkbox-cell">
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="row-checkbox">
+                            </label>
+                        </td>
+                        <td><span class="category-label">На усмотрение учреждения</span></td>
+                        <td>Решение о размещении принимайте самостоятельно</td>
+                        <td>Публичный годовой отчет, вакансии, внутренние новости</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const checkboxes = document.querySelectorAll('.row-checkbox');
+            const checkedCountEl = document.getElementById('checkedCount');
+            const totalCountEl = document.getElementById('totalCount');
+            const progressMiniFill = document.getElementById('progressMiniFill');
+            const totalRows = checkboxes.length;
+
+            totalCountEl.textContent = totalRows;
+
+            function updateProgress() {
+                const checked = document.querySelectorAll('.row-checkbox:checked').length;
+                checkedCountEl.textContent = checked;
+                const percent = totalRows > 0 ? (checked / totalRows) * 100 : 0;
+                progressMiniFill.style.width = `${percent}%`;
+            }
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateProgress);
+            });
+
+            document.getElementById('resetBtn')?.addEventListener('click', () => {
+                checkboxes.forEach(cb => {
+                    cb.checked = false;
+                });
+                updateProgress();
+            });
+
+            document.getElementById('copyTableBtn')?.addEventListener('click', () => {
+                const rows = document.querySelectorAll('#checklistTable tbody tr');
+                let text = 'Категория документов\tЧто это значит для учреждения\tКакие документы размещать на сайте\tСтатус\n';
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    const category = cells[1]?.textContent.trim() || '';
+                    const meaning = cells[2]?.textContent.trim() || '';
+                    const documents = cells[3]?.textContent.trim() || '';
+                    const isChecked = row.querySelector('.row-checkbox')?.checked ? '✅ Выполнено' : '⬜ Не выполнено';
+                    text += `${category}\t${meaning}\t${documents}\t${isChecked}\n`;
+                });
+                navigator.clipboard.writeText(text.trim()).then(() => {
+                    alert('✅ Таблица скопирована в буфер обмена.');
+                }).catch(() => {
+                    alert('⚠️ Не удалось скопировать таблицу.');
+                });
+            });
+
+            document.getElementById('savePdfBtn')?.addEventListener('click', () => {
+                const styleId = 'print-temp-style';
+                let styleEl = document.getElementById(styleId);
+                if (!styleEl) {
+                    styleEl = document.createElement('style');
+                    styleEl.id = styleId;
+                    document.head.appendChild(styleEl);
+                }
+                styleEl.textContent = `
+                    @media print {
+                        body { background: white; }
+                        .checklist-container { box-shadow: none; max-width: 100%; width: 100%; height: auto; }
+                        .toolbar { display: none; }
+                        .table-wrapper { overflow: visible; height: auto; }
+                        table { box-shadow: none; }
+                        .custom-checkbox input[type="checkbox"] {
+                            -webkit-appearance: checkbox !important;
+                            appearance: checkbox !important;
+                            width: 18px;
+                            height: 18px;
+                            border: 1px solid #000;
+                            border-radius: 3px;
+                            background: white;
+                        }
+                        .custom-checkbox input[type="checkbox"]:checked::after {
+                            display: none;
+                        }
+                    }
+                `;
+                window.print();
+                setTimeout(() => {
+                    const tempStyle = document.getElementById(styleId);
+                    if (tempStyle) tempStyle.remove();
+                }, 200);
+            });
+
+            updateProgress();
+        })();
+    </script>
+</body>
+</html>
