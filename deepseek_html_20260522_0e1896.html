@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=2.0">
+    <title>Памятка-листалка · Обязательные сведения на сайте учреждения культуры</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #eef2f5;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+            color: #000000;
+        }
+
+        .memorandum {
+            width: 100%;
+            max-width: 1000px;
+            min-width: 800px;
+            height: 1000px;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 6px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .toolbar {
+            background: #ffffff;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #d9f0cf;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 2px 8px rgba(11, 43, 59, 0.04);
+        }
+
+        .nav-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            background: #ffffff;
+            border: 1px solid #ccdce6;
+            color: #0b2b3b;
+            font-weight: 600;
+            font-size: 1.2rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            user-select: none;
+        }
+
+        .nav-btn:hover {
+            background: #d9f0cf;
+            border-color: #c22b2b;
+            color: #0b2b3b;
+            box-shadow: 0 4px 10px rgba(194, 43, 43, 0.15);
+        }
+
+        .nav-btn:active {
+            background: #c22b2b;
+            color: white;
+            border-color: #c22b2b;
+            transform: scale(0.96);
+        }
+
+        .progress-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f8fafc;
+            padding: 8px 18px;
+            border-radius: 40px;
+            border: 1px solid #d9f0cf;
+        }
+
+        .page-indicator {
+            font-weight: 600;
+            color: #0b2b3b;
+            background: #d9f0cf;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar-bg {
+            width: 120px;
+            height: 8px;
+            background: #e9edf2;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #c22b2b;
+            border-radius: 20px;
+            transition: width 0.25s ease;
+        }
+
+        .pdf-btn {
+            background: #c22b2b;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(194, 43, 43, 0.3);
+            transition: 0.2s;
+            letter-spacing: 0.3px;
+            border: 1px solid #a02020;
+        }
+
+        .pdf-btn:hover {
+            background: #a02020;
+            box-shadow: 0 8px 16px rgba(194, 43, 43, 0.4);
+        }
+
+        .pages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px;
+            scroll-behavior: smooth;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .page {
+            display: none;
+            animation: fade 0.25s ease;
+            flex-direction: column;
+            gap: 20px;
+            height: fit-content;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0.6;
+                transform: translateY(5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #d9f0cf;
+            border-radius: 24px;
+            padding: 20px 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        }
+
+        .intro-card {
+            background: #f9fbf9;
+            border-left: 5px solid #c22b2b;
+        }
+
+        h2 {
+            color: #0b2b3b;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        h3 {
+            font-weight: 700;
+            color: #0b2b3b;
+            margin: 16px 0 8px;
+            font-size: 1.15rem;
+            border-bottom: 1px solid #d9f0cf;
+            padding-bottom: 4px;
+        }
+
+        .check-item {
+            margin-bottom: 18px;
+        }
+
+        .check-item p {
+            margin: 6px 0 6px 8px;
+            line-height: 1.5;
+        }
+
+        .copy-btn {
+            background: white;
+            border: 1px solid #0b2b3b;
+            color: #0b2b3b;
+            padding: 10px 18px;
+            border-radius: 24px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.15s;
+            margin-top: 12px;
+        }
+
+        .copy-btn:hover {
+            background: #d9f0cf;
+            border-color: #c22b2b;
+        }
+
+        .highlight {
+            background: #fff6f5;
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-weight: 600;
+            color: #c22b2b;
+        }
+
+        hr {
+            border: 0.5px solid #d9f0cf;
+            margin: 16px 0;
+        }
+
+        @media (max-width: 850px) {
+            .memorandum {
+                min-width: 320px;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="memorandum">
+        <!-- Верхняя панель -->
+        <div class="toolbar">
+            <div class="nav-section">
+                <div class="nav-buttons">
+                    <button class="nav-btn" id="prevPageBtn" title="Предыдущая страница (←)">←</button>
+                    <button class="nav-btn" id="nextPageBtn" title="Следующая страница (→)">→</button>
+                </div>
+                <div class="progress-area">
+                    <span class="page-indicator" id="pageIndicator">1 / 3</span>
+                    <div class="progress-bar-bg">
+                        <div class="progress-fill" id="progressFill" style="width: 33%;"></div>
+                    </div>
+                </div>
+            </div>
+            <button class="pdf-btn" id="savePdfBtn">
+                <span>📄</span> Сохранить в PDF
+            </button>
+        </div>
+
+        <!-- Страницы -->
+        <div class="pages-container" id="pagesContainer">
+            <!-- Страница 1: Общая информация об учреждении -->
+            <div class="page active" id="page1">
+                <div class="card intro-card">
+                    <h2>🏛️ Общая информация об учреждении</h2>
+                    <p>Базовые сведения об учреждении культуры перечислены в пункте 8.1 приказа Минкультуры от 20.02.2015 № 277. Отсутствие хотя бы одного из обязательных пунктов – нарушение законодательства.</p>
+                </div>
+                <div class="card">
+                    <div class="check-item">
+                        <h3>📛 Полное и сокращенное наименование</h3>
+                        <p>На сайте есть разделы «Реквизиты и контакты» или «Об учреждении». Проверьте, что там присутствуют оба названия. Сокращенное наименование должно быть приведено без ошибок, в точности как в уставе.</p>
+                    </div>
+                    <div class="check-item">
+                        <h3>📍 Место нахождения и почтовый адрес</h3>
+                        <p>Закон разделяет эти понятия. «Место нахождения» – это юридический адрес учреждения. «Почтовый адрес» – адрес, по которому ему можно направлять корреспонденцию. Прокуратура при проверке смотрит, не дублирует ли почтовый адрес юридический. Даже если адреса совпадают, укажите оба адреса и четко подпишите их: «Юридический адрес» и «Почтовый адрес».</p>
+                    </div>
+                    <div class="check-item">
+                        <h3>🗺️ Схема проезда</h3>
+                        <p>Схема проезда должна помочь любому человеку легко добраться до вашего учреждения. Удобнее разместить интерактивную карту с отметкой вашего учреждения, и текстовой инструкцией для общественного транспорта, личного автомобиля – откуда лучше заезжать, где парковаться.</p>
+                    </div>
+                    <div class="check-item">
+                        <h3>📅 Дата создания организации культуры</h3>
+                        <p>На сайте необходимо указать год или точную дату его основания. Некоторые учреждения упускают его из виду, не считая важным. А это обязательный пункт.</p>
+                    </div>
+                    <div class="check-item">
+                        <h3>🏢 Сведения об учредителе</h3>
+                        <p>Вы должны указать полное наименование органа власти, который является вашим учредителем. Разместите также ссылку на официальный сайт учредителя.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Страница 2: Продолжение общей информации + документы -->
+            <div class="page" id="page2">
+                <div class="card">
+                    <div class="check-item">
+                        <h3>📊 Структура организации</h3>
+                        <p>На сайте должна быть информация об отделах и подразделениях учреждения. Структуру лучше оформить в виде схемы или списка, с обязательным указанием руководителей подразделений.</p>
+                    </div>
+                    <div class="check-item">
+                        <h3>🕒 Режим и график работы</h3>
+                        <p>Укажите расписание по дням недели, время работы, перерывы и санитарные дни. Режим работы обязательно должен быть размещен в заметном месте, не прячьте его в многоуровневом меню, это сочтут нарушением. Идеальное место – «подвал» сайта, который виден на всех страницах.</p>
+                    </div>
+                    <div class="check-item">
+                        <h3>📞 Контакты</h3>
+                        <p>На сайте должны быть указаны актуальные и рабочие номера телефонов и адреса электронной почты. Если у вас разные номера для общего отдела, кассы и приемной, укажите и их.</p>
+                    </div>
+                    <div class="check-item">
+                        <h3>👥 Руководящий состав</h3>
+                        <p>К нему относят директора, его заместителей, главного бухгалтера, руководство структурных подразделений и филиалов.</p>
+                    </div>
+                    <div class="check-item">
+                        <h3>🏘️ Филиалы</h3>
+                        <p>Для каждого филиала опубликуйте полную информацию, как по головному учреждению: наименование, адрес и схема проезда, режим работы, контакты, Ф. И. О. руководителя.</p>
+                    </div>
+                </div>
+                <div class="card intro-card">
+                    <h2>📑 Документы об услугах и деятельности</h2>
+                    <p>Этот блок информации показывает, насколько прозрачно, подотчетно и эффективно работает учреждение. Обязательные сведения, которые должны быть на сайте перечислены в пункте 8.2 Приказа № 277.</p>
+                </div>
+            </div>
+
+            <!-- Страница 3: Услуги, финансы, мероприятия -->
+            <div class="page" id="page3">
+                <div class="card">
+                    <div class="check-item">
+                        <h3>💼 Информация об услугах и ценах</h3>
+                        <p>Проверьте, что на видном месте размещен перечень всех основных услуг, которые вы предоставляете в рамках государственного (муниципального) задания, а также всех платных услуг, оказываемых сверх этого задания. Ошибка – смешать их или перечислить не полностью.</p>
+                        <p>Проверьте, есть ли на сайте прямые ссылки на приказы или постановления, которые утверждают ваши цены. Важно, чтобы это были действующие документы с актуальными расценками.</p>
+                    </div>
+                    <div class="check-item">
+                        <h3>💰 Финансовые документы и отчетность</h3>
+                        <p>Ваша публичная бухгалтерия, обязательная для размещения по закону. Эти документы касаются поступления и расходования средств, а также итогов вашей работы. Проверьте, размещен ли ваш План ФХД на текущий финансовый год и плановый период. Это базовый финансовый документ. Некоторые учреждения ошибочно публикуют его в закрытом разделе для учредителя. На сайте найдите отчет о выполнении госзадания за отчетный период и ежегодный отчет о результатах вашей деятельности.</p>
+                    </div>
+                    <div class="check-item">
+                        <h3>🔧 Материально-техническое обеспечение и лицензии</h3>
+                        <p>Проверьте, есть ли раздел, где вы описываете, какими ресурсами располагаете для оказания услуг: оборудованные помещения, наличие библиотечных фондов, музыкальных инструментов, компьютеров, доступ в интернет. Разместите на сайте копии всех ваших действующих лицензий, например, на образовательную деятельность для ДШИ, на хранение музейных предметов для музеев.</p>
+                    </div>
+                    <div class="check-item">
+                        <h3>📅 Информация о планируемых мероприятиях</h3>
+                        <p>Публикация только прошедших событий и отсутствие актуальной афиши на месяц – это нарушение. Проверьте, что на вашем сайте есть актуальные анонсы мероприятий с датами, временем и ценами на билеты.</p>
+                    </div>
+                    <button class="copy-btn" id="copyChecklistBtn">
+                        📋 Скопировать весь чек-лист
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const pages = document.querySelectorAll('.page');
+            const prevBtn = document.getElementById('prevPageBtn');
+            const nextBtn = document.getElementById('nextPageBtn');
+            const pageIndicator = document.getElementById('pageIndicator');
+            const progressFill = document.getElementById('progressFill');
+            const container = document.getElementById('pagesContainer');
+
+            let currentPage = 0;
+            const totalPages = pages.length;
+
+            function updatePage(index) {
+                if (index < 0) index = 0;
+                if (index >= totalPages) index = totalPages - 1;
+
+                pages.forEach((page, i) => {
+                    page.classList.toggle('active', i === index);
+                });
+
+                currentPage = index;
+                pageIndicator.textContent = `${currentPage + 1} / ${totalPages}`;
+                const percent = ((currentPage + 1) / totalPages) * 100;
+                progressFill.style.width = `${percent}%`;
+
+                if (container) {
+                    container.scrollTop = 0;
+                }
+            }
+
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 0) updatePage(currentPage - 1);
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentPage < totalPages - 1) updatePage(currentPage + 1);
+            });
+
+            window.addEventListener('keydown', (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
+                if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    if (currentPage > 0) updatePage(currentPage - 1);
+                } else if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    if (currentPage < totalPages - 1) updatePage(currentPage + 1);
+                }
+            });
+
+            // Копирование всего чек-листа
+            document.getElementById('copyChecklistBtn')?.addEventListener('click', () => {
+                const checklistText = `Общая информация об учреждении (п. 8.1 Приказа №277):
+- Полное и сокращенное наименование (как в уставе)
+- Место нахождения и почтовый адрес (подписать оба)
+- Схема проезда (карта + текст)
+- Дата создания
+- Сведения об учредителе (со ссылкой)
+- Структура организации (с руководителями)
+- Режим и график работы (в подвале сайта)
+- Контакты (телефоны, email)
+- Руководящий состав
+- Филиалы (полная информация)
+
+Документы об услугах и деятельности (п. 8.2):
+- Услуги и цены (госзадание + платные)
+- Приказы/постановления о ценах
+- План ФХД
+- Отчет о госзадании и ежегодный отчет
+- Материально-техническое обеспечение и лицензии
+- Анонсы мероприятий (актуальная афиша)`;
+                navigator.clipboard.writeText(checklistText).then(() => {
+                    alert('✅ Чек-лист скопирован в буфер обмена.');
+                }).catch(() => {
+                    alert('⚠️ Не удалось скопировать текст.');
+                });
+            });
+
+            // Сохранение в PDF
+            document.getElementById('savePdfBtn')?.addEventListener('click', () => {
+                const styleId = 'print-temp-style';
+                let styleEl = document.getElementById(styleId);
+                if (!styleEl) {
+                    styleEl = document.createElement('style');
+                    styleEl.id = styleId;
+                    document.head.appendChild(styleEl);
+                }
+                styleEl.textContent = `
+                    @media print {
+                        body { background: white; }
+                        .memorandum { box-shadow: none; max-width: 100%; width: 100%; height: auto; }
+                        .toolbar { display: none; }
+                        .pages-container { overflow: visible; height: auto; }
+                        .page { display: block !important; margin-bottom: 30px; page-break-after: always; }
+                        .page:last-child { page-break-after: auto; }
+                    }
+                `;
+                window.print();
+                setTimeout(() => {
+                    const tempStyle = document.getElementById(styleId);
+                    if (tempStyle) tempStyle.remove();
+                    updatePage(currentPage);
+                }, 200);
+            });
+
+            updatePage(0);
+        })();
+    </script>
+</body>
+</html>
