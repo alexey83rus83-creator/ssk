@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=2.0">
+    <title>Памятка · Обновление маркетинговых разделов сайта</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #eef2f5;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+            color: #000000;
+        }
+
+        .memorandum {
+            width: 100%;
+            max-width: 1000px;
+            min-width: 800px;
+            height: 1200px;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 6px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .toolbar {
+            background: #ffffff;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #d9f0cf;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 2px 8px rgba(11, 43, 59, 0.04);
+        }
+
+        .nav-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            background: #ffffff;
+            border: 1px solid #ccdce6;
+            color: #0b2b3b;
+            font-weight: 600;
+            font-size: 1.2rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            user-select: none;
+        }
+
+        .nav-btn:hover {
+            background: #d9f0cf;
+            border-color: #c22b2b;
+            color: #0b2b3b;
+            box-shadow: 0 4px 10px rgba(194, 43, 43, 0.15);
+        }
+
+        .nav-btn:active {
+            background: #c22b2b;
+            color: white;
+            border-color: #c22b2b;
+            transform: scale(0.96);
+        }
+
+        .progress-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f8fafc;
+            padding: 8px 18px;
+            border-radius: 40px;
+            border: 1px solid #d9f0cf;
+        }
+
+        .page-indicator {
+            font-weight: 600;
+            color: #0b2b3b;
+            background: #d9f0cf;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar-bg {
+            width: 140px;
+            height: 8px;
+            background: #e9edf2;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #c22b2b;
+            border-radius: 20px;
+            transition: width 0.25s ease;
+        }
+
+        .pdf-btn {
+            background: #c22b2b;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(194, 43, 43, 0.3);
+            transition: 0.2s;
+            letter-spacing: 0.3px;
+            border: 1px solid #a02020;
+        }
+
+        .pdf-btn:hover {
+            background: #a02020;
+            box-shadow: 0 8px 16px rgba(194, 43, 43, 0.4);
+        }
+
+        .pages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px;
+            scroll-behavior: smooth;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .page {
+            display: none;
+            animation: fade 0.25s ease;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0.6;
+                transform: translateY(5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #d9f0cf;
+            border-radius: 20px;
+            padding: 18px 22px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .card h2 {
+            color: #0b2b3b;
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .card h3 {
+            color: #0b2b3b;
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin: 14px 0 6px;
+        }
+
+        .card p,
+        .card li {
+            line-height: 1.5;
+            margin-bottom: 5px;
+            font-size: 0.92rem;
+        }
+
+        .card ul,
+        .card ol {
+            margin-left: 20px;
+            margin-bottom: 8px;
+        }
+
+        .highlight-box {
+            background: #f9fbf9;
+            border-left: 4px solid #c22b2b;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin: 10px 0;
+        }
+
+        .copy-btn {
+            background: white;
+            border: 1px solid #0b2b3b;
+            color: #0b2b3b;
+            padding: 10px 18px;
+            border-radius: 24px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.15s;
+            margin-top: 8px;
+            font-size: 0.9rem;
+        }
+
+        .copy-btn:hover {
+            background: #d9f0cf;
+            border-color: #c22b2b;
+        }
+
+        @media (max-width: 850px) {
+            .memorandum {
+                min-width: 320px;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="memorandum">
+        <div class="toolbar">
+            <div class="nav-section">
+                <div class="nav-buttons">
+                    <button class="nav-btn" id="prevPageBtn" title="Предыдущая страница (←)">←</button>
+                    <button class="nav-btn" id="nextPageBtn" title="Следующая страница (→)">→</button>
+                </div>
+                <div class="progress-area">
+                    <span class="page-indicator" id="pageIndicator">1 / 6</span>
+                    <div class="progress-bar-bg">
+                        <div class="progress-fill" id="progressFill" style="width: 16.6%;"></div>
+                    </div>
+                </div>
+            </div>
+            <button class="pdf-btn" id="savePdfBtn">📄 Сохранить в PDF</button>
+        </div>
+
+        <div class="pages-container" id="pagesContainer">
+            <!-- СТРАНИЦА 1: Описание кружка (полностью) -->
+            <div class="page active" id="page1">
+                <div class="card">
+                    <h2>🎨 Описание кружка</h2>
+                    <p>Главная ошибка большинства карточек — типовые обещания без конкретики. «Развитие мелкой моторики», «творческое мышление», «индивидуальный подход» — эти фразы ничего не говорят родителю. Они стоят в каждой второй секции.</p>
+                    <div class="highlight-box">
+                        <h3>Что добавить в карточку кружка</h3>
+                        <ul>
+                            <li><strong>Возрастную категорию</strong> — без размытых «для всех желающих», а с четкими границами. Например, «от 7 до 17 лет».</li>
+                            <li><strong>Ожидаемый результат</strong> — что ребенок будет уметь через 3, 6 и 12 месяцев. Пример: «Через 3 месяца: создаст 5 рисунков в технике акварели; через 6 месяцев: нарисует пейзаж с натуры; через 12 месяцев: подготовит персональную мини‑выставку».</li>
+                            <li><strong>Формат занятий</strong> — очно, онлайн или гибридно. Указать, как проходит занятие (в группе, индивидуально), длительность (45 минут, 1,5 часа), периодичность (1–2 раза в неделю).</li>
+                            <li><strong>Стоимость и условия оплаты</strong> — полная цена, возможные льготы, ссылка на сертификат ПФДО. Добавить блок «Как оплатить»: варианты (наличные, карта, сертификат), сроки (до начала занятий, помесячно), возможность рассрочки.</li>
+                            <li><strong>Педагог</strong> — ФИО, фото в процессе работы, краткое описание подхода («делает ставку на комплексное развитие»).</li>
+                            <li><strong>Место проведения</strong> — точный адрес, номер аудитории, наличие парковки/остановки рядом.</li>
+                            <li><strong>Требования к ребенку</strong> — навыки до старта, специальная одежда/инвентарь.</li>
+                            <li><strong>Отзывы</strong> — 2–3 коротких отзыва родителей с фото детей на занятиях.</li>
+                        </ul>
+                    </div>
+                    <button class="copy-btn" id="copyPage1Btn">📋 Скопировать текст</button>
+                </div>
+            </div>
+
+            <!-- СТРАНИЦА 2: SEO-оптимизация -->
+            <div class="page" id="page2">
+                <div class="card">
+                    <h2>🔍 SEO‑оптимизация карточек кружков для поиска</h2>
+                    <p>Чтобы карточки кружков находили в Яндексе, нужно добавить ключевые слова и метатеги:</p>
+                    <ul>
+                        <li><strong>Title</strong> — «Кружок рисования для детей 7–10 лет в [Район], [Город] — запись 2026».</li>
+                        <li><strong>Description</strong> — «Развиваем художественное мышление через акварель и графику. Занятия 2 раза в неделю, стоимость 3 500 руб./месяц. Пробное занятие бесплатно».</li>
+                        <li><strong>Ключевые слова</strong> — «кружки для детей [район], творчество для школьников, развитие мелкой моторики, бесплатные занятия».</li>
+                        <li><strong>Структурированные данные</strong> — разметка Schema.</li>
+                    </ul>
+                    <button class="copy-btn" id="copyPage2Btn">📋 Скопировать текст</button>
+                </div>
+            </div>
+
+            <!-- СТРАНИЦА 3: Фото команды -->
+            <div class="page" id="page3">
+                <div class="card">
+                    <h2>📸 Фото команды</h2>
+                    <p>Большинство сайтов публикует фото педагогов на фоне белой стены или баннера. Родитель видит человека, но не видит специалиста. Сухое перечисление регалий не спасает ситуацию.</p>
+                    <div class="highlight-box">
+                        <h3>Что заменить в карточке педагога</h3>
+                        <ul>
+                            <li><strong>Шаблонное студийное фото</strong> — на снимок в процессе занятия: педагог рядом с детьми, объясняет, поправляет, показывает.</li>
+                            <li><strong>Сухое перечисление регалий</strong> — на короткий рассказ из трех частей: почему я работаю с детьми, какой проект стал для меня самым важным, что меня вдохновляет в профессии и вне ее.</li>
+                            <li><strong>Добавить блок «Достижения учеников»</strong> — 1–2 примера: «В прошлом году ученики заняли 1‑е место на городском конкурсе чтецов», «Подготовили спектакль, который показали на 5 площадках города».</li>
+                            <li><strong>Указать график консультаций</strong> — когда родитель может задать вопрос педагогу (например, «По вторникам с 16:00 до 17:00 в кабинете № 3»).</li>
+                        </ul>
+                    </div>
+                    <button class="copy-btn" id="copyPage3Btn">📋 Скопировать текст</button>
+                </div>
+            </div>
+
+            <!-- СТРАНИЦА 4: Анонс мероприятия (полностью) -->
+            <div class="page" id="page4">
+                <div class="card">
+                    <h2>📅 Анонс мероприятия</h2>
+                    <p>Типичный анонс выглядит как служебная записка: дата, время, место, ответственный. Родителю он неудобен — в нем нет ответа на главный вопрос: зачем приводить ребенка.</p>
+                    <div class="highlight-box">
+                        <h3>Структура «Воронка события»</h3>
+                        <ul>
+                            <li><strong>Картинка‑завлекалка</strong> — не клипарт, а реальное фото с прошлого занятия или репетиции.</li>
+                            <li><strong>Абзац эмоций</strong> — короткий отзыв родителя или ребенка о таком же мероприятии.</li>
+                            <li><strong>Программа</strong> — дата, время, место, продолжительность, возрастная категория. Добавить блок «Чему научится ребенок» — 3–5 навыков или знаний.</li>
+                            <li><strong>Блок «Что взять с собой»</strong> — список (тетрадь, краски, удобная одежда), ссылка на чек‑лист для скачивания.</li>
+                            <li><strong>Кнопка «Записаться сейчас»</strong> — форма не более чем на три поля: имя ребенка, телефон родителя, email.</li>
+                            <li><strong>Блок «Часто задаваемые вопросы»</strong> — 3–4 вопроса с ответами.</li>
+                            <li><strong>Галерея фото/видео</strong> — 3–5 снимков с прошлых мероприятий, короткое видео (30–60 секунд) с репетиции.</li>
+                        </ul>
+                    </div>
+                    <button class="copy-btn" id="copyPage4Btn">📋 Скопировать текст</button>
+                </div>
+            </div>
+
+            <!-- СТРАНИЦА 5: Бесшовная запись + чек-лист -->
+            <div class="page" id="page5">
+                <div class="card">
+                    <h2>📝 Бесшовная запись</h2>
+                    <p>Самая частая причина брошенных форм — лишние требования на этапе записи. Официальный алгоритм записи в кружки московских школ насчитывает семь шагов. На каждом из них часть пользователей отсеивается.</p>
+                    <div class="highlight-box">
+                        <h3>Чек‑лист для аудита формы записи</h3>
+                        <ul>
+                            <li>Кнопка «Записаться» всегда на виду и не уезжает при прокрутке (фиксируется в правом нижнем углу экрана).</li>
+                            <li>Подтверждение приходит мгновенно на экран и дублируется в email или SMS. Текст сообщения: «Вы записаны на [Название кружка]. Ждем [Имя ребенка] [Дата] в [Время]. Если нужно отменить запись, ответьте на это письмо».</li>
+                            <li>Авторизация через Госуслуги — только там, где это обязательно по регламенту (например, для использования сертификата ПФДО).</li>
+                            <li>Форма не более трех полей: имя ребенка, телефон, email. Валидация данных: проверка формата телефона (+7 XXX XXX‑XX‑XX) и email (наличие @ и домена).</li>
+                            <li>Для длинных форм работает прогресс‑бар — пользователь видит, сколько шагов осталось (например, «Шаг 1 из 3»).</li>
+                            <li>Добавить блок «Альтернативные способы записи» — телефон администратора, QR‑код на форму, ссылка на Telegram‑бота.</li>
+                        </ul>
+                    </div>
+                    <button class="copy-btn" id="copyPage5Btn">📋 Скопировать текст</button>
+                </div>
+            </div>
+
+            <!-- СТРАНИЦА 6: Обновленный подвал сайта -->
+            <div class="page" id="page6">
+                <div class="card">
+                    <h2>📌 Обновленный подвал сайта</h2>
+                    <p>Колеблющийся родитель часто уходит в подвал сайта, чтобы проверить легитимность учреждения. Если там иконки запрещенных соцсетей или ссылки ведут в пустоту, доверие падает.</p>
+                    <div class="highlight-box">
+                        <h3>Что проверить в подвале</h3>
+                        <ul>
+                            <li>Убрать иконки и ссылки на заблокированные соцсети.</li>
+                            <li>Проверить, куда ведут все оставшиеся ссылки.</li>
+                            <li>Убедиться, что телефон, адрес и email актуальны и дублируются в шапке сайта.</li>
+                            <li>Разместить ссылки на актуальные страницы: MAX, VK, Rutube — и регулярно публиковать там результаты занятий, чтобы родитель видел живую деятельность.</li>
+                            <li>Добавить блок «Официальные документы» — ссылки на устав, лицензию, программу развития (в формате PDF с тегами по ГОСТ Р 70176‑2022).</li>
+                            <li>Включить карту проезда — интерактивная карта с меткой учреждения, кнопкой «Построить маршрут».</li>
+                            <li>Добавить форму обратной связи — 2 поля (имя, вопрос), ответ приходит на email в течение 24 часов.</li>
+                        </ul>
+                    </div>
+                    <button class="copy-btn" id="copyPage6Btn">📋 Скопировать текст</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const pages = document.querySelectorAll('.page');
+            const prevBtn = document.getElementById('prevPageBtn');
+            const nextBtn = document.getElementById('nextPageBtn');
+            const pageIndicator = document.getElementById('pageIndicator');
+            const progressFill = document.getElementById('progressFill');
+            const container = document.getElementById('pagesContainer');
+            let currentPage = 0;
+            const totalPages = pages.length;
+
+            function updatePage(index) {
+                if (index < 0) index = 0;
+                if (index >= totalPages) index = totalPages - 1;
+                pages.forEach((p, i) => p.classList.toggle('active', i === index));
+                currentPage = index;
+                pageIndicator.textContent = `${currentPage + 1} / ${totalPages}`;
+                progressFill.style.width = `${((currentPage + 1) / totalPages) * 100}%`;
+                if (container) container.scrollTop = 0;
+            }
+
+            prevBtn.addEventListener('click', () => { if (currentPage > 0) updatePage(currentPage - 1); });
+            nextBtn.addEventListener('click', () => { if (currentPage < totalPages - 1) updatePage(currentPage + 1); });
+
+            window.addEventListener('keydown', (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
+                if (e.key === 'ArrowLeft') { e.preventDefault(); if (currentPage > 0) updatePage(currentPage - 1); }
+                if (e.key === 'ArrowRight') { e.preventDefault(); if (currentPage < totalPages - 1) updatePage(currentPage + 1); }
+            });
+
+            function copyText(text) {
+                navigator.clipboard.writeText(text).then(() => alert('✅ Текст скопирован.')).catch(() => alert('⚠️ Ошибка.'));
+            }
+
+            document.getElementById('copyPage1Btn')?.addEventListener('click', () => copyText('Возрастная категория, ожидаемый результат, формат занятий, стоимость и условия оплаты, педагог, место проведения, требования к ребенку, отзывы.'));
+            document.getElementById('copyPage2Btn')?.addEventListener('click', () => copyText('Title, Description, ключевые слова, структурированные данные Schema.'));
+            document.getElementById('copyPage3Btn')?.addEventListener('click', () => copyText('Фото в процессе занятия, рассказ из трех частей, достижения учеников, график консультаций.'));
+            document.getElementById('copyPage4Btn')?.addEventListener('click', () => copyText('Картинка-завлекалка, абзац эмоций, программа, блок «Что взять с собой», кнопка «Записаться сейчас», FAQ, галерея фото/видео.'));
+            document.getElementById('copyPage5Btn')?.addEventListener('click', () => copyText('Кнопка на виду, мгновенное подтверждение, Госуслуги только по регламенту, форма до трех полей, прогресс-бар, альтернативные способы записи.'));
+            document.getElementById('copyPage6Btn')?.addEventListener('click', () => copyText('Убрать заблокированные соцсети, актуальные ссылки, телефон/адрес/email, ссылки на MAX/VK/Rutube, официальные документы, карта проезда, форма обратной связи.'));
+
+            document.getElementById('savePdfBtn')?.addEventListener('click', () => {
+                const styleId = 'print-temp-style';
+                let el = document.getElementById(styleId);
+                if (!el) { el = document.createElement('style'); el.id = styleId; document.head.appendChild(el); }
+                el.textContent = `@media print{body{background:white}.memorandum{box-shadow:none;max-width:100%;width:100%;height:auto}.toolbar{display:none}.pages-container{overflow:visible;height:auto}.page{display:block!important;margin-bottom:30px;page-break-after:always}.page:last-child{page-break-after:auto}}`;
+                window.print();
+                setTimeout(() => { const t = document.getElementById(styleId); if (t) t.remove(); updatePage(currentPage); }, 200);
+            });
+
+            updatePage(0);
+        })();
+    </script>
+</body>
+</html>
