@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=2.0">
+    <title>Памятка · Аудит цифровой доступности (Постановление №102)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #eef2f5;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+            color: #000000;
+        }
+
+        .memorandum {
+            width: 100%;
+            max-width: 1000px;
+            min-width: 800px;
+            height: 1200px;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 6px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .toolbar {
+            background: #ffffff;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #d9f0cf;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 2px 8px rgba(11, 43, 59, 0.04);
+        }
+
+        .nav-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            background: #ffffff;
+            border: 1px solid #ccdce6;
+            color: #0b2b3b;
+            font-weight: 600;
+            font-size: 1.2rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            user-select: none;
+        }
+
+        .nav-btn:hover {
+            background: #d9f0cf;
+            border-color: #c22b2b;
+            color: #0b2b3b;
+            box-shadow: 0 4px 10px rgba(194, 43, 43, 0.15);
+        }
+
+        .nav-btn:active {
+            background: #c22b2b;
+            color: white;
+            border-color: #c22b2b;
+            transform: scale(0.96);
+        }
+
+        .progress-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f8fafc;
+            padding: 8px 18px;
+            border-radius: 40px;
+            border: 1px solid #d9f0cf;
+        }
+
+        .page-indicator {
+            font-weight: 600;
+            color: #0b2b3b;
+            background: #d9f0cf;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar-bg {
+            width: 140px;
+            height: 8px;
+            background: #e9edf2;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #c22b2b;
+            border-radius: 20px;
+            transition: width 0.25s ease;
+        }
+
+        .pdf-btn {
+            background: #c22b2b;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(194, 43, 43, 0.3);
+            transition: 0.2s;
+            letter-spacing: 0.3px;
+            border: 1px solid #a02020;
+        }
+
+        .pdf-btn:hover {
+            background: #a02020;
+            box-shadow: 0 8px 16px rgba(194, 43, 43, 0.4);
+        }
+
+        .pages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px;
+            scroll-behavior: smooth;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .page {
+            display: none;
+            animation: fade 0.25s ease;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0.6;
+                transform: translateY(5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #d9f0cf;
+            border-radius: 20px;
+            padding: 18px 22px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .card h2 {
+            color: #0b2b3b;
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .card h3 {
+            color: #0b2b3b;
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin: 14px 0 6px;
+        }
+
+        .card p,
+        .card li {
+            line-height: 1.5;
+            margin-bottom: 6px;
+        }
+
+        .card ul,
+        .card ol {
+            margin-left: 20px;
+            margin-bottom: 8px;
+        }
+
+        .highlight-box {
+            background: #f9fbf9;
+            border-left: 4px solid #c22b2b;
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin: 10px 0;
+        }
+
+        .tech-spec {
+            background: #fffbfb;
+            border: 1px dashed #c22b2b;
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin: 10px 0;
+        }
+
+        .copy-btn {
+            background: white;
+            border: 1px solid #0b2b3b;
+            color: #0b2b3b;
+            padding: 10px 18px;
+            border-radius: 24px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.15s;
+            margin-top: 8px;
+            font-size: 0.9rem;
+        }
+
+        .copy-btn:hover {
+            background: #d9f0cf;
+            border-color: #c22b2b;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border: 2px solid #c22b2b;
+            border-radius: 6px;
+            cursor: pointer;
+            flex-shrink: 0;
+            margin-top: 2px;
+            background: white;
+            position: relative;
+        }
+
+        .checklist-item input[type="checkbox"]:checked {
+            background: #c22b2b;
+        }
+
+        .checklist-item input[type="checkbox"]:checked::after {
+            content: "";
+            position: absolute;
+            left: 5px;
+            top: 1px;
+            width: 6px;
+            height: 11px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        @media (max-width: 850px) {
+            .memorandum {
+                min-width: 320px;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="memorandum">
+        <div class="toolbar">
+            <div class="nav-section">
+                <div class="nav-buttons">
+                    <button class="nav-btn" id="prevPageBtn" title="Предыдущая страница (←)">←</button>
+                    <button class="nav-btn" id="nextPageBtn" title="Следующая страница (→)">→</button>
+                </div>
+                <div class="progress-area">
+                    <span class="page-indicator" id="pageIndicator">1 / 8</span>
+                    <div class="progress-bar-bg">
+                        <div class="progress-fill" id="progressFill" style="width: 12.5%;"></div>
+                    </div>
+                </div>
+            </div>
+            <button class="pdf-btn" id="savePdfBtn">📄 Сохранить в PDF</button>
+        </div>
+
+        <div class="pages-container" id="pagesContainer">
+            <!-- СТРАНИЦА 1: Масштабирование -->
+            <div class="page active" id="page1">
+                <div class="card">
+                    <h2>📐 Масштабирование</h2>
+                    <p>Текстовая информация должна масштабироваться не менее чем на 200 процентов исходного масштаба интернет-страницы без применения вспомогательных технологий, потери функциональности и появления горизонтальной полосы прокрутки.</p>
+                    <div class="highlight-box">
+                        <h3>Как проверить</h3>
+                        <p>Посмотрите, как сайт ведет себя при увеличении масштаба в браузере. Увеличьте масштаб страницы сочетанием клавиш Ctrl + «+» или Ctrl + колесико мыши. Если текст выезжает за пределы экрана, кнопки перестают нажиматься или меню становится недоступным, сайт не соответствует требованиям. Речь идет именно об обычном браузере пользователя. Важно, чтобы «горизонтальная прокрутка», то есть возможность листать страницу вправо, не появлялась ни при каких обстоятельствах. Если при увеличении сайт ломается − это серьезное нарушение.</p>
+                    </div>
+                    <div class="tech-spec">
+                        <h3>Что написать в техзадании</h3>
+                        <p>Потребуйте от подрядчика два обязательных технических решения:</p>
+                        <ol>
+                            <li><strong>Гибкую верстку</strong> – в ней элементы страницы – текст, колонки, изображения, кнопки – меняют свой размер и положение в зависимости от того, насколько пользователь увеличил страницу.</li>
+                            <li><strong>Использование относительных единиц измерения</strong> для текстовых элементов. Они позволяют браузеру «растягивать» шрифты и блоки без искажений.</li>
+                        </ol>
+                    </div>
+                    <button class="copy-btn" id="copyPage1Btn">📋 Скопировать формулировку</button>
+                </div>
+            </div>
+
+            <!-- СТРАНИЦА 2: Требование о масштабировании -->
+            <div class="page" id="page2">
+                <div class="card">
+                    <h2>📐 Как сформулировать требование о масштабировании в техзадании</h2>
+                    <ol>
+                        <li>Верстка Сайта должна быть гибкой (Responsive Web Design). При масштабировании страницы в браузере до 200 процентов все элементы интерфейса (блоки, меню, формы) должны изменять свой размер и перестраиваться, полностью подстраиваясь под новое разрешение экрана без «разрывов» и искажений.</li>
+                        <li>Размер шрифта всех текстовых элементов (заголовков, абзацев, подписей кнопок и т.д.) должен быть задан в «относительных единицах измерения» – rem или em. Использование абсолютных единиц (px, pt) для текста не допускается.</li>
+                        <li>При любом масштабе страницы (от 100 до 200 процентов и выше) горизонтальная полоса прокрутки должна отсутствовать. Вся текстовая и графическая информация должна быть доступна для просмотра только с использованием вертикальной прокрутки.</li>
+                    </ol>
+                    <button class="copy-btn" id="copyPage2Btn">📋 Скопировать формулировку</button>
+                </div>
+            </div>
+
+            <!-- СТРАНИЦА 3: Доступность документов -->
+            <div class="page" id="page3">
+                <div class="card">
+                    <h2>📄 Доступность документов</h2>
+                    <p>Документы, представленные на официальных сайтах, должны быть доступны для чтения при помощи вспомогательных технологий, включая программы экранного доступа. В первую очередь требование касается PDF-файлов.</p>
+                    <div class="highlight-box">
+                        <h3>Как проверить</h3>
+                        <p>Документы необходимо разметить в соответствии с положениями ГОСТ Р 70176-2022 «Интернет-ресурсы и другая информация, представленная в электронно-цифровой форме. Файлы формата PDF. Требования доступности для людей с инвалидностью и других лиц с ограничениями жизнедеятельности». Альтернативный вариант – разместить на сайте доступные версии таких документов, например, текстовые файлы или HTML-версии, которые можно читать с помощью программ экранного доступа.</p>
+                        <p>Представьте, что PDF – это картинка. Программа экранного доступа видит ее, но не понимает, где начинается заголовок, где идет абзац, а где таблица. На тегированном PDF все элементы логически размечены, пронумерованы и подписаны. Программа экранного доступа может прочитать пользователю все по порядку. Чтобы PDF стал доступным, он должен содержать тегированную разметку. То есть иметь логическую структуру – заголовки, абзацы, списки – и корректный порядок чтения.</p>
+                    </div>
+                    <button class="copy-btn" id="copyPage3Btn">📋 Скопировать формулировку</button>
+                </div>
+            </div>
+
+            <!-- СТРАНИЦА 4: Требования к PDF -->
+            <div class="page" id="page4">
+                <div class="card">
+                    <h2>📄 Как сформулировать требования к PDF-файлам в техзадании</h2>
+                    <p>Все перечисленные ниже требования обязательны к исполнению:</p>
+                    <ul>
+                        <li><strong>Тег «Заголовок».</strong> Основные заголовки документа должны быть размечены тегами H1–H6. В документе нельзя пропускать уровни, например, после H1 сразу идти к H3.</li>
+                        <li><strong>Тег «Абзац».</strong> Любой фрагмент текста должен быть обозначен тегом P (параграф).</li>
+                        <li><strong>Тег «Список».</strong> Маркированные и нумерованные списки должны быть структурированы.</li>
+                        <li><strong>Тег «Таблица».</strong> Заголовки строк и столбцов таблицы должны быть выделены тегом TH. Таблица должна читаться построчно слева направо и сверху вниз.</li>
+                        <li><strong>Тег «Изображение».</strong> У каждого содержательного рисунка, фото или схемы должно быть краткое текстовое описание (тег Alt). Декоративные элементы, например, разделительные линии, нужно отметить как артефакты, чтобы программа для чтения с экрана их игнорировала.</li>
+                    </ul>
+                    <button class="copy-btn" id="copyPage4Btn">📋 Скопировать формулировку</button>
+                </div>
+            </div>
+
+            <!-- СТРАНИЦА 5: Заголовки страниц -->
+            <div class="page" id="page5">
+                <div class="card">
+                    <h2>🏷️ Заголовки страниц официальных сайтов</h2>
+                    <p>Они должны описывать их тему или цель.</p>
+                    <div class="highlight-box">
+                        <h3>Как проверить</h3>
+                        <p>Каждая страница сайта учреждения культуры должна иметь уникальный и содержательный заголовок. «Главная», «Контакты», «Новости» – хорошие заголовки. «Страница 1» или «index.html» – плохие. Программы экранного доступа в первую очередь озвучивают именно заголовок страницы, поэтому он должен быть понятным и отражать суть того, что находится на этой странице.</p>
+                        <p><strong>Что поручить ответственным.</strong> Проверьте заголовки всех ключевых разделов. Заголовок должен быть осмысленным и уникальным, чтобы пользователь не запутался.</p>
+                    </div>
+                    <button class="copy-btn" id="copyPage5Btn">📋 Скопировать формулировку</button>
+                </div>
+            </div>
+
+            <!-- СТРАНИЦА 6: Динамический контент -->
+            <div class="page" id="page6">
+                <div class="card">
+                    <h2>🎞️ Управление динамическим контентом</h2>
+                    <p>Если на официальных сайтах разместили информацию в движении, с миганием или автообновлением, пользователю должны быть доступны средства управления ею.</p>
+                    <div class="highlight-box">
+                        <h3>Как проверить</h3>
+                        <p>Бегающие баннеры, мигающие кнопки, автоматически перелистывающиеся слайдеры, видео, которое начинается само по себе, – все это должно иметь кнопки управления. Пользователь должен иметь возможность: остановить движение; скрыть элемент; изменить частоту обновления. Запрещены элементы, которые мигают чаще трех раз в секунду – это может вызвать эпилептический припадок. Анимация загрузки допустима, но только если она действительно показывает, что процесс идет.</p>
+                        <p>Избегайте автоматически проигрывающихся видео на главной и откажитесь от сверхдинамичных баннеров. Добавьте четкие кнопки «Стоп», «Скрыть», «Настройки» для бегущих строк и слайдеров.</p>
+                    </div>
+                    <button class="copy-btn" id="copyPage6Btn">📋 Скопировать формулировку</button>
+                </div>
+            </div>
+
+            <!-- СТРАНИЦА 7: Управление с клавиатуры + Читаемый шрифт + Альтернативное описание (сжато) -->
+            <div class="page" id="page7">
+                <div class="card">
+                    <h2>⌨️ Управление с клавиатуры</h2>
+                    <p>Информация на официальных сайтах должна быть беспрепятственно доступна при помощи клавиатуры, а также при помощи вспомогательных технологий. Под ними понимают программы экранного доступа, которые считывают структуру и последовательность информации.</p>
+                    <div class="highlight-box">
+                        <h3>Как проверить</h3>
+                        <p>Проверьте: можете ли вы перемещаться по всем разделам сайта, используя только клавишу Tab, Enter, пробел и стрелки управления. Отключите мышь и проверьте навигацию. Получится ли найти информацию о платных услугах. Доступна ли форма обратной связи. Если нет − это критическое нарушение.</p>
+                    </div>
+                    <h3>🔤 Читаемый шрифт</h3>
+                    <p>Текстовая информация должна представляться с использованием читаемого шрифта без избыточных декоративных элементов, обеспечивающего достаточную контрастность и различимость символов. Размер основного текста – не менее 16px, межстрочный интервал – не менее 1,5.</p>
+                    <h3>🖼️ Альтернативное описание</h3>
+                    <p>Нетекстовый контент должен иметь альтернативное текстовое описание. Каждое содержательное изображение обязано иметь атрибут alt с кратким, емким и осмысленным описанием.</p>
+                    <button class="copy-btn" id="copyPage7Btn">📋 Скопировать формулировку</button>
+                </div>
+            </div>
+
+            <!-- СТРАНИЦА 8: Чек-лист -->
+            <div class="page" id="page8">
+                <div class="card">
+                    <h2>✅ Проверочный чек-лист</h2>
+                    <div class="checklist-item"><input type="checkbox"><span>Масштабирование до 200% без горизонтальной прокрутки</span></div>
+                    <div class="checklist-item"><input type="checkbox"><span>PDF-документы размечены по ГОСТ Р 70176-2022</span></div>
+                    <div class="checklist-item"><input type="checkbox"><span>Уникальные и понятные заголовки страниц</span></div>
+                    <div class="checklist-item"><input type="checkbox"><span>Динамический контент имеет кнопки управления</span></div>
+                    <div class="checklist-item"><input type="checkbox"><span>Полная навигация с клавиатуры (Tab, Enter, Пробел)</span></div>
+                    <button class="copy-btn" id="copyChecklistBtn" style="margin-top:12px;">📋 Скопировать чек-лист</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const pages = document.querySelectorAll('.page');
+            const prevBtn = document.getElementById('prevPageBtn');
+            const nextBtn = document.getElementById('nextPageBtn');
+            const pageIndicator = document.getElementById('pageIndicator');
+            const progressFill = document.getElementById('progressFill');
+            const container = document.getElementById('pagesContainer');
+            let currentPage = 0;
+            const totalPages = pages.length;
+
+            function updatePage(index) {
+                if (index < 0) index = 0;
+                if (index >= totalPages) index = totalPages - 1;
+                pages.forEach((p, i) => p.classList.toggle('active', i === index));
+                currentPage = index;
+                pageIndicator.textContent = `${currentPage + 1} / ${totalPages}`;
+                progressFill.style.width = `${((currentPage + 1) / totalPages) * 100}%`;
+                if (container) container.scrollTop = 0;
+            }
+
+            prevBtn.addEventListener('click', () => { if (currentPage > 0) updatePage(currentPage - 1); });
+            nextBtn.addEventListener('click', () => { if (currentPage < totalPages - 1) updatePage(currentPage + 1); });
+
+            window.addEventListener('keydown', (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
+                if (e.key === 'ArrowLeft') { e.preventDefault(); if (currentPage > 0) updatePage(currentPage - 1); }
+                if (e.key === 'ArrowRight') { e.preventDefault(); if (currentPage < totalPages - 1) updatePage(currentPage + 1); }
+            });
+
+            function copyText(text) {
+                navigator.clipboard.writeText(text).then(() => alert('✅ Текст скопирован.')).catch(() => alert('⚠️ Ошибка.'));
+            }
+
+            document.getElementById('copyPage1Btn')?.addEventListener('click', () => copyText('Гибкая верстка + относительные единицы измерения. Масштабирование до 200% без горизонтальной прокрутки.'));
+            document.getElementById('copyPage2Btn')?.addEventListener('click', () => copyText('1. Responsive Web Design. 2. rem/em для шрифтов. 3. Отсутствие горизонтальной прокрутки.'));
+            document.getElementById('copyPage3Btn')?.addEventListener('click', () => copyText('PDF по ГОСТ Р 70176-2022 с тегированной разметкой.'));
+            document.getElementById('copyPage4Btn')?.addEventListener('click', () => copyText('Теги: H1-H6, P, списки, TH, Alt для изображений.'));
+            document.getElementById('copyPage5Btn')?.addEventListener('click', () => copyText('Уникальные заголовки страниц: «Главная», «Контакты», «Новости».'));
+            document.getElementById('copyPage6Btn')?.addEventListener('click', () => copyText('Кнопки «Стоп», «Скрыть», «Настройки» для динамического контента.'));
+            document.getElementById('copyPage7Btn')?.addEventListener('click', () => copyText('Навигация с клавиатуры, читаемый шрифт 16px, alt-текст для изображений.'));
+            document.getElementById('copyChecklistBtn')?.addEventListener('click', () => copyText('1. Масштабирование 200%\n2. PDF по ГОСТ\n3. Заголовки\n4. Динамический контент\n5. Клавиатура'));
+
+            document.getElementById('savePdfBtn')?.addEventListener('click', () => {
+                const styleId = 'print-temp-style';
+                let el = document.getElementById(styleId);
+                if (!el) { el = document.createElement('style'); el.id = styleId; document.head.appendChild(el); }
+                el.textContent = `@media print{body{background:white}.memorandum{box-shadow:none;max-width:100%;width:100%;height:auto}.toolbar{display:none}.pages-container{overflow:visible;height:auto}.page{display:block!important;margin-bottom:30px;page-break-after:always}.page:last-child{page-break-after:auto}}`;
+                window.print();
+                setTimeout(() => { const t = document.getElementById(styleId); if (t) t.remove(); updatePage(currentPage); }, 200);
+            });
+
+            updatePage(0);
+        })();
+    </script>
+</body>
+</html>
