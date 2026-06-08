@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=2.0">
+    <title>Памятка · Ограничения ИИ и проверка контента</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #eef2f5;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+            color: #000000;
+        }
+
+        .memorandum {
+            width: 100%;
+            max-width: 1000px;
+            min-width: 800px;
+            height: 1200px;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 6px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .toolbar {
+            background: #ffffff;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #d9f0cf;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 2px 8px rgba(11, 43, 59, 0.04);
+        }
+
+        .nav-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            background: #ffffff;
+            border: 1px solid #ccdce6;
+            color: #0b2b3b;
+            font-weight: 600;
+            font-size: 1.2rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            user-select: none;
+        }
+
+        .nav-btn:hover {
+            background: #d9f0cf;
+            border-color: #c22b2b;
+            color: #0b2b3b;
+            box-shadow: 0 4px 10px rgba(194, 43, 43, 0.15);
+        }
+
+        .nav-btn:active {
+            background: #c22b2b;
+            color: white;
+            border-color: #c22b2b;
+            transform: scale(0.96);
+        }
+
+        .progress-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f8fafc;
+            padding: 8px 18px;
+            border-radius: 40px;
+            border: 1px solid #d9f0cf;
+        }
+
+        .page-indicator {
+            font-weight: 600;
+            color: #0b2b3b;
+            background: #d9f0cf;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar-bg {
+            width: 140px;
+            height: 8px;
+            background: #e9edf2;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #c22b2b;
+            border-radius: 20px;
+            transition: width 0.25s ease;
+        }
+
+        .pdf-btn {
+            background: #c22b2b;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(194, 43, 43, 0.3);
+            transition: 0.2s;
+            letter-spacing: 0.3px;
+            border: 1px solid #a02020;
+        }
+
+        .pdf-btn:hover {
+            background: #a02020;
+            box-shadow: 0 8px 16px rgba(194, 43, 43, 0.4);
+        }
+
+        .pages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px;
+            scroll-behavior: smooth;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .page {
+            display: none;
+            animation: fade 0.25s ease;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0.6;
+                transform: translateY(5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #d9f0cf;
+            border-radius: 20px;
+            padding: 18px 22px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .card h2 {
+            color: #0b2b3b;
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .card h3 {
+            color: #0b2b3b;
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin: 14px 0 6px;
+        }
+
+        .card p,
+        .card li {
+            line-height: 1.5;
+            margin-bottom: 5px;
+            font-size: 0.92rem;
+        }
+
+        .card ul,
+        .card ol {
+            margin-left: 20px;
+            margin-bottom: 8px;
+        }
+
+        .highlight-box {
+            background: #f9fbf9;
+            border-left: 4px solid #c22b2b;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin: 10px 0;
+        }
+
+        .warning-box {
+            background: #fffbfb;
+            border: 1px solid #c22b2b;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-top: 12px;
+        }
+
+        .copy-btn {
+            background: white;
+            border: 1px solid #0b2b3b;
+            color: #0b2b3b;
+            padding: 10px 18px;
+            border-radius: 24px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.15s;
+            margin-top: 8px;
+            font-size: 0.9rem;
+        }
+
+        .copy-btn:hover {
+            background: #d9f0cf;
+            border-color: #c22b2b;
+        }
+
+        /* Чек-лист на последней странице */
+        .checklist-items {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            background: #ffffff;
+            border: 1px solid #d9f0cf;
+            border-radius: 16px;
+            padding: 14px 18px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        .check-item:hover {
+            border-color: #c22b2b;
+            box-shadow: 0 4px 12px rgba(194, 43, 43, 0.06);
+        }
+
+        .check-item.checked {
+            background: #f9fdf7;
+        }
+
+        .custom-checkbox input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #c22b2b;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            background: white;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .custom-checkbox input[type="checkbox"]:checked {
+            background: #c22b2b;
+            border-color: #c22b2b;
+        }
+
+        .custom-checkbox input[type="checkbox"]:checked::after {
+            content: "";
+            position: absolute;
+            left: 5px;
+            top: 1px;
+            width: 6px;
+            height: 11px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .item-number {
+            display: inline-block;
+            background: #0b2b3b;
+            color: white;
+            font-weight: 700;
+            font-size: 0.7rem;
+            width: 22px;
+            height: 22px;
+            border-radius: 11px;
+            text-align: center;
+            line-height: 22px;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+
+        .item-text {
+            color: #333;
+            line-height: 1.45;
+            font-size: 0.9rem;
+        }
+
+        .warning-note {
+            background: #fff6f5;
+            border: 1px solid #c22b2b;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-top: 16px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #c22b2b;
+        }
+
+        @media (max-width: 850px) {
+            .memorandum {
+                min-width: 320px;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="memorandum">
+        <div class="toolbar">
+            <div class="nav-section">
+                <div class="nav-buttons">
+                    <button class="nav-btn" id="prevPageBtn" title="Предыдущая страница (←)">←</button>
+                    <button class="nav-btn" id="nextPageBtn" title="Следующая страница (→)">→</button>
+                </div>
+                <div class="progress-area">
+                    <span class="page-indicator" id="pageIndicator">1 / 5</span>
+                    <div class="progress-bar-bg">
+                        <div class="progress-fill" id="progressFill" style="width: 20%;"></div>
+                    </div>
+                </div>
+            </div>
+            <button class="pdf-btn" id="savePdfBtn">📄 Сохранить в PDF</button>
+        </div>
+
+        <div class="pages-container" id="pagesContainer">
+            <!-- СТРАНИЦА 1: Запрещённые данные -->
+            <div class="page active" id="page1">
+                <div class="card">
+                    <h2>🚫 Данные, которые запрещено передавать</h2>
+                    <div class="highlight-box">
+                        <h3>Персональные данные без письменного согласия</h3>
+                        <p>Сотрудник не отправляет в нейросеть фамилии, телефоны, адреса, даты рождения посетителей и работников. Исключение — письменное согласие каждого человека или прямой закон, разрешающий обработку.</p>
+                    </div>
+                    <div class="highlight-box">
+                        <h3>Гостайна</h3>
+                        <p>Любые сведения под грифом «секретно» или «особой важности» запрещены к передаче в нейросеть. Учреждение культуры редко работает с гостайной, но если работает — передача на внешний сервер считается разглашением.</p>
+                    </div>
+                    <div class="highlight-box">
+                        <h3>Коммерческая тайна</h3>
+                        <p>Сметы с точными цифрами, условия договоров с контрагентами, уникальные методики работы. Нейросеть может сохранить эти данные у себя — конкуренты получат к ним доступ.</p>
+                    </div>
+                    <div class="highlight-box">
+                        <h3>Конфиденциальная внутренняя информация</h3>
+                        <p>Данные о проверках контролирующих органов, служебные расследования, жалобы сотрудников. Отправлять это в нейросеть запрещено даже в обезличенном виде.</p>
+                    </div>
+                    <button class="copy-btn" id="copyPage1Btn">📋 Скопировать текст</button>
+                </div>
+            </div>
+
+            <!-- СТРАНИЦА 2: Требования к итоговому документу -->
+            <div class="page" id="page2">
+                <div class="card">
+                    <h2>📝 Требования к итоговому документу</h2>
+                    <h3>Обязательная маркировка «Создано с помощью ИИ»</h3>
+                    <p>Ставится в каждом документе, созданном или отредактированном с помощью нейросети:</p>
+                    <ul>
+                        <li><strong>для текстов</strong> — в начале или конце документа, размер шрифта не меньше основного текста;</li>
+                        <li><strong>для изображений</strong> — в углу или под подписью, на афише — мелким шрифтом в нижней части;</li>
+                        <li><strong>в социальных сетях</strong> — в первом предложении описания или через хэштег #созданосИИ.</li>
+                    </ul>
+                    <h3>Правила указания авторства</h3>
+                    <ul>
+                        <li>Если нейросеть сгенерировала текст полностью — авторство принадлежит учреждению, имя конкретного сотрудника указывается как «проверил» или «отредактировал».</li>
+                        <li>Если сотрудник изменил больше 50 % текста — авторство переходит к сотруднику.</li>
+                        <li>При совместной работе авторство фиксируется как «Учреждение культуры, доработка — [Ф. И. О. сотрудника]».</li>
+                    </ul>
+                    <button class="copy-btn" id="copyPage2Btn">📋 Скопировать текст</button>
+                </div>
+            </div>
+
+            <!-- СТРАНИЦА 3: Ответственные за результат -->
+            <div class="page" id="page3">
+                <div class="card">
+                    <h2>👤 Ответственные за результат</h2>
+                    <div class="highlight-box">
+                        <h3>Сотрудник, который отправлял запрос</h3>
+                        <p>Отвечает за соблюдение запретов. Он не имеет права передавать персональные данные, гостайну или коммерческую тайну. Нарушение влечёт дисциплинарную ответственность.</p>
+                    </div>
+                    <div class="highlight-box">
+                        <h3>Сотрудник, который проверяет результат</h3>
+                        <p>Отвечает за достоверность. Он читает сгенерированный текст, проверяет даты, фамилии, цифры. Если находит ошибку — исправляет. Если пропускает ошибку — несёт ответственность как автор.</p>
+                    </div>
+                    <div class="highlight-box">
+                        <h3>Учреждение</h3>
+                        <p>Отвечает за результат перед третьими лицами. Если нейросеть написала клевету или нарушила чьи‑то права — учреждение платит штраф или компенсацию. Внутри учреждения вина распределяется между сотрудниками в зависимости от их роли в процессе.</p>
+                    </div>
+                    <button class="copy-btn" id="copyPage3Btn">📋 Скопировать текст</button>
+                </div>
+            </div>
+
+            <!-- СТРАНИЦА 4: Оформление авторских прав -->
+            <div class="page" id="page4">
+                <div class="card">
+                    <h2>©️ Оформление авторских прав</h2>
+                    <p>Результат работы нейросети не является объектом авторского права. Российское законодательство признаёт автором только человека. Учреждение не может зарегистрировать текст, сгенерированный ИИ, как своё произведение.</p>
+                    <div class="highlight-box">
+                        <h3>Доработка сотрудником</h3>
+                        <p>Если сотрудник доработал результат, авторские права возникают на доработку. Например, сотрудник переписал 30 % текста, добавил факты, исправил стиль — авторское право действует на изменённую часть.</p>
+                    </div>
+                    <div class="highlight-box">
+                        <h3>Изображения</h3>
+                        <p>Изображения, сгенерированные нейросетью, можно использовать в коммерческих целях. Авторские права на них никому не принадлежат. Учреждение не обязано указывать разработчика нейросети в подписи к картинке.</p>
+                    </div>
+                    <div class="highlight-box">
+                        <h3>Музыка и видео</h3>
+                        <p>Музыкальные фрагменты и видео требуют особой осторожности. Нейросеть могла использовать чужой фрагмент без разрешения. Ответственность за плагиат лежит на учреждении, а не на разработчике нейросети. Перед публикацией необходимо проверить аудио‑ и видеоконтент на наличие защищённых фрагментов.</p>
+                    </div>
+                    <button class="copy-btn" id="copyPage4Btn">📋 Скопировать текст</button>
+                </div>
+            </div>
+
+            <!-- СТРАНИЦА 5: Чек-лист 10 пунктов -->
+            <div class="page" id="page5">
+                <div class="card">
+                    <h2>✅ Чек-лист: 10 пунктов для проверки контента от ИИ</h2>
+                    <p style="margin-bottom:12px;">Перед публикацией или использованием пройдите по каждому пункту. Отметьте «да» или «нет». <strong>Если хотя бы один ответ — «нет», контент нельзя выпускать.</strong></p>
+                    <div class="checklist-items" id="checklistContainer">
+                        <div class="check-item"><label class="custom-checkbox"><input type="checkbox" class="step-checkbox"></label><span class="item-number">1</span><span class="item-text">В запросе не передавали персональные данные, гостайну, коммерческую тайну или конфиденциальную информацию.</span></div>
+                        <div class="check-item"><label class="custom-checkbox"><input type="checkbox" class="step-checkbox"></label><span class="item-number">2</span><span class="item-text">Сотрудник прочитал сгенерированный текст от начала до конца.</span></div>
+                        <div class="check-item"><label class="custom-checkbox"><input type="checkbox" class="step-checkbox"></label><span class="item-number">3</span><span class="item-text">Все даты, цифры, фамилии, названия в тексте соответствуют реальности.</span></div>
+                        <div class="check-item"><label class="custom-checkbox"><input type="checkbox" class="step-checkbox"></label><span class="item-number">4</span><span class="item-text">Текст не содержит призывов к нарушению закона, оскорблений или дискриминации.</span></div>
+                        <div class="check-item"><label class="custom-checkbox"><input type="checkbox" class="step-checkbox"></label><span class="item-number">5</span><span class="item-text">Контент не копирует фрагменты чужих произведений без указания источника.</span></div>
+                        <div class="check-item"><label class="custom-checkbox"><input type="checkbox" class="step-checkbox"></label><span class="item-number">6</span><span class="item-text">В документе или публикации стоит маркировка «Создано с помощью ИИ».</span></div>
+                        <div class="check-item"><label class="custom-checkbox"><input type="checkbox" class="step-checkbox"></label><span class="item-number">7</span><span class="item-text">Для изображения маркировка стоит в углу или под подписью.</span></div>
+                        <div class="check-item"><label class="custom-checkbox"><input type="checkbox" class="step-checkbox"></label><span class="item-number">8</span><span class="item-text">Если нейросеть использовали для музыки или видео — проверили отсутствие чужих фрагментов (через сервисы проверки авторских прав).</span></div>
+                        <div class="check-item"><label class="custom-checkbox"><input type="checkbox" class="step-checkbox"></label><span class="item-number">9</span><span class="item-text">Назначен сотрудник, который подписывает результат как проверенный (указывается Ф. И. О., должность, дата проверки).</span></div>
+                        <div class="check-item"><label class="custom-checkbox"><input type="checkbox" class="step-checkbox"></label><span class="item-number">10</span><span class="item-text">Учреждение готово предъявить исходный запрос и ответ нейросети при проверке Роскомнадзора или других органов.</span></div>
+                    </div>
+                    <div class="warning-note">⚠️ Если хотя бы один пункт не выполнен — контент нельзя публиковать до устранения нарушения.</div>
+                    <button class="copy-btn" id="copyChecklistBtn" style="margin-top:12px;">📋 Скопировать чек-лист</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const pages = document.querySelectorAll('.page');
+            const prevBtn = document.getElementById('prevPageBtn');
+            const nextBtn = document.getElementById('nextPageBtn');
+            const pageIndicator = document.getElementById('pageIndicator');
+            const progressFill = document.getElementById('progressFill');
+            const container = document.getElementById('pagesContainer');
+            let currentPage = 0;
+            const totalPages = pages.length;
+
+            function updatePage(index) {
+                if (index < 0) index = 0;
+                if (index >= totalPages) index = totalPages - 1;
+                pages.forEach((p, i) => p.classList.toggle('active', i === index));
+                currentPage = index;
+                pageIndicator.textContent = `${currentPage + 1} / ${totalPages}`;
+                progressFill.style.width = `${((currentPage + 1) / totalPages) * 100}%`;
+                if (container) container.scrollTop = 0;
+            }
+
+            prevBtn.addEventListener('click', () => { if (currentPage > 0) updatePage(currentPage - 1); });
+            nextBtn.addEventListener('click', () => { if (currentPage < totalPages - 1) updatePage(currentPage + 1); });
+
+            window.addEventListener('keydown', (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
+                if (e.key === 'ArrowLeft') { e.preventDefault(); if (currentPage > 0) updatePage(currentPage - 1); }
+                if (e.key === 'ArrowRight') { e.preventDefault(); if (currentPage < totalPages - 1) updatePage(currentPage + 1); }
+            });
+
+            function copyText(text) {
+                navigator.clipboard.writeText(text).then(() => alert('✅ Текст скопирован.')).catch(() => alert('⚠️ Ошибка.'));
+            }
+
+            document.getElementById('copyPage1Btn')?.addEventListener('click', () => copyText('Запрещено передавать: персональные данные без согласия, гостайну, коммерческую тайну, конфиденциальную внутреннюю информацию.'));
+            document.getElementById('copyPage2Btn')?.addEventListener('click', () => copyText('Маркировка «Создано с помощью ИИ» обязательна. Авторство: до 50% правок — учреждение, более 50% — сотрудник.'));
+            document.getElementById('copyPage3Btn')?.addEventListener('click', () => copyText('Отправитель отвечает за соблюдение запретов. Проверяющий — за достоверность. Учреждение — перед третьими лицами.'));
+            document.getElementById('copyPage4Btn')?.addEventListener('click', () => copyText('Результат ИИ — не объект авторского права. Права возникают на доработку сотрудника. Музыку и видео проверять на плагиат.'));
+            document.getElementById('copyChecklistBtn')?.addEventListener('click', () => {
+                const items = document.querySelectorAll('#checklistContainer .check-item');
+                let text = 'Чек-лист: 10 пунктов для проверки контента от ИИ\n\n';
+                items.forEach((item, i) => {
+                    const isChecked = item.querySelector('.step-checkbox')?.checked ? '✅' : '☐';
+                    text += `${isChecked} ${i + 1}. ${item.querySelector('.item-text')?.textContent.trim()}\n`;
+                });
+                text += '\nЕсли хотя бы один ответ — «нет», контент нельзя выпускать.';
+                copyText(text);
+            });
+
+            // Логика чек-боксов на странице 5
+            const checkboxes = document.querySelectorAll('#checklistContainer .step-checkbox');
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', function() {
+                    const card = this.closest('.check-item');
+                    if (card) card.classList.toggle('checked', this.checked);
+                });
+            });
+
+            document.getElementById('savePdfBtn')?.addEventListener('click', () => {
+                const styleId = 'print-temp-style';
+                let el = document.getElementById(styleId);
+                if (!el) { el = document.createElement('style'); el.id = styleId; document.head.appendChild(el); }
+                el.textContent = `@media print{body{background:white}.memorandum{box-shadow:none;max-width:100%;width:100%;height:auto}.toolbar{display:none}.pages-container{overflow:visible;height:auto}.page{display:block!important;margin-bottom:30px;page-break-after:always}.page:last-child{page-break-after:auto}.custom-checkbox input[type="checkbox"]{-webkit-appearance:checkbox!important;appearance:checkbox!important;width:16px;height:16px;border:1px solid #000;border-radius:3px;background:white}.custom-checkbox input[type="checkbox"]:checked::after{display:none}}`;
+                window.print();
+                setTimeout(() => { const t = document.getElementById(styleId); if (t) t.remove(); updatePage(currentPage); }, 200);
+            });
+
+            updatePage(0);
+        })();
+    </script>
+</body>
+</html>
