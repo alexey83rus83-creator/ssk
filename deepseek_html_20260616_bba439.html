@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Памятка: нейросети в культуре</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f5f1eb;
+            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .card {
+            max-width: 820px;
+            width: 100%;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08), 0 8px 20px rgba(0, 0, 0, 0.03);
+            padding: 28px 30px 35px;
+            transition: all 0.2s;
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            color: #1e1a16;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .subhead {
+            font-size: 15px;
+            color: #5e554b;
+            border-left: 4px solid #c7b7a8;
+            padding-left: 16px;
+            margin-bottom: 24px;
+            line-height: 1.4;
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 0;
+            border-bottom: 1px solid #e5ddd6;
+            margin-bottom: 22px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 10px 18px 10px 18px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #5e554b;
+            border-radius: 40px 40px 0 0;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-right: 2px;
+            letter-spacing: 0.2px;
+        }
+
+        .tab-btn:hover {
+            background: #f0ebe6;
+            color: #1e1a16;
+        }
+
+        .tab-btn.active {
+            background: #1e1a16;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fade 0.25s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fade {
+            0% { opacity: 0.4; transform: translateY(4px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-weight: 600;
+            font-size: 17px;
+            color: #1e1a16;
+            margin: 18px 0 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title:first-of-type {
+            margin-top: 4px;
+        }
+
+        .badge {
+            background: #e5ddd6;
+            padding: 2px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #3f3831;
+        }
+
+        .rule-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .rule-list li {
+            padding: 8px 0 8px 28px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23b45309" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>') left center no-repeat;
+            background-size: 18px;
+            background-position: 0 8px;
+            border-bottom: 1px solid #f0ebe6;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #1e1a16;
+        }
+
+        .rule-list li:last-child {
+            border-bottom: none;
+        }
+
+        .rule-list .danger {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23b91c1c" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>');
+            color: #7f1d1d;
+        }
+
+        .rule-list .success {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%231a7f4a" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>');
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 18px;
+            background: #faf8f6;
+            border-radius: 18px;
+            padding: 12px 18px;
+            margin: 8px 0 8px 0;
+        }
+
+        .grid-item {
+            font-size: 14px;
+            padding: 6px 0;
+            border-bottom: 1px dashed #e5ddd6;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .grid-item:last-child {
+            border-bottom: none;
+        }
+
+        .grid-item strong {
+            color: #2b241e;
+        }
+
+        .grid-item span {
+            color: #5e554b;
+            text-align: right;
+            max-width: 65%;
+        }
+
+        .chip-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 12px;
+            margin: 12px 0 8px 0;
+        }
+
+        .chip {
+            background: #ede8e2;
+            padding: 5px 16px;
+            border-radius: 60px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #1e1a16;
+        }
+
+        .chip.green {
+            background: #dcefe3;
+            color: #0d4629;
+        }
+
+        .chip.red {
+            background: #fce8e8;
+            color: #911f1f;
+        }
+
+        .checklist {
+            margin: 14px 0 6px 0;
+        }
+
+        .checklist label {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 8px 0;
+            font-size: 14px;
+            border-bottom: 1px solid #f0ebe6;
+            cursor: pointer;
+            color: #1e1a16;
+        }
+
+        .checklist label:last-child {
+            border-bottom: none;
+        }
+
+        .checklist input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #1e1a16;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .footnote {
+            margin-top: 24px;
+            background: #f4f0eb;
+            padding: 16px 18px;
+            border-radius: 24px;
+            font-size: 14px;
+            border-left: 5px solid #b45309;
+            color: #1e1a16;
+            line-height: 1.5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footnote span {
+            font-weight: 600;
+        }
+
+        .footnote small {
+            font-weight: 400;
+            color: #4b4139;
+        }
+
+        @media (max-width: 550px) {
+            .card { padding: 18px 16px; }
+            h1 { font-size: 21px; }
+            .grid-2 { grid-template-columns: 1fr; padding: 10px 14px; }
+            .grid-item span { max-width: 100%; text-align: left; }
+            .tab-btn { padding: 8px 12px; font-size: 13px; }
+            .footnote { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>📘 Нейросети в культуре</h1>
+    <div class="subhead">Памятка руководителю: внедряем ИИ по‑новым правилам · 1 страница</div>
+
+    <!-- TABS -->
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="tab1">⚡ Старт</button>
+        <button class="tab-btn" data-tab="tab2">🛡️ Безопасность</button>
+        <button class="tab-btn" data-tab="tab3">🧩 Задачи</button>
+        <button class="tab-btn" data-tab="tab4">✅ Чек-лист</button>
+    </div>
+
+    <!-- TAB 1: СТАРТ -->
+    <div id="tab1" class="tab-content active">
+        <div class="section-title">🚀 С чего начать</div>
+        <ul class="rule-list">
+            <li class="success"><strong>Пилотный отдел</strong> — выберите маркетинг или творческую группу, внедряйте постепенно.</li>
+            <li><strong>Объясните принцип</strong>: нейросеть — это «библиотекарь», она ищет <strong>паттерны</strong>, а не понимает смысл.</li>
+            <li><strong>Правило «3‑х промтов»</strong>: отправляйте один запрос 3 раза с разными формулировками, берите лучший вариант.</li>
+            <li><strong>Назначьте ответственного</strong> за логирование запросов (кто, когда, в какую нейросеть).</li>
+        </ul>
+
+        <div class="section-title">📌 Доступные нейросети (реестр РФ)</div>
+        <div class="chip-group">
+            <span class="chip green">YandexGPT</span>
+            <span class="chip green">GigaChat</span>
+            <span class="chip green">Kandinsky</span>
+            <span class="chip green">Шедеврум</span>
+            <span class="chip red">ChatGPT (недоступен)</span>
+            <span class="chip red">Midjourney (недоступен)</span>
+        </div>
+        <div style="font-size: 13px; color: #5e554b; margin-top: 6px;">Иностранные сервисы официально недоступны для госучреждений.</div>
+    </div>
+
+    <!-- TAB 2: БЕЗОПАСНОСТЬ -->
+    <div id="tab2" class="tab-content">
+        <div class="section-title">⛔ Запрещено загружать в ИИ (штрафы до 75 000 ₽)</div>
+        <ul class="rule-list">
+            <li class="danger"><strong>Персональные данные</strong> — ФИО, телефоны, адреса, паспорта (нарушение 152-ФЗ).</li>
+            <li class="danger"><strong>Коммерческая тайна</strong> — финансовые резервы, детали бюджетов, инвестиционные планы.</li>
+            <li class="danger"><strong>Гриф «секретно»</strong> — документы для служебного пользования и гостайна.</li>
+            <li class="danger"><strong>Кадровые решения</strong> — нельзя увольнять или принимать сотрудников только на основе вывода ИИ.</li>
+        </ul>
+        <div class="section-title" style="margin-top: 10px;">⚖️ Ответственность</div>
+        <ul class="rule-list">
+            <li><strong>Административная</strong> — штраф до 75 000 ₽ за утечку персданных.</li>
+            <li><strong>Гражданская</strong> — возмещение ущерба, если ИИ распространил недостоверную информацию.</li>
+            <li><strong>Дисциплинарная</strong> — взыскание за нарушение внутренних регламентов.</li>
+        </ul>
+    </div>
+
+    <!-- TAB 3: ЗАДАЧИ -->
+    <div id="tab3" class="tab-content">
+        <div class="section-title">🧑‍💼 Кому что делегировать</div>
+        <div class="grid-2">
+            <div class="grid-item"><strong>Администрация</strong> <span>отчёты, расписания, ответы гражданам</span></div>
+            <div class="grid-item"><strong>Творческий отдел</strong> <span>10 идей за 5 мин, черновики афиш, анонсы</span></div>
+            <div class="grid-item"><strong>Маркетинг</strong> <span>посты для соцсетей, заголовки, анализ кампаний</span></div>
+            <div class="grid-item"><strong>Кадровая служба</strong> <span>первичный отсев резюме, анализ нагрузки</span></div>
+            <div class="grid-item"><strong>Юристы</strong> <span>проверка договоров (подсветка ошибок)</span></div>
+            <div class="grid-item"><strong>Бухгалтерия</strong> <span>контроль лимитов, КБК, платёжки</span></div>
+        </div>
+        <div style="background: #faf8f6; border-radius: 16px; padding: 12px 16px; margin: 12px 0 0 0;">
+            <span style="font-weight: 500; font-size: 14px;">🧠 Принцип «Человек в цикле»</span>
+            <ul style="list-style: none; padding: 6px 0 0 0; font-size: 14px; color: #2b241e;">
+                <li style="padding: 4px 0;">✓ Факты перепроверяйте — нейросети ошибаются</li>
+                <li style="padding: 4px 0;">✓ Финальный текст редактируйте под свой стиль</li>
+                <li style="padding: 4px 0;">✓ Обязательно ставьте маркировку «Создано с помощью ИИ»</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- TAB 4: ЧЕК-ЛИСТ -->
+    <div id="tab4" class="tab-content">
+        <div class="section-title">📋 План внедрения (по шагам)</div>
+        <div class="checklist">
+            <label><input type="checkbox"> <span>Назначен ответственный за работу с ИИ в учреждении</span></label>
+            <label><input type="checkbox"> <span>Проведена планерка с творческим отделом (генерация идей)</span></label>
+            <label><input type="checkbox"> <span>Сотрудники обучены правилу «3‑х промтов»</span></label>
+            <label><input type="checkbox"> <span>Запрещённые данные (персональные, секретные) не загружаются</span></label>
+            <label><input type="checkbox"> <span>Настроено логирование запросов (кто, куда, когда)</span></label>
+            <label><input type="checkbox"> <span>Внедрён пилотный проект в одном отделе</span></label>
+            <label><input type="checkbox"> <span>Результаты ИИ проходят факт-чекинг перед публикацией</span></label>
+        </div>
+        <div style="margin-top: 14px; font-size: 14px; background: #ede8e2; border-radius: 60px; padding: 8px 18px; display: inline-block; color: #1e1a16;">
+            ⏳ КПЭ учредителя по ИИ — 2026 год
+        </div>
+    </div>
+
+    <!-- ФУТЕР -->
+    <div class="footnote">
+        <span>Главное правило</span>
+        <small>Нейросеть — помощник, а не замена. Ответственность за результат всегда несёт человек.</small>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const tabs = document.querySelectorAll('.tab-btn');
+        const contents = {
+            tab1: document.getElementById('tab1'),
+            tab2: document.getElementById('tab2'),
+            tab3: document.getElementById('tab3'),
+            tab4: document.getElementById('tab4')
+        };
+
+        function activateTab(tabId) {
+            // скрыть все
+            Object.values(contents).forEach(el => el.classList.remove('active'));
+            // убрать active у кнопок
+            tabs.forEach(btn => btn.classList.remove('active'));
+            // показать нужный
+            if (contents[tabId]) contents[tabId].classList.add('active');
+            // подсветить кнопку
+            tabs.forEach(btn => {
+                if (btn.dataset.tab === tabId) btn.classList.add('active');
+            });
+        }
+
+        tabs.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                const tabId = this.dataset.tab;
+                if (tabId) activateTab(tabId);
+            });
+        });
+
+        // по умолчанию активна первая вкладка
+        activateTab('tab1');
+
+        // чекбоксы сохраняют состояние (интерактив)
+    })();
+</script>
+
+</body>
+</html>
