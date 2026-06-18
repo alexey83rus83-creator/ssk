@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Правовая база ИИ для культуры</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f5f1eb;
+            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .card {
+            max-width: 920px;
+            width: 100%;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08), 0 8px 20px rgba(0, 0, 0, 0.03);
+            padding: 28px 30px 35px;
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            color: #1e1a16;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .subhead {
+            font-size: 15px;
+            color: #5e554b;
+            border-left: 4px solid #c7b7a8;
+            padding-left: 16px;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 0;
+            border-bottom: 1px solid #e5ddd6;
+            margin-bottom: 22px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #5e554b;
+            border-radius: 40px 40px 0 0;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-right: 2px;
+        }
+
+        .tab-btn:hover {
+            background: #f0ebe6;
+            color: #1e1a16;
+        }
+
+        .tab-btn.active {
+            background: #1e1a16;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fade 0.25s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fade {
+            0% { opacity: 0.4; transform: translateY(4px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            border-radius: 18px;
+            border: 1px solid #e5ddd6;
+            background: #fcfaf8;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            min-width: 600px;
+        }
+
+        th {
+            background: #ede8e2;
+            color: #1e1a16;
+            font-weight: 600;
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 2px solid #d5cbc2;
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #e5ddd6;
+            vertical-align: top;
+            line-height: 1.5;
+            color: #1e1a16;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .highlight {
+            background: #f4f0eb;
+        }
+
+        .badge-info {
+            display: inline-block;
+            background: #dcefe3;
+            color: #0d4629;
+            font-size: 12px;
+            font-weight: 500;
+            padding: 2px 12px;
+            border-radius: 30px;
+            margin-right: 6px;
+        }
+
+        .badge-warn {
+            display: inline-block;
+            background: #fce8e8;
+            color: #911f1f;
+            font-size: 12px;
+            font-weight: 500;
+            padding: 2px 12px;
+            border-radius: 30px;
+            margin-right: 6px;
+        }
+
+        .footnote {
+            margin-top: 22px;
+            background: #f4f0eb;
+            padding: 14px 18px;
+            border-radius: 24px;
+            font-size: 14px;
+            border-left: 5px solid #b45309;
+            color: #1e1a16;
+            line-height: 1.5;
+        }
+
+        .footnote strong {
+            font-weight: 600;
+        }
+
+        @media (max-width: 600px) {
+            .card { padding: 18px 14px; }
+            h1 { font-size: 21px; }
+            .tab-btn { padding: 8px 14px; font-size: 13px; }
+            th, td { padding: 10px 12px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>📋 Правовая база ИИ для учреждений культуры</h1>
+    <div class="subhead">
+        Законодательство по использованию нейросетей в России сейчас в процессе разработки. Есть утверждённые нормативные акты, проекты и разъяснения чиновников – мы проанализировали только то, что касается сферы культуры.
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="tab1">📜 Нормативные акты</button>
+        <button class="tab-btn" data-tab="tab2">📌 Проекты и разъяснения</button>
+        <button class="tab-btn" data-tab="tab3">⚖️ Ответственность</button>
+    </div>
+
+    <!-- TAB 1: НОРМАТИВНЫЕ АКТЫ -->
+    <div id="tab1" class="tab-content active">
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 30%;">Документ</th>
+                        <th style="width: 35%;">О чём</th>
+                        <th style="width: 35%;">Как касается учреждений культуры</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Национальная стратегия развития ИИ до 2030 года</strong><br><span style="font-size: 12px; color: #5e554b;">Указ Президента №490 от 10.10.2019</span></td>
+                        <td>Определяет основные направления развития ИИ в России:<br>• создание условий для внедрения ИИ в ключевых отраслях;<br>• развитие отечественных разработок в области ИИ;<br>• обеспечение безопасности и этичного использования технологий.</td>
+                        <td>Учреждения культуры обязаны учитывать стратегию при разработке региональных и ведомственных планов внедрения ИИ. Стратегия прямо упоминает сферу культуры как одну из приоритетных.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Федеральный закон №152-ФЗ</strong><br><span style="font-size: 12px; color: #5e554b;">«О персональных данных» от 27.07.2006</span></td>
+                        <td>Запрещает принимать решения о человеке исключительно на основе автоматической обработки данных. Исключение – письменное согласие человека или прямое разрешение другого закона.</td>
+                        <td>Запрещает использовать ИИ для автоматизированного отбора резюме или принятия решений о предоставлении услуг без участия человека. Требует согласия на обработку персональных данных.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Кодекс этики в сфере ИИ</strong><br><span style="font-size: 12px; color: #5e554b;">Утверждён в 2021 году</span></td>
+                        <td>Содержит принципы человекоцентричности, безопасности, недискриминации и ответственности.</td>
+                        <td>Носит рекомендательный характер, но учреждения часто учитывают его положения при разработке внутренних регламентов использования ИИ.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ГОСТы в области ИИ</strong><br><span style="font-size: 12px; color: #5e554b;">ГОСТ Р 70462.1‑2022, ГОСТ Р ИСО/МЭК 24029‑2, ГОСТ Р 71484.1‑2024 и др.</span></td>
+                        <td>Оценивают робастность нейронных сетей, качество данных для машинного обучения, методологию формальных методов.</td>
+                        <td>Помогают учреждениям оценивать надёжность и качество нейросетевых решений при выборе поставщиков и технологий.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- TAB 2: ПРОЕКТЫ И РАЗЪЯСНЕНИЯ -->
+    <div id="tab2" class="tab-content">
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 30%;">Проект / Разъяснение</th>
+                        <th style="width: 35%;">О чём</th>
+                        <th style="width: 35%;">Как касается учреждений культуры</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Проект постановления Минцифры</strong><br><span style="font-size: 12px; color: #5e554b;">Об эксперименте по использованию генеративного ИИ в госуправлении</span></td>
+                        <td>Предусматривает добровольное участие федеральных и региональных органов власти. Разрешённые задачи: управление данными, обработка документов, кадровая работа, оценка рисков, работа с контентом. Запрещает использовать генеративные модели для прогнозирования социально-экономических процессов и для работы с гостайной.</td>
+                        <td>Учреждения культуры могут использовать ИИ для:<br>• обработки заявок посетителей;<br>• составления отчётов и расписаний;<br>• генерации текстов анонсов и пресс-релизов;<br>• анализа обратной связи от посетителей.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Анализ Минэкономразвития</strong><br><span style="font-size: 12px; color: #5e554b;">По внедрению ИИ в сфере контроля и надзора за 2025 год</span></td>
+                        <td>Содержит рекомендации по использованию ИИ для анализа видеопотока, обработки данных о посещаемости и загруженности объектов.</td>
+                        <td>Рекомендует применять нейросети для контроля безопасности в музеях и театрах, а также для обработки данных о посещаемости и загруженности объектов.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>КПЭ по внедрению ИИ</strong><br><span style="font-size: 12px; color: #5e554b;">Целевые показатели к концу 2026 года</span></td>
+                        <td>Устанавливают для 20 органов исполнительной власти сквозные и отраслевые показатели: количество сотрудников с доступом к сервисам генеративного ИИ, доля организаций, применяющих ИИ, удовлетворённость сотрудников, индекс внедрения технологий ИИ.</td>
+                        <td>Если вышестоящий орган имеет КПЭ по использованию ИИ, то подведомственные учреждения обязаны учитывать эти требования. Невыполнение показателей влечёт санкции в адрес руководителя.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Законопроект Минцифры о регулировании ИИ</strong><br><span style="font-size: 12px; color: #5e554b;">Представлен в марте 2026 года, не принят. Вступает в силу 01.09.2027</span></td>
+                        <td>Вводит классификацию моделей ИИ («суверенные», «национальные», «доверенные»), обязанности разработчиков и учреждений-операторов, требования к маркировке контента.</td>
+                        <td>Учреждения культуры как операторы ИИ-моделей должны:<br>• включать в документацию руководство по безопасной эксплуатации;<br>• проводить тестирование системы;<br>• предоставлять пользователям информацию о назначении системы и её ограничениях;<br>• приостанавливать работу при выявлении угрозы причинения вреда.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- TAB 3: ОТВЕТСТВЕННОСТЬ -->
+    <div id="tab3" class="tab-content">
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 25%;">Вид ответственности</th>
+                        <th style="width: 40%;">Основание</th>
+                        <th style="width: 35%;">Последствия для учреждения культуры</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Административная</strong></td>
+                        <td>Нарушение требований к обработке персональных данных<br><span style="font-size: 12px; color: #5e554b;">ст. 13.11 КоАП РФ</span></td>
+                        <td>Назначают штраф для юридических лиц до 500 тысяч рублей.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Гражданско-правовая</strong></td>
+                        <td>Причинение вреда из-за некорректной работы ИИ, например, распространение недостоверной информации</td>
+                        <td>Суд обязывает возместить ущерб.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Дисциплинарная</strong></td>
+                        <td>Нарушение сотрудниками внутренних регламентов использования ИИ</td>
+                        <td>Руководитель налагает взыскания в соответствии с трудовым договором и локальными актами учреждения.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="margin-top: 16px; background: #faf8f6; border-radius: 16px; padding: 14px 18px; font-size: 14px; color: #1e1a16; border-left: 4px solid #b45309;">
+            <strong>Важно:</strong> прямых норм об ответственности за работу с ИИ в учреждении культуры на июнь 2026 года нет. Однако косвенная ответственность возникает через КПЭ ведомств, которым подведомственно учреждение. Если для вышестоящего органа установлен целевой показатель по ИИ, его невыполнение повлечёт санкции в адрес руководителя.
+        </div>
+    </div>
+
+    <div class="footnote">
+        <strong>📌 К сведению:</strong> Законопроект Минцифры о регулировании ИИ представлен в марте 2026 года и по состоянию на июль ещё не принят. Его требования должны вступить в силу 1 сентября 2027 года.
+    </div>
+</div>
+
+<script>
+    (function() {
+        const tabs = document.querySelectorAll('.tab-btn');
+        const contents = {
+            tab1: document.getElementById('tab1'),
+            tab2: document.getElementById('tab2'),
+            tab3: document.getElementById('tab3')
+        };
+
+        function activateTab(tabId) {
+            Object.values(contents).forEach(el => el.classList.remove('active'));
+            tabs.forEach(btn => btn.classList.remove('active'));
+            if (contents[tabId]) contents[tabId].classList.add('active');
+            tabs.forEach(btn => {
+                if (btn.dataset.tab === tabId) btn.classList.add('active');
+            });
+        }
+
+        tabs.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                const tabId = this.dataset.tab;
+                if (tabId) activateTab(tabId);
+            });
+        });
+
+        // активируем первую вкладку
+        activateTab('tab1');
+    })();
+</script>
+
+</body>
+</html>
