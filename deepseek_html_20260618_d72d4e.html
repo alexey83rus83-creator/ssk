@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Памятка руководителю учреждения культуры</title>
+    <style>
+        /* Сброс и общие стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #f0f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+        }
+        .wrapper {
+            max-width: 780px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 8px 20px rgba(0, 0, 0, 0.06);
+            padding: 28px 30px 30px;
+            border: 1px solid #e0e9e9;
+            transition: all 0.2s;
+        }
+
+        /* Заголовок */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            border-bottom: 3px solid #00A5A5;
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+        }
+        .header-left h1 {
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 1.25;
+            color: #1a2b2b;
+            letter-spacing: -0.3px;
+        }
+        .header-left .sub {
+            font-size: 14px;
+            color: #4d5f5f;
+            margin-top: 4px;
+            font-weight: 400;
+            border-left: 3px solid #C8102E;
+            padding-left: 12px;
+        }
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+        .btn-icon {
+            background: transparent;
+            border: 1px solid #d0dcdc;
+            border-radius: 40px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #1a2b2b;
+            cursor: pointer;
+            transition: 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f9fbfb;
+        }
+        .btn-icon:hover {
+            background: #00A5A5;
+            border-color: #00A5A5;
+            color: #fff;
+        }
+        .btn-icon.pdf {
+            background: #C8102E;
+            border-color: #C8102E;
+            color: #fff;
+        }
+        .btn-icon.pdf:hover {
+            background: #a00d24;
+            border-color: #a00d24;
+        }
+        .btn-icon svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+
+        /* Вкладки */
+        .tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 18px;
+            border-bottom: 2px solid #e3ebeb;
+            padding-bottom: 0;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 10px 18px 12px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #4d5f5f;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: 0.15s;
+            margin-bottom: -2px;
+            border-radius: 12px 12px 0 0;
+            letter-spacing: -0.2px;
+        }
+        .tab-btn:hover {
+            color: #1a2b2b;
+            background: #f2f8f8;
+        }
+        .tab-btn.active {
+            color: #00A5A5;
+            border-bottom: 3px solid #00A5A5;
+            background: #f7fcfc;
+        }
+
+        .tab-content {
+            display: none;
+            background: #fcfefe;
+            border-radius: 0 0 16px 16px;
+            padding: 6px 0 8px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Чек-листы */
+        .checklist {
+            list-style: none;
+            padding: 0;
+            margin: 6px 0 8px;
+        }
+        .checklist li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 8px 8px 8px 4px;
+            font-size: 15px;
+            line-height: 1.45;
+            color: #1a2b2b;
+            border-bottom: 1px solid #edf3f3;
+            transition: background 0.1s;
+        }
+        .checklist li:last-child {
+            border-bottom: none;
+        }
+        .checklist li:hover {
+            background: #f4fafa;
+        }
+        .checklist input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 3px;
+            flex-shrink: 0;
+            accent-color: #00A5A5;
+            cursor: pointer;
+        }
+        .checklist .label {
+            flex: 1;
+        }
+        .checklist .label strong {
+            color: #003333;
+            font-weight: 600;
+        }
+
+        .block-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #003333;
+            margin: 18px 0 6px;
+            padding-left: 4px;
+            border-left: 4px solid #00A5A5;
+            padding-left: 12px;
+        }
+        .block-title:first-of-type {
+            margin-top: 0;
+        }
+
+        /* Красный совет */
+        .advice {
+            background: #fff6f6;
+            border-left: 4px solid #C8102E;
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin: 20px 0 6px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #2d1a1a;
+        }
+        .advice .badge {
+            background: #C8102E;
+            color: #fff;
+            font-weight: 700;
+            font-size: 12px;
+            padding: 2px 12px;
+            border-radius: 30px;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .advice .text {
+            flex: 1;
+        }
+
+        /* Подвал */
+        .footer {
+            border-top: 1px solid #e0e9e9;
+            margin-top: 20px;
+            padding-top: 14px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #6b7f7f;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        /* Адаптив */
+        @media (max-width: 600px) {
+            .wrapper {
+                padding: 16px;
+            }
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+            .actions {
+                justify-content: flex-start;
+            }
+            .tab-btn {
+                font-size: 13px;
+                padding: 8px 12px 10px;
+            }
+            .checklist li {
+                font-size: 14px;
+                padding: 6px 4px;
+            }
+            .block-title {
+                font-size: 15px;
+            }
+            .advice {
+                flex-direction: column;
+                gap: 6px;
+            }
+        }
+        @media print {
+            .btn-icon {
+                display: none;
+            }
+            .wrapper {
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+            .tab-content {
+                display: block !important;
+            }
+            .tab-btn {
+                display: none;
+            }
+            .tabs {
+                display: none;
+            }
+            .checklist input[type="checkbox"] {
+                accent-color: #000;
+            }
+        }
+
+        /* скрытый блок для копирования */
+        .copy-helper {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper" id="memorandum">
+        <!-- Шапка -->
+        <div class="header">
+            <div class="header-left">
+                <h1>Памятка руководителю<br>учреждения культуры</h1>
+                <div class="sub">Практические рекомендации по безопасности</div>
+            </div>
+            <div class="actions">
+                <button class="btn-icon" id="copyBtn">
+                    <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                    Копировать
+                </button>
+                <button class="btn-icon pdf" id="pdfBtn">
+                    <svg viewBox="0 0 24 24"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>
+                    Скачать PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- Вкладки -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="tab1">Инструктажи</button>
+            <button class="tab-btn" data-tab="tab2">Меры безопасности</button>
+            <button class="tab-btn" data-tab="tab3">Практика и профилактика</button>
+        </div>
+
+        <!-- Вкладка 1 -->
+        <div class="tab-content active" id="tab1">
+            <div class="block-title">Проведите внеплановые инструктажи с персоналом</div>
+            <ul class="checklist">
+                <li><input type="checkbox"><span class="label">Действия при обнаружении подозрительного предмета</span></li>
+                <li><input type="checkbox"><span class="label">Алгоритм при угрозе по телефону</span></li>
+                <li><input type="checkbox"><span class="label">Реакция на признаки применения химических или биологических веществ</span></li>
+                <li><input type="checkbox"><span class="label">Распознавание фишинговых рассылок</span></li>
+                <li><input type="checkbox"><span class="label">Признаки вербовки в соцсетях (на что обращать внимание)</span></li>
+            </ul>
+            <div class="advice">
+                <span class="badge">Совет</span>
+                <span class="text">Если не хватает ресурсов или возникают вопросы — обращайтесь за разъяснениями к учредителю или в профильные ведомства.</span>
+            </div>
+        </div>
+
+        <!-- Вкладка 2 -->
+        <div class="tab-content" id="tab2">
+            <div class="block-title">Проверьте и усильте меры безопасности</div>
+            <ul class="checklist">
+                <li><input type="checkbox"><span class="label"><strong>Самообследование</strong> — оценка текущего уровня безопасности, поиск слабых мест</span></li>
+                <li><input type="checkbox"><span class="label"><strong>Паспорт безопасности</strong> — актуализация с учётом изменений, реконструкции, новых мероприятий; согласование с ФСБ и Росгвардией</span></li>
+                <li><input type="checkbox"><span class="label"><strong>Хранение и передача</strong> — надёжное обращение с паспортом и другими документами ограниченного доступа</span></li>
+                <li><input type="checkbox"><span class="label"><strong>Пропускной режим</strong> — учёт посетителей (журнал с ФИО, временем прибытия/убытия), ограничение стоянки постороннего транспорта у здания</span></li>
+                <li><input type="checkbox"><span class="label"><strong>Инженерно-техническая защита</strong> — проверка видеонаблюдения, сигнализации, оповещения; дополнительное оборудование по согласованию с ФСБ или Росгвардией</span></li>
+            </ul>
+        </div>
+
+        <!-- Вкладка 3 -->
+        <div class="tab-content" id="tab3">
+            <div class="block-title">Отработайте действия на практике и укрепите профилактику</div>
+            <ul class="checklist">
+                <li><input type="checkbox"><span class="label"><strong>Учебно-тренировочные эвакуации</strong> — регулярные практические занятия для отработки слаженности в стрессовых ситуациях</span></li>
+                <li><input type="checkbox"><span class="label"><strong>Профилактика терроризма</strong> — беседы с сотрудниками о неприятии экстремистских идей, тематические выставки и экскурсии для посетителей</span></li>
+                <li><input type="checkbox"><span class="label"><strong>Связь с силовыми ведомствами</strong> — регулярный контакт с ФСБ, МВД, Росгвардией, запрос разъяснений по новым угрозам, согласование решений</span></li>
+            </ul>
+            <div class="advice" style="margin-top: 10px;">
+                <span class="badge">Совет</span>
+                <span class="text">При нехватке ресурсов или сложностях с реализацией мер — запрашивайте поддержку учредителя или профильных ведомств.</span>
+            </div>
+        </div>
+
+        <!-- подвал -->
+        <div class="footer">
+            <span>© Справочник руководителя учреждения культуры</span>
+            <span>Актуально на сезон 2026</span>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // Переключение вкладок
+            const tabs = document.querySelectorAll('.tab-btn');
+            const contents = {
+                tab1: document.getElementById('tab1'),
+                tab2: document.getElementById('tab2'),
+                tab3: document.getElementById('tab3')
+            };
+
+            tabs.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tabId = this.dataset.tab;
+                    // убрать активные
+                    tabs.forEach(b => b.classList.remove('active'));
+                    Object.values(contents).forEach(c => c.classList.remove('active'));
+                    // активировать
+                    this.classList.add('active');
+                    if (contents[tabId]) contents[tabId].classList.add('active');
+                });
+            });
+
+            // Копирование
+            document.getElementById('copyBtn').addEventListener('click', function() {
+                // собираем весь текст с чек-боксами (без состояния галочек, просто текст)
+                const wrapper = document.getElementById('memorandum');
+                const clone = wrapper.cloneNode(true);
+                // удаляем кнопки
+                clone.querySelectorAll('.btn-icon, .actions').forEach(el => el.remove());
+                // убираем вкладки (кнопки) и оставляем весь контент
+                const tabBtns = clone.querySelectorAll('.tab-btn');
+                tabBtns.forEach(b => b.remove());
+                const tabsContainer = clone.querySelector('.tabs');
+                if (tabsContainer) tabsContainer.remove();
+                // все tab-content делаем видимыми
+                clone.querySelectorAll('.tab-content').forEach(c => c.classList.add('active'));
+                // убираем чекбоксы (оставляем только текст)
+                clone.querySelectorAll('.checklist input[type="checkbox"]').forEach(cb => cb.remove());
+                // удаляем скрытые элементы
+                const helper = clone.querySelector('.copy-helper');
+                if (helper) helper.remove();
+
+                let text = clone.textContent;
+                // чистим лишние пробелы и переносы
+                text = text.replace(/\s+/g, ' ').trim();
+                // разбиваем на строки для читаемости
+                const lines = text.split('. ').join('.\n');
+                navigator.clipboard.writeText(text).then(() => {
+                    const original = this.innerHTML;
+                    this.innerHTML = '✅ Скопировано';
+                    setTimeout(() => { this.innerHTML = original; }, 2000);
+                }).catch(() => {
+                    alert('Не удалось скопировать. Выделите текст вручную.');
+                });
+            });
+
+            // PDF (печать)
+            document.getElementById('pdfBtn').addEventListener('click', function() {
+                window.print();
+            });
+
+            // Сохраняем состояние чек-боксов (опционально — в localStorage)
+            const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+            checkboxes.forEach((cb, index) => {
+                // восстанавливаем
+                const saved = localStorage.getItem('check_' + index);
+                if (saved === 'true') cb.checked = true;
+                cb.addEventListener('change', function() {
+                    localStorage.setItem('check_' + index, this.checked);
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
