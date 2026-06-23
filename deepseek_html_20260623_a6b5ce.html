@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Памятка: проблемы антитеррористических инструктажей</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #eef2f5;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 24px 16px;
+        }
+
+        .card {
+            max-width: 960px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
+            padding: 28px 28px 32px;
+            border: 1px solid #d5dfe6;
+        }
+
+        .card-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0a1a2b;
+            letter-spacing: -0.3px;
+            padding-bottom: 16px;
+            border-bottom: 3px solid #1a3a5c;
+            margin-bottom: 20px;
+        }
+        .card-title span {
+            background: #1a3a5c;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 2px 14px;
+            border-radius: 30px;
+            margin-left: 12px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        /* Вкладки */
+        .tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #dce6ed;
+            padding-bottom: 0;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 10px 20px 12px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #4a5f73;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: 0.15s;
+            margin-bottom: -2px;
+            border-radius: 12px 12px 0 0;
+            letter-spacing: -0.2px;
+        }
+        .tab-btn:hover {
+            color: #0a1a2b;
+            background: #f0f5fa;
+        }
+        .tab-btn.active {
+            color: #1a3a5c;
+            border-bottom: 3px solid #1a3a5c;
+            background: #f5f8fe;
+        }
+
+        .tab-content {
+            display: none;
+            background: #fafcfe;
+            border-radius: 0 0 16px 16px;
+            padding: 4px 0 8px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* табличная сетка */
+        .table-grid {
+            display: flex;
+            flex-direction: column;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #d5dfe6;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1.1fr;
+            border-bottom: 1px solid #dee8ef;
+        }
+        .row:last-child {
+            border-bottom: none;
+        }
+
+        .row.header {
+            background: #1a3a5c;
+            color: #fff;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 0.3px;
+            border-bottom: 2px solid #0f2a44;
+        }
+        .row.header .cell {
+            padding: 12px 16px;
+        }
+
+        .cell {
+            padding: 14px 16px;
+            font-size: 14.5px;
+            line-height: 1.5;
+            color: #0a1a2b;
+            background: #fff;
+            border-right: 1px solid #dee8ef;
+            word-break: break-word;
+        }
+        .cell:last-child {
+            border-right: none;
+        }
+
+        .row:not(.header) .cell:first-child {
+            font-weight: 600;
+            color: #0a1a2b;
+        }
+
+        /* Решение с чек-боксом */
+        .solution-wrap {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .solution-wrap input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 3px;
+            flex-shrink: 0;
+            accent-color: #1a3a5c;
+            cursor: pointer;
+        }
+        .solution-wrap .text {
+            flex: 1;
+            color: #0a1a2b;
+        }
+
+        /* подвал */
+        .footer-note {
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid #dce6ed;
+            display: flex;
+            justify-content: flex-end;
+            font-size: 13px;
+            color: #5a7373;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        /* адаптив */
+        @media (max-width: 700px) {
+            .card {
+                padding: 16px 14px;
+            }
+            .card-title {
+                font-size: 18px;
+            }
+            .tab-btn {
+                font-size: 13px;
+                padding: 8px 14px 10px;
+            }
+            .row {
+                grid-template-columns: 1fr;
+                border-bottom: 2px solid #d5dfe6;
+            }
+            .row.header {
+                display: none;
+            }
+            .cell {
+                border-right: none;
+                padding: 10px 12px;
+                border-bottom: 1px dashed #dee8ef;
+            }
+            .cell:last-child {
+                border-bottom: none;
+            }
+            .row:not(.header) .cell:first-child {
+                background: #eef4fa;
+                font-weight: 700;
+                font-size: 14px;
+            }
+            .row:not(.header) .cell:nth-child(2) {
+                background: #f7fafc;
+            }
+            .row:not(.header) .cell:nth-child(3) {
+                background: #f9fcfe;
+            }
+            .solution-wrap {
+                flex-wrap: wrap;
+            }
+        }
+
+        @media print {
+            .card {
+                box-shadow: none;
+                border: 1px solid #aaa;
+            }
+            .tab-btn {
+                display: none;
+            }
+            .tabs {
+                display: none;
+            }
+            .tab-content {
+                display: block !important;
+            }
+            .solution-wrap input[type="checkbox"] {
+                accent-color: #000;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="card-title">
+        Таблица 2. Проблемы антитеррористических инструктажей и их решения
+        <span>чек-лист</span>
+    </div>
+
+    <!-- Вкладки -->
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="tab1">Методические проблемы</button>
+        <button class="tab-btn" data-tab="tab2">Проблемы восприятия</button>
+    </div>
+
+    <!-- Вкладка 1: Методические проблемы -->
+    <div class="tab-content active" id="tab1">
+        <div class="table-grid">
+            <div class="row header">
+                <div class="cell">Проблема</div>
+                <div class="cell">Последствия</div>
+                <div class="cell">Решение</div>
+            </div>
+
+            <!-- строка 1 -->
+            <div class="row">
+                <div class="cell">Отсутствие конкретики</div>
+                <div class="cell">Фразы «будьте бдительны» или «проявляйте внимание» ничего не значат без примеров. Люди не понимают, что именно им делать</div>
+                <div class="cell">
+                    <div class="solution-wrap">
+                        <input type="checkbox" id="a1">
+                        <label for="a1" class="text">Давайте на инструктаже четкие, простые алгоритмы. Например, «Обнаружение подозрительного предмета»: Не трогать, не вскрывать, не ставить рядом сумки, отойти на безопасное расстояние, немедленно сообщить ответственному по безопасности/охране. Запомнить время и место обнаружения.</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- строка 2 -->
+            <div class="row">
+                <div class="cell">Разглашение секретных сведений</div>
+                <div class="cell">Нельзя раздавать паспорт безопасности, схему расположения камер и пароли для охраны кому попало</div>
+                <div class="cell">
+                    <div class="solution-wrap">
+                        <input type="checkbox" id="a2">
+                        <label for="a2" class="text">Не сообщайте на инструктаже всем сведения из паспорта безопасности. Пароли для тревожных кнопок, детальные планы действий доводите только до ключевых сотрудников, например охраны, руководителей. Храните паспорт безопасности и другую документацию по всем правилам.</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- строка 3 -->
+            <div class="row">
+                <div class="cell">Игнорирование из-за низкой вероятности события</div>
+                <div class="cell">Сотрудники не относятся серьезно к инструктажу, потому что полагают, что с ними такого не произойдет</div>
+                <div class="cell">
+                    <div class="solution-wrap">
+                        <input type="checkbox" id="a3">
+                        <label for="a3" class="text">Используйте реальные кейсы, например атака БПЛА на Панораму в Севастополе, теракт в «Крокусе». Покажите на этих примерах, что наблюдательность, знание планов эвакуации помогают и в быту: предотвратить кражу, заметить забытую кем-то сумку</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Вкладка 2: Проблемы восприятия -->
+    <div class="tab-content" id="tab2">
+        <div class="table-grid">
+            <div class="row header">
+                <div class="cell">Проблема</div>
+                <div class="cell">Последствия</div>
+                <div class="cell">Решение</div>
+            </div>
+
+            <!-- строка 4 -->
+            <div class="row">
+                <div class="cell">Рост уровня тревожности и стресса в коллективе</div>
+                <div class="cell">Инструктаж может породить неврозы, подозрительность и нездоровую атмосферу в коллективе</div>
+                <div class="cell">
+                    <div class="solution-wrap">
+                        <input type="checkbox" id="a4">
+                        <label for="a4" class="text">Дозируйте и смягчайте подачу, делайте акцент не на ужасах терактов, а конкретных действиях и как они помогут. Вместе с руководителем кадровой службы используйте приемы, чтобы снизить стресс у сотрудников</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- строка 5 -->
+            <div class="row">
+                <div class="cell">Стигматизация и ксенофобия</div>
+                <div class="cell">После инструктажа сотрудники могут начать с подозрением относиться к определенным группам людей (по внешнему виду, вероисповеданию)</div>
+                <div class="cell">
+                    <div class="solution-wrap">
+                        <input type="checkbox" id="a5">
+                        <label for="a5" class="text">Сделайте фокус на подозрительном поведении, а не на внешности. Важно не то, как человек выглядит, а то, как он ведет себя. Например, нервничает, одет не по погоде, пытается пронести что-то запрещенное. Напоминайте о главном правиле: «Если что-то видишь – скажи ответственному, а не суди сам»</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-note">
+        <span>Антитеррористическая безопасность</span>
+    </div>
+</div>
+
+<script>
+    // Переключение вкладок
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = {
+        tab1: document.getElementById('tab1'),
+        tab2: document.getElementById('tab2')
+    };
+
+    tabs.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const tabId = this.dataset.tab;
+            tabs.forEach(b => b.classList.remove('active'));
+            Object.values(contents).forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            if (contents[tabId]) contents[tabId].classList.add('active');
+        });
+    });
+
+    // Сохранение состояния чек-боксов в localStorage
+    document.querySelectorAll('.solution-wrap input[type="checkbox"]').forEach((cb, index) => {
+        const saved = localStorage.getItem('antiterror_check_' + index);
+        if (saved === 'true') cb.checked = true;
+
+        cb.addEventListener('change', function() {
+            localStorage.setItem('antiterror_check_' + index, this.checked);
+        });
+    });
+</script>
+
+</body>
+</html>
