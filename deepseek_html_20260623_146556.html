@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Памятка: проблемы инструктажа по ЧС</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #eef2f5;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 24px 16px;
+        }
+
+        .card {
+            max-width: 960px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
+            padding: 28px 28px 32px;
+            border: 1px solid #d5dfe6;
+        }
+
+        .card-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0a1a2b;
+            letter-spacing: -0.3px;
+            padding-bottom: 16px;
+            border-bottom: 3px solid #1a3a5c;
+            margin-bottom: 20px;
+        }
+        .card-title span {
+            background: #1a3a5c;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 2px 14px;
+            border-radius: 30px;
+            margin-left: 12px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #dce6ed;
+            padding-bottom: 0;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 10px 20px 12px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #4a5f73;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: 0.15s;
+            margin-bottom: -2px;
+            border-radius: 12px 12px 0 0;
+            letter-spacing: -0.2px;
+        }
+        .tab-btn:hover {
+            color: #0a1a2b;
+            background: #f0f5fa;
+        }
+        .tab-btn.active {
+            color: #1a3a5c;
+            border-bottom: 3px solid #1a3a5c;
+            background: #f5f8fe;
+        }
+
+        .tab-content {
+            display: none;
+            background: #fafcfe;
+            border-radius: 0 0 16px 16px;
+            padding: 4px 0 8px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        .table-grid {
+            display: flex;
+            flex-direction: column;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #d5dfe6;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1.1fr;
+            border-bottom: 1px solid #dee8ef;
+        }
+        .row:last-child {
+            border-bottom: none;
+        }
+
+        .row.header {
+            background: #1a3a5c;
+            color: #fff;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 0.3px;
+            border-bottom: 2px solid #0f2a44;
+        }
+        .row.header .cell {
+            padding: 12px 16px;
+        }
+
+        .cell {
+            padding: 14px 16px;
+            font-size: 14.5px;
+            line-height: 1.5;
+            color: #0a1a2b;
+            background: #fff;
+            border-right: 1px solid #dee8ef;
+            word-break: break-word;
+        }
+        .cell:last-child {
+            border-right: none;
+        }
+
+        .row:not(.header) .cell:first-child {
+            font-weight: 600;
+            color: #0a1a2b;
+        }
+
+        .solution-wrap {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .solution-wrap input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 3px;
+            flex-shrink: 0;
+            accent-color: #1a3a5c;
+            cursor: pointer;
+        }
+        .solution-wrap .text {
+            flex: 1;
+            color: #0a1a2b;
+        }
+
+        .footer-note {
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid #dce6ed;
+            display: flex;
+            justify-content: flex-end;
+            font-size: 13px;
+            color: #5a7373;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        @media (max-width: 700px) {
+            .card {
+                padding: 16px 14px;
+            }
+            .card-title {
+                font-size: 18px;
+            }
+            .tab-btn {
+                font-size: 13px;
+                padding: 8px 14px 10px;
+            }
+            .row {
+                grid-template-columns: 1fr;
+                border-bottom: 2px solid #d5dfe6;
+            }
+            .row.header {
+                display: none;
+            }
+            .cell {
+                border-right: none;
+                padding: 10px 12px;
+                border-bottom: 1px dashed #dee8ef;
+            }
+            .cell:last-child {
+                border-bottom: none;
+            }
+            .row:not(.header) .cell:first-child {
+                background: #eef4fa;
+                font-weight: 700;
+                font-size: 14px;
+            }
+            .row:not(.header) .cell:nth-child(2) {
+                background: #f7fafc;
+            }
+            .row:not(.header) .cell:nth-child(3) {
+                background: #f9fcfe;
+            }
+            .solution-wrap {
+                flex-wrap: wrap;
+            }
+        }
+
+        @media print {
+            .card {
+                box-shadow: none;
+                border: 1px solid #aaa;
+            }
+            .tab-btn {
+                display: none;
+            }
+            .tabs {
+                display: none;
+            }
+            .tab-content {
+                display: block !important;
+            }
+            .solution-wrap input[type="checkbox"] {
+                accent-color: #000;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="card-title">
+        Таблица 3. Проблемы инструктажа по действиям в ЧС и их решения
+        <span>чек-лист</span>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="tab1">Методические проблемы</button>
+        <button class="tab-btn" data-tab="tab2">Проблемы восприятия</button>
+    </div>
+
+    <!-- Вкладка 1: Методические проблемы -->
+    <div class="tab-content active" id="tab1">
+        <div class="table-grid">
+            <div class="row header">
+                <div class="cell">Проблема</div>
+                <div class="cell">Последствия</div>
+                <div class="cell">Решение</div>
+            </div>
+
+            <div class="row">
+                <div class="cell">Инструктаж сводится к чтению программы без привязки к реальным рискам учреждения</div>
+                <div class="cell">Сотрудники не понимают, какие именно ЧС могут произойти на их рабочих местах</div>
+                <div class="cell">
+                    <div class="solution-wrap">
+                        <input type="checkbox" id="c1">
+                        <label for="c1" class="text">Сделайте акцент на вопросах 1 и 2 программы. Разберите конкретные опасные места в учреждении, возможные действия работников, которые могут привести к ЧС, и характерные риски для вашего района</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="cell">Нет демонстрации СИЗ и СКЗ, всё только в теории</div>
+                <div class="cell">Сотрудники не умеют пользоваться противогазами, не знают, где выдаются СИЗ и как заполнять убежище</div>
+                <div class="cell">
+                    <div class="solution-wrap">
+                        <input type="checkbox" id="c2">
+                        <label for="c2" class="text">Включите в вопросы 7 и 8 практическую часть: покажите СИЗ, проведите демонстрацию надевания, укажите пункт выдачи и места расположения СКЗ, разберите правила поведения в укрытии</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="cell">Игнорирование вопроса 6 (химическая и радиационная защита)</div>
+                <div class="cell">При реальной угрозе люди не знают, как изготовить подручные средства защиты и герметизировать помещение</div>
+                <div class="cell">
+                    <div class="solution-wrap">
+                        <input type="checkbox" id="c3">
+                        <label for="c3" class="text">Отработайте вопрос 6 детально: порядок изготовления ватно-марлевых повязок, герметизация окон и дверей, действия при утечке АХОВ</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="cell">Отсутствие проверки знаний после инструктажа</div>
+                <div class="cell">Руководитель не может подтвердить, что сотрудники усвоили материал</div>
+                <div class="cell">
+                    <div class="solution-wrap">
+                        <input type="checkbox" id="c4">
+                        <label for="c4" class="text">Используйте раздел 3 программы как основу для контрольных вопросов. Проверьте знание сигналов оповещения, порядка эвакуации и правил применения СИЗ</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Вкладка 2: Проблемы восприятия -->
+    <div class="tab-content" id="tab2">
+        <div class="table-grid">
+            <div class="row header">
+                <div class="cell">Проблема</div>
+                <div class="cell">Последствия</div>
+                <div class="cell">Решение</div>
+            </div>
+
+            <div class="row">
+                <div class="cell">Сотрудники путают сигналы оповещения и не знают, как действовать в разных местах (рабочее место, столовая)</div>
+                <div class="cell">Хаос и задержки при эвакуации, неправильные действия</div>
+                <div class="cell">
+                    <div class="solution-wrap">
+                        <input type="checkbox" id="c5">
+                        <label for="c5" class="text">Отработайте вопрос 5 по сценариям: «на рабочем месте», «в столовой», «в другом помещении». Закрепите на практической тренировке</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="cell">Работники не понимают свои права и обязанности в области защиты от ЧС</div>
+                <div class="cell">Отказ от выполнения законных требований, непонимание ответственности</div>
+                <div class="cell">
+                    <div class="solution-wrap">
+                        <input type="checkbox" id="c6">
+                        <label for="c6" class="text">Выделите время на вопрос 9. Разберите федеральные законы, обязанности по трудовому договору и дополнительные соглашения</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="cell">Из-за обилия тем сотрудники теряют концентрацию, материал кажется «водой»</div>
+                <div class="cell">Низкое усвоение, формальное отношение к инструктажу</div>
+                <div class="cell">
+                    <div class="solution-wrap">
+                        <input type="checkbox" id="c7">
+                        <label for="c7" class="text">Разбейте программу на два занятия. В первом — вопросы 1–5 (общее), во втором — вопросы 6–9 (практика и обязанности). Используйте визуальные схемы и памятки</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-note">
+        <span>Инструктаж по действиям в ЧС</span>
+    </div>
+</div>
+
+<script>
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = {
+        tab1: document.getElementById('tab1'),
+        tab2: document.getElementById('tab2')
+    };
+
+    tabs.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const tabId = this.dataset.tab;
+            tabs.forEach(b => b.classList.remove('active'));
+            Object.values(contents).forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            if (contents[tabId]) contents[tabId].classList.add('active');
+        });
+    });
+
+    document.querySelectorAll('.solution-wrap input[type="checkbox"]').forEach((cb, index) => {
+        const saved = localStorage.getItem('chs_check_' + index);
+        if (saved === 'true') cb.checked = true;
+        cb.addEventListener('change', function() {
+            localStorage.setItem('chs_check_' + index, this.checked);
+        });
+    });
+</script>
+
+</body>
+</html>
