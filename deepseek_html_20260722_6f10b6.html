@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Программы инструктажей по безопасности</title>
+
+    <!-- iframe-resizer -->
+    <script src="https://cdn.jsdelivr.net/npm/iframe-resizer@4.3.6/js/iframeResizer.contentWindow.min.js">
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f5f7fa;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            padding: 16px;
+            margin: 0;
+            min-height: auto;
+            width: 100%;
+        }
+
+        .presentation {
+            max-width: 1100px;
+            width: 100%;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.04);
+            padding: 28px 32px 32px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding-bottom: 16px;
+            border-bottom: 4px solid #2b6c8f;
+            margin-bottom: 18px;
+        }
+
+        .header-left {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0a1a2b;
+            letter-spacing: -0.5px;
+        }
+        .header-title span {
+            background: linear-gradient(135deg, #2b6c8f, #4a9bb5);
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 2px 16px;
+            border-radius: 30px;
+            margin-left: 12px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .header-sub {
+            font-size: 17px;
+            color: #4a5f73;
+            font-weight: 400;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-shrink: 0;
+            align-items: center;
+        }
+
+        .btn-pdf {
+            background: linear-gradient(135deg, #2b6c8f, #4a9bb5);
+            border: none;
+            border-radius: 30px;
+            padding: 12px 26px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: inherit;
+            box-shadow: 0 4px 12px rgba(43, 108, 143, 0.30);
+        }
+        .btn-pdf:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(43, 108, 143, 0.40);
+        }
+        .btn-pdf svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .main-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 18px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0;
+            flex-wrap: wrap;
+        }
+
+        .main-tab {
+            background: transparent;
+            border: none;
+            padding: 14px 28px 16px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #4a5f73;
+            cursor: pointer;
+            border-bottom: 4px solid transparent;
+            transition: 0.15s;
+            margin-bottom: -2px;
+            border-radius: 14px 14px 0 0;
+            font-family: inherit;
+        }
+        .main-tab:hover {
+            color: #0a1a2b;
+            background: #f0f5fa;
+        }
+        .main-tab.active {
+            color: #2b6c8f;
+            border-bottom: 4px solid #2b6c8f;
+            background: #f5faff;
+        }
+        .main-tab .badge {
+            display: inline-block;
+            background: #e67e22;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 1px 12px;
+            border-radius: 30px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        .main-content {
+            display: none;
+            background: #fafcfe;
+            border-radius: 0 0 16px 16px;
+            padding: 4px 0 8px;
+        }
+        .main-content.active {
+            display: block;
+        }
+
+        .sub-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 16px;
+            padding-bottom: 0;
+            flex-wrap: wrap;
+            background: #f0f5fa;
+            border-radius: 12px;
+            padding: 4px;
+        }
+
+        .sub-tab {
+            background: transparent;
+            border: none;
+            padding: 10px 18px 12px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #4a5f73;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: 0.15s;
+            font-family: inherit;
+            flex: 0 0 auto;
+        }
+        .sub-tab:hover {
+            background: rgba(255, 255, 255, 0.6);
+            color: #0a1a2b;
+        }
+        .sub-tab.active {
+            background: #ffffff;
+            color: #2b6c8f;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+        .sub-tab .emoji {
+            margin-right: 6px;
+        }
+
+        .sub-content {
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+        .sub-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .slide-card {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #e8eef2;
+            padding: 20px 22px 22px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+            transition: 0.1s;
+        }
+        .slide-card:hover {
+            border-color: #b8d0e0;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+        }
+
+        .slide-card.full {
+            grid-column: 1 / -1;
+        }
+
+        .slide-card.color-1 {
+            border-left: 5px solid #2b6c8f;
+        }
+        .slide-card.color-2 {
+            border-left: 5px solid #e67e22;
+        }
+        .slide-card.color-3 {
+            border-left: 5px solid #27ae60;
+        }
+        .slide-card.color-4 {
+            border-left: 5px solid #8e44ad;
+        }
+        .slide-card.color-5 {
+            border-left: 5px solid #c0392b;
+        }
+        .slide-card.color-6 {
+            border-left: 5px solid #2980b9;
+        }
+        .slide-card.color-game {
+            border-left: 5px solid #f39c12;
+            background: linear-gradient(135deg, #fffdf5, #fef9f0);
+        }
+
+        .slide-card .num {
+            display: inline-block;
+            background: #2b6c8f;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 2px 14px;
+            border-radius: 30px;
+            margin-bottom: 8px;
+            letter-spacing: 0.3px;
+        }
+        .slide-card .num.green {
+            background: #27ae60;
+        }
+        .slide-card .num.orange {
+            background: #e67e22;
+        }
+        .slide-card .num.purple {
+            background: #8e44ad;
+        }
+        .slide-card .num.red {
+            background: #c0392b;
+        }
+        .slide-card .num.game {
+            background: #f39c12;
+        }
+
+        .slide-card .title {
+            font-size: 19px;
+            font-weight: 700;
+            color: #0a1a2b;
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+        .slide-card .title .emoji {
+            margin-right: 8px;
+        }
+
+        .slide-card .sub {
+            font-size: 15px;
+            color: #4a5f73;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .slide-card .body {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #1a2b3c;
+        }
+        .slide-card .body ul {
+            list-style: none;
+            padding: 0;
+            margin: 4px 0;
+        }
+        .slide-card .body ul li {
+            padding: 4px 0 4px 28px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="%232b6c8f" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>') left center no-repeat;
+            background-size: 18px;
+        }
+        .slide-card .body ul li .emoji {
+            margin-right: 6px;
+        }
+
+        .slide-card .body .highlight {
+            background: #eef4fa;
+            padding: 10px 16px;
+            border-radius: 10px;
+            border-left: 5px solid #2b6c8f;
+            margin: 8px 0;
+            font-size: 15px;
+        }
+        .slide-card .body .highlight.orange {
+            border-left-color: #e67e22;
+            background: #fef9f0;
+        }
+        .slide-card .body .highlight.green {
+            border-left-color: #27ae60;
+            background: #f0faf2;
+        }
+        .slide-card .body .highlight.purple {
+            border-left-color: #8e44ad;
+            background: #f5f0fa;
+        }
+        .slide-card .body .highlight.game {
+            border-left-color: #f39c12;
+            background: #fef9f0;
+        }
+
+        .slide-card .body .time {
+            display: inline-block;
+            background: #f0f4fa;
+            color: #2b6c8f;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 3px 16px;
+            border-radius: 30px;
+            border: 1px solid #d5dfe6;
+            margin: 4px 0;
+        }
+        .slide-card .body .time.orange {
+            background: #fef5e8;
+            color: #e67e22;
+            border-color: #f0dcc8;
+        }
+        .slide-card .body .time.game {
+            background: #fef5e8;
+            color: #f39c12;
+            border-color: #f0dcc8;
+        }
+
+        .slide-card .body .tag {
+            display: inline-block;
+            background: #e8f0fe;
+            color: #2b6c8f;
+            font-size: 13px;
+            padding: 2px 14px;
+            border-radius: 30px;
+            border: 1px solid #d0dcec;
+            margin: 2px 4px 2px 0;
+        }
+        .slide-card .body .tag.orange {
+            background: #fef5e8;
+            color: #e67e22;
+            border-color: #f0dcc8;
+        }
+        .slide-card .body .tag.green {
+            background: #e8f5ea;
+            color: #27ae60;
+            border-color: #c8e0d0;
+        }
+        .slide-card .body .tag.game {
+            background: #fef5e8;
+            color: #f39c12;
+            border-color: #f0dcc8;
+        }
+
+        .footer-note {
+            margin-top: 22px;
+            padding-top: 16px;
+            border-top: 2px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #5a7373;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        @media (max-width: 900px) {
+            .slide-grid {
+                grid-template-columns: 1fr;
+            }
+            .presentation {
+                padding: 16px 14px;
+            }
+            .header-title {
+                font-size: 22px;
+            }
+            .main-tab {
+                font-size: 15px;
+                padding: 10px 16px 12px;
+            }
+            .sub-tab {
+                font-size: 13px;
+                padding: 8px 12px 10px;
+            }
+            .slide-card .title {
+                font-size: 17px;
+            }
+            .slide-card .body {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .header-actions {
+                justify-content: flex-start;
+            }
+            .btn-pdf {
+                padding: 10px 18px;
+                font-size: 14px;
+            }
+            .main-tab {
+                font-size: 13px;
+                padding: 8px 12px 10px;
+            }
+            .main-tab .badge {
+                font-size: 10px;
+                padding: 0 8px;
+                margin-left: 4px;
+            }
+            .sub-tab {
+                font-size: 12px;
+                padding: 6px 10px 8px;
+            }
+            .slide-card {
+                padding: 14px 14px 16px;
+            }
+            .slide-card .title {
+                font-size: 16px;
+            }
+            .slide-card .body {
+                font-size: 13px;
+            }
+            .slide-card .body ul li {
+                padding-left: 24px;
+                background-size: 16px;
+            }
+        }
+
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+            .presentation {
+                box-shadow: none;
+                border: 1px solid #ccc;
+                padding: 16px;
+                max-width: 100%;
+                border-radius: 0;
+            }
+            .btn-pdf {
+                display: none;
+            }
+            .main-tab {
+                display: none;
+            }
+            .main-tabs {
+                display: none;
+            }
+            .main-content {
+                display: block !important;
+                padding: 0;
+                margin-top: 8px;
+                background: transparent;
+            }
+            .main-content:not(:first-child) {
+                margin-top: 24px;
+                border-top: 2px solid #ddd;
+                padding-top: 16px;
+            }
+            .sub-tabs {
+                display: none;
+            }
+            .sub-content {
+                display: block !important;
+            }
+            .slide-grid {
+                display: block;
+            }
+            .slide-card {
+                page-break-inside: avoid;
+                border: 1px solid #ddd;
+                margin-bottom: 10px;
+                box-shadow: none;
+            }
+            .slide-card .num {
+                background: #333 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .slide-card .body .highlight {
+                background: #f0f4f8 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .slide-card .body ul li {
+                background: none;
+                padding-left: 18px;
+                list-style: disc;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="presentation" id="presentation">
+
+    <!-- Шапка -->
+    <div class="header">
+        <div class="header-left">
+            <div class="header-title">
+                📋 Программы инструктажей по безопасности
+                <span>2026</span>
+            </div>
+            <div class="header-sub">🏛️ Учреждение культуры — подготовка к новому сезону</div>
+        </div>
+        <div class="header-actions">
+            <button class="btn-pdf" id="pdfBtn">
+                <svg viewBox="0 0 24 24"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>
+                📄 Скачать PDF
+            </button>
+        </div>
+    </div>
+
+    <!-- Основные вкладки -->
+    <div class="main-tabs">
+        <button class="main-tab active" data-main="main1">🔥 Противопожарный <span class="badge">30 мин</span></button>
+        <button class="main-tab" data-main="main2">🛡️ Антитеррористический <span class="badge">30 мин</span></button>
+        <button class="main-tab" data-main="main3">⚠️ Чрезвычайные ситуации <span class="badge">30 мин</span></button>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ВКЛАДКА 1: ПРОТИВОПОЖАРНЫЙ -->
+    <!-- ============================================================ -->
+    <div class="main-content active" id="main1">
+
+        <div class="sub-tabs">
+            <button class="sub-tab active" data-sub="sub1-1"><span class="emoji">📌</span> Общие положения</button>
+            <button class="sub-tab" data-sub="sub1-2"><span class="emoji">📚</span> Темы 1–4</button>
+            <button class="sub-tab" data-sub="sub1-3"><span class="emoji">🚨</span> Темы 5–7</button>
+            <button class="sub-tab" data-sub="sub1-4"><span class="emoji">🛠️</span> Практика</button>
+            <button class="sub-tab" data-sub="sub1-5"><span class="emoji">🎮</span> Проверка знаний</button>
+        </div>
+
+        <!-- Подвкладка 1.1 -->
+        <div class="sub-content active" id="sub1-1">
+            <div class="slide-grid">
+                <div class="slide-card color-1">
+                    <span class="num">📌 Раздел 1</span>
+                    <div class="title"><span class="emoji">👋</span> Общие положения</div>
+                    <div class="body">
+                        <ul>
+                            <li><strong>Первичный инструктаж</strong> — до начала работы с новыми сотрудниками, переведёнными из других подразделений</li>
+                            <li><strong>Повторный инструктаж</strong> — не реже 1 раза в год для всех</li>
+                            <li>Для учреждений с массовым пребыванием (50+ чел.) — не реже 1 раза в полгода</li>
+                        </ul>
+                        <div class="highlight" style="margin-top: 8px;">📄 Основание: приказ МЧС России от 16.12.2024 № 1120</div>
+                        <div style="margin-top: 6px;">
+                            <span class="time">⏱️ 30 минут</span>
+                            <span class="tag">📝 зачёт</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slide-card color-2">
+                    <span class="num">📌 Раздел 2</span>
+                    <div class="title"><span class="emoji">📊</span> Структура инструктажа</div>
+                    <div class="body">
+                        <ul>
+                            <li><strong>Теоретическая часть</strong> — 15 минут</li>
+                            <li><strong>Практическая часть</strong> — 15 минут</li>
+                            <li><strong>Итого</strong> — 30 минут</li>
+                        </ul>
+                        <div style="margin-top: 8px;">
+                            <span class="time">📖 Теория: 15 мин</span>
+                            <span class="time orange">🛠️ Практика: 15 мин</span>
+                        </div>
+                        <div style="margin-top: 6px;">
+                            <span class="tag">✅ проверка знаний</span>
+                            <span class="tag orange">🎯 отработка навыков</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Подвкладка 1.2 -->
+        <div class="sub-content" id="sub1-2">
+            <div class="slide-grid">
+                <div class="slide-card color-3">
+                    <span class="num green">📚 Тема 1</span>
+                    <div class="title"><span class="emoji">⚖️</span> Обязанности и ответственность</div>
+                    <div class="body">
+                        <ul>
+                            <li>Соблюдать требования пожарной безопасности (ФЗ № 69, ППР № 1479)</li>
+                            <li>Ответственность — дисциплинарная, административная, уголовная (ст. 38 ФЗ № 69)</li>
+                        </ul>
+                        <div class="highlight" style="margin-top: 6px;">📌 Руководители несут персональную ответственность на подведомственных объектах</div>
+                    </div>
+                </div>
+
+                <div class="slide-card color-4">
+                    <span class="num purple">📚 Тема 2</span>
+                    <div class="title"><span class="emoji">🔥</span> Условия горения и первичные средства</div>
+                    <div class="body">
+                        <ul>
+                            <li><strong>Причины пожаров</strong> — неосторожное обращение с огнём, неисправность оборудования, самовозгорание</li>
+                            <li><strong>Огнетушители</strong> — порошковые (ОП) и углекислотные (ОУ)</li>
+                            <li>Для электроустановок — только порошковые (до 1 кВ) или углекислотные (до 10 кВ)</li>
+                        </ul>
+                        <div class="highlight orange" style="margin-top: 6px;">⚠️ Вода для тушения электроустановок под напряжением запрещена</div>
+                    </div>
+                </div>
+
+                <div class="slide-card color-5 full">
+                    <span class="num red">📚 Тема 3–4</span>
+                    <div class="title"><span class="emoji">🗺️</span> Эвакуационные пути и планы</div>
+                    <div class="body" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div>
+                            <strong>🎯 Что проверяем:</strong>
+                            <ul>
+                                <li>Планы эвакуации на этажах</li>
+                                <li>Эвакуационные выходы и лестницы</li>
+                                <li>Знаки безопасности на путях эвакуации</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <strong>🧯 Огнетушители:</strong>
+                            <ul>
+                                <li>Классы пожара — A, B, C, D, E</li>
+                                <li>Учёт в специальном журнале</li>
+                                <li>Замена на время ремонта</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="highlight" style="margin-top: 6px;">📋 Ознакомление с планом эвакуации на рабочем месте — обязательно</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Подвкладка 1.3 -->
+        <div class="sub-content" id="sub1-3">
+            <div class="slide-grid">
+                <div class="slide-card color-6">
+                    <span class="num">🚨 Тема 5</span>
+                    <div class="title"><span class="emoji">📞</span> Действия при пожаре</div>
+                    <div class="body">
+                        <ul>
+                            <li><strong>Немедленно</strong> — сообщить по телефону 101 или 112</li>
+                            <li>Назвать адрес, место пожара, фамилию</li>
+                            <li>Прекратить работы, организовать эвакуацию</li>
+                            <li>По возможности обесточить здание</li>
+                            <li>Встретить пожарных, сообщить информацию</li>
+                        </ul>
+                        <div class="highlight orange" style="margin-top: 6px;">🔥 При огневых работах — сообщить о месте газовых баллонов</div>
+                    </div>
+                </div>
+
+                <div class="slide-card color-1">
+                    <span class="num">🚨 Тема 6</span>
+                    <div class="title"><span class="emoji">🛡️</span> Меры личной безопасности</div>
+                    <div class="body">
+                        <ul>
+                            <li>В задымлённом помещении — ползком, повязка на нос и рот</li>
+                            <li><strong>Не тушить водой</strong> — газ, горючие жидкости, электропровода</li>
+                            <li>Главная опасность — отравление оксидом углерода (до 80% гибели)</li>
+                            <li>Использовать СИЗ органов дыхания и зрения</li>
+                        </ul>
+                        <div class="highlight green" style="margin-top: 6px;">💡 При спасении людей — использовать основные и запасные выходы</div>
+                    </div>
+                </div>
+
+                <div class="slide-card color-2 full">
+                    <span class="num orange">🚨 Тема 7</span>
+                    <div class="title"><span class="emoji">💊</span> Первая помощь при ожогах</div>
+                    <div class="body" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div>
+                            <strong>🔥 Термический ожог:</strong>
+                            <ul>
+                                <li>Сбросить горящую одежду</li>
+                                <li>Наложить асептическую повязку</li>
+                                <li>Направить в лечебное учреждение</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <strong>⚡ Электротравма:</strong>
+                            <ul>
+                                <li>Освободить от тока (сухая палка, отключить сеть)</li>
+                                <li>Реанимация: непрямой массаж сердца, искусственное дыхание</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Подвкладка 1.4: Практика -->
+        <div class="sub-content" id="sub1-4">
+            <div class="slide-grid">
+                <div class="slide-card color-3 full">
+                    <span class="num green">🛠️ Тема 8</span>
+                    <div class="title"><span class="emoji">🏃</span> Практическая тренировка</div>
+                    <div class="body" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div>
+                            <strong>📋 Алгоритм:</strong>
+                            <ul>
+                                <li>Подача звукового сигнала оповещения</li>
+                                <li>Открытие эвакуационных выходов</li>
+                                <li>Эвакуация быстрым шагом, без бега</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <strong>✅ Контроль:</strong>
+                            <ul>
+                                <li>Перекличка после эвакуации</li>
+                                <li>Тушение первичными средствами</li>
+                                <li>Обход помещений посредниками</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="highlight purple" style="margin-top: 6px;">📊 Фиксация времени полной эвакуации — обязательна</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Подвкладка 1.5: Игры и задания -->
+        <div class="sub-content" id="sub1-5">
+            <div class="slide-grid">
+                <div class="slide-card color-game full">
+                    <span class="num game">🎮 Проверка знаний</span>
+                    <div class="title"><span class="emoji">🧩</span> Интерактивные задания</div>
+                    <div class="body" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
+                        <div>
+                            <strong>🎯 Викторина «Что делать?»</strong>
+                            <ul>
+                                <li>Ситуация: загорелся электроприбор</li>
+                                <li>Варианты: вода, огнетушитель, обесточить</li>
+                                <li>Правильный ответ: обесточить → огнетушитель</li>
+                            </ul>
+                            <span class="tag game">⏱️ 3 мин</span>
+                        </div>
+                        <div>
+                            <strong>🗺️ Найди выход</strong>
+                            <ul>
+                                <li>По плану эвакуации найти ближайший выход</li>
+                                <li>Назвать маршрут движения</li>
+                                <li>Указать места размещения огнетушителей</li>
+                            </ul>
+                            <span class="tag game">⏱️ 4 мин</span>
+                        </div>
+                        <div>
+                            <strong>🧯 Огнетушитель — какой выбрать?</strong>
+                            <ul>
+                                <li>Задание: подобрать огнетушитель для класса пожара</li>
+                                <li>Пример: электроустановка — углекислотный</li>
+                                <li>Пример: твёрдые материалы — порошковый</li>
+                            </ul>
+                            <span class="tag game">⏱️ 3 мин</span>
+                        </div>
+                    </div>
+                    <div class="highlight game" style="margin-top: 10px;">🎮 Итого 10 минут на игровой блок. Формат — групповая работа или индивидуальные карточки</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ВКЛАДКА 2: АНТИТЕРРОРИСТИЧЕСКИЙ -->
+    <!-- ============================================================ -->
+    <div class="main-content" id="main2">
+
+        <div class="sub-tabs">
+            <button class="sub-tab active" data-sub="sub2-1"><span class="emoji">📌</span> Обязанности</button>
+            <button class="sub-tab" data-sub="sub2-2"><span class="emoji">🔍</span> Обнаружение угроз</button>
+            <button class="sub-tab" data-sub="sub2-3"><span class="emoji">📞</span> Угрозы и захват</button>
+            <button class="sub-tab" data-sub="sub2-4"><span class="emoji">💥</span> Взрывы и смертники</button>
+            <button class="sub-tab" data-sub="sub2-5"><span class="emoji">🎮</span> Проверка знаний</button>
+        </div>
+
+        <div class="sub-content active" id="sub2-1">
+            <div class="slide-grid">
+                <div class="slide-card color-1">
+                    <span class="num">📌 Раздел 1</span>
+                    <div class="title"><span class="emoji">👤</span> Руководитель учреждения</div>
+                    <div class="body">
+                        <ul>
+                            <li>Оценить реальность угрозы</li>
+                            <li>Уточнить обстановку у охраны</li>
+                            <li>Ограничить доступ посторонних</li>
+                            <li>Организовать эвакуацию</li>
+                            <li>Сообщить в МВД, ФСБ, ГОЧС</li>
+                            <li>При прибытии оперативной группы — передать управление</li>
+                        </ul>
+                        <div class="highlight orange" style="margin-top: 6px;">📞 Телефоны: 102, 112</div>
+                    </div>
+                </div>
+
+                <div class="slide-card color-2">
+                    <span class="num orange">📌 Раздел 2</span>
+                    <div class="title"><span class="emoji">🧑‍🤝‍🧑</span> Персонал учреждения</div>
+                    <div class="body">
+                        <ul>
+                            <li>Осматривать рабочие места на предмет подозрительных предметов</li>
+                            <li>Задерживать посторонних совместно с охраной</li>
+                            <li>При появлении вооружённых — немедленно сообщить</li>
+                            <li>Перед началом работы проверить исправность СИЗ</li>
+                        </ul>
+                        <div class="highlight" style="margin-top: 6px;">🛡️ Эксплуатировать СИЗ по назначению</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sub-content" id="sub2-2">
+            <div class="slide-grid">
+                <div class="slide-card color-3 full">
+                    <span class="num green">🔍 Раздел 3</span>
+                    <div class="title"><span class="emoji">💣</span> Обнаружение подозрительного предмета</div>
+                    <div class="body" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                        <div>
+                            <strong>✅ Что делать:</strong>
+                            <ul>
+                                <li>Сообщить в правоохранительные органы</li>
+                                <li>Зафиксировать время обнаружения</li>
+                                <li>Обеспечить безопасное расстояние</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <strong>🚫 Запрещено:</strong>
+                            <ul>
+                                <li>Трогать, вскрывать, передвигать</li>
+                                <li>Самостоятельно предпринимать действия</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <strong>📋 Дополнительно:</strong>
+                            <ul>
+                                <li>Дождаться оперативной группы</li>
+                                <li>Обеспечить проезд спецтехники</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="highlight orange" style="margin-top: 6px;">⚠️ Внешний вид предмета может скрывать взрывное устройство</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sub-content" id="sub2-3">
+            <div class="slide-grid">
+                <div class="slide-card color-4">
+                    <span class="num purple">📞 Раздел 4</span>
+                    <div class="title"><span class="emoji">📱</span> Угроза по телефону</div>
+                    <div class="body">
+                        <ul>
+                            <li>Дословно запомнить разговор, зафиксировать на бумаге</li>
+                            <li>Отметить пол, возраст, особенности речи, звуковой фон</li>
+                            <li>Зафиксировать время и продолжительность</li>
+                            <li>Получить ответы: требования, условия, способ связи</li>
+                        </ul>
+                        <div class="highlight green" style="margin-top: 6px;">📝 Не распространяться о факте разговора</div>
+                    </div>
+                </div>
+
+                <div class="slide-card color-5">
+                    <span class="num red">📄 Раздел 5</span>
+                    <div class="title"><span class="emoji">✉️</span> Угроза в письменной форме</div>
+                    <div class="body">
+                        <ul>
+                            <li>Убрать в плотный полиэтиленовый пакет</li>
+                            <li>Не оставлять отпечатков пальцев</li>
+                            <li>Сохранить конверт и упаковку</li>
+                            <li>Направить в правоохранительные органы с сопроводительным письмом</li>
+                        </ul>
+                        <div class="highlight purple" style="margin-top: 6px;">📌 Запрещается мять, сгибать, делать надписи на документе</div>
+                    </div>
+                </div>
+
+                <div class="slide-card color-6 full">
+                    <span class="num">🔄 Раздел 6</span>
+                    <div class="title"><span class="emoji">🔒</span> Захват заложников</div>
+                    <div class="body" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div>
+                            <strong>✅ Что делать:</strong>
+                            <ul>
+                                <li>Сообщить в правоохранительные органы</li>
+                                <li>Не вступать в переговоры по собственной инициативе</li>
+                                <li>Выполнять требования, не провоцировать</li>
+                                <li>Запомнить приметы преступников</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <strong>🚨 При штурме:</strong>
+                            <ul>
+                                <li>Лежать на полу лицом вниз</li>
+                                <li>Голову закрыть руками</li>
+                                <li>Не бежать навстречу спецслужбам</li>
+                                <li>Держаться подальше от дверей и окон</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sub-content" id="sub2-4">
+            <div class="slide-grid">
+                <div class="slide-card color-1">
+                    <span class="num">💥 Раздел 8</span>
+                    <div class="title"><span class="emoji">🏚️</span> Взрыв здания</div>
+                    <div class="body">
+                        <ul>
+                            <li>Лечь на пол, укрыться под главными стенами</li>
+                            <li>При завале — не пытаться выбраться, стучать по трубам</li>
+                            <li>Закрыть нос и рот влажной тканью</li>
+                            <li>Выходить прижавшись к стене, пригнувшись</li>
+                            <li>Не разжигать огонь, не кричать без необходимости</li>
+                        </ul>
+                        <div class="highlight orange" style="margin-top: 6px;">📞 Телефон спасателей — 112</div>
+                    </div>
+                </div>
+
+                <div class="slide-card color-2">
+                    <span class="num orange">💀 Раздел 9</span>
+                    <div class="title"><span class="emoji">🎭</span> Террористы-смертники</div>
+                    <div class="body">
+                        <ul>
+                            <li><strong>Признаки:</strong> неадекватное поведение, бледность, заторможенность</li>
+                            <li>Одежда не по погоде, просторная</li>
+                            <li>Попытка уклониться от камер видеонаблюдения</li>
+                            <li>При себе — мобильный телефон</li>
+                        </ul>
+                        <div class="highlight green" style="margin-top: 6px;">⚠️ При подозрении — сообщить в правоохранительные органы</div>
+                    </div>
+                </div>
+
+                <div class="slide-card color-3 full">
+                    <span class="num green">🧪 Раздел 10</span>
+                    <div class="title"><span class="emoji">🧬</span> Химический и биологический терроризм</div>
+                    <div class="body" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div>
+                            <strong>🔬 При обнаружении:</strong>
+                            <ul>
+                                <li>Немедленно сообщить в правоохранительные органы и ГОЧС</li>
+                                <li>Пострадавшего вывести на свежий воздух</li>
+                                <li>Обеспечить тепло, покой</li>
+                                <li>При необходимости — промывание желудка</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <strong>🛡️ При угрозе эпидемии:</strong>
+                            <ul>
+                                <li>Максимально сократить контакты</li>
+                                <li>Не посещать общественные места</li>
+                                <li>Использовать СИЗ: повязки, капюшон, сапоги, перчатки</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Подвкладка 2.5: Игры и задания -->
+        <div class="sub-content" id="sub2-5">
+            <div class="slide-grid">
+                <div class="slide-card color-game full">
+                    <span class="num game">🎮 Проверка знаний</span>
+                    <div class="title"><span class="emoji">🧩</span> Интерактивные задания</div>
+                    <div class="body" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
+                        <div>
+                            <strong>📞 Ролевая игра «Звонок угрозы»</strong>
+                            <ul>
+                                <li>Один сотрудник — звонит, другой — принимает звонок</li>
+                                <li>Задача: зафиксировать все детали разговора</li>
+                                <li>Оценить правильность заполнения бланка</li>
+                            </ul>
+                            <span class="tag game">⏱️ 5 мин</span>
+                        </div>
+                        <div>
+                            <strong>🔍 Найди подозрительный предмет</strong>
+                            <ul>
+                                <li>На фото или схеме помещения найти 3 подозрительных предмета</li>
+                                <li>Описать алгоритм действий для каждого</li>
+                            </ul>
+                            <span class="tag game">⏱️ 4 мин</span>
+                        </div>
+                        <div>
+                            <strong>🚨 Кейс-задача «Теракт в здании»</strong>
+                            <ul>
+                                <li>Разобрать ситуацию: захват заложников</li>
+                                <li>Предложить пошаговый план действий</li>
+                                <li>Обсудить в группе</li>
+                            </ul>
+                            <span class="tag game">⏱️ 6 мин</span>
+                        </div>
+                    </div>
+                    <div class="highlight game" style="margin-top: 10px;">🎮 Итого 15 минут на игровой блок. Формат — групповая работа, разбор кейсов</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ВКЛАДКА 3: ЧРЕЗВЫЧАЙНЫЕ СИТУАЦИИ -->
+    <!-- ============================================================ -->
+    <div class="main-content" id="main3">
+
+        <div class="sub-tabs">
+            <button class="sub-tab active" data-sub="sub3-1"><span class="emoji">📌</span> Общие положения</button>
+            <button class="sub-tab" data-sub="sub3-2"><span class="emoji">📋</span> Вопросы 1–4</button>
+            <button class="sub-tab" data-sub="sub3-3"><span class="emoji">🛡️</span> Вопросы 5–7</button>
+            <button class="sub-tab" data-sub="sub3-4"><span class="emoji">🏛️</span> Вопросы 8–9 + план</button>
+            <button class="sub-tab" data-sub="sub3-5"><span class="emoji">🎮</span> Проверка знаний</button>
+        </div>
+
+        <div class="sub-content active" id="sub3-1">
+            <div class="slide-grid">
+                <div class="slide-card color-1">
+                    <span class="num">📌 Раздел 1</span>
+                    <div class="title"><span class="emoji">🎯</span> Общие требования</div>
+                    <div class="body">
+                        <ul>
+                            <li><strong>Цель</strong> — ознакомление с опасностями при ЧС и способами защиты</li>
+                            <li><strong>Задачи:</strong> права и обязанности, возможные опасности, способы защиты, порядок действий по сигналам</li>
+                        </ul>
+                        <div class="highlight" style="margin-top: 6px;">📄 Основание: постановление Правительства № 1485, письмо МЧС № ИВ-11-85</div>
+                        <div style="margin-top: 6px;">
+                            <span class="time">⏱️ 30 минут</span>
+                            <span class="tag">📝 зачёт / незачёт</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slide-card color-2">
+                    <span class="num orange">📌 Раздел 2</span>
+                    <div class="title"><span class="emoji">👤</span> Организация и проведение</div>
+                    <div class="body">
+                        <ul>
+                            <li><strong>Ответственное лицо</strong> — назначается приказом руководителя</li>
+                            <li>Инструктаж проводит руководитель или уполномоченное лицо</li>
+                            <li><strong>Дистанционная форма</strong> — аудиовизуальная связь, электронный журнал</li>
+                        </ul>
+                        <div class="highlight green" style="margin-top: 6px;">📋 При дистанционной форме — акт о прохождении в течение 20 дней</div>
+                    </div>
+                </div>
+
+                <div class="slide-card color-3 full">
+                    <span class="num green">📌 Раздел 3</span>
+                    <div class="title"><span class="emoji">📊</span> Планируемые результаты</div>
+                    <div class="body" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div>
+                            <strong>📖 Знать:</strong>
+                            <ul>
+                                <li>Потенциальные источники опасностей и виды ЧС</li>
+                                <li>Способы оповещения при угрозе и возникновении ЧС</li>
+                                <li>Основные способы защиты и правила действий</li>
+                                <li>Места хранения СИЗ и расположения СКЗ</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <strong>🛠️ Уметь:</strong>
+                            <ul>
+                                <li>Действовать по сигналам оповещения</li>
+                                <li>Действовать при эвакуации</li>
+                                <li>Использовать СИЗ и СКЗ</li>
+                            </ul>
+                            <div style="margin-top: 6px;">
+                                <span class="tag green">✅ зачёт</span>
+                                <span class="tag orange">❌ незачёт</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sub-content" id="sub3-2">
+            <div class="slide-grid">
+                <div class="slide-card color-4">
+                    <span class="num purple">❓ Вопрос 1</span>
+                    <div class="title"><span class="emoji">⚠️</span> Действия работника</div>
+                    <div class="body">
+                        <ul>
+                            <li>Наиболее опасные места в учреждении</li>
+                            <li>Действия, которые могут привести к аварии или ЧС</li>
+                            <li>Возможные последствия</li>
+                        </ul>
+                        <div class="highlight purple" style="margin-top: 6px;">🎯 Акцент на должностные обязанности и правила учреждения</div>
+                    </div>
+                </div>
+
+                <div class="slide-card color-5">
+                    <span class="num red">❓ Вопрос 2</span>
+                    <div class="title"><span class="emoji">🌊</span> Характерные ЧС</div>
+                    <div class="body">
+                        <ul>
+                            <li>ЧС для географического месторасположения учреждения</li>
+                            <li>Потенциально опасные объекты</li>
+                            <li>Возможные последствия аварий</li>
+                        </ul>
+                        <div class="highlight orange" style="margin-top: 6px;">📍 Учитываем специфику региона и учреждения культуры</div>
+                    </div>
+                </div>
+
+                <div class="slide-card color-6">
+                    <span class="num">❓ Вопрос 3</span>
+                    <div class="title"><span class="emoji">🛡️</span> Способы защиты</div>
+                    <div class="body">
+                        <ul>
+                            <li>Установленные в учреждении способы защиты</li>
+                            <li>Основы реализации способов защиты</li>
+                        </ul>
+                        <div class="highlight green" style="margin-top: 6px;">🏛️ Конкретные меры для учреждения культуры</div>
+                    </div>
+                </div>
+
+                <div class="slide-card color-1 full">
+                    <span class="num">❓ Вопрос 4</span>
+                    <div class="title"><span class="emoji">📢</span> Способы оповещения</div>
+                    <div class="body" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div>
+                            <strong>📡 Средства:</strong>
+                            <ul>
+                                <li>Сирены и голосовые сообщения</li>
+                                <li>Телевидение и радио</li>
+                                <li>Мессенджеры и СМС</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <strong>📋 Порядок:</strong>
+                            <ul>
+                                <li>Типовые тексты информационных сообщений</li>
+                                <li>Сигнал «Ракетная опасность»</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sub-content" id="sub3-3">
+            <div class="slide-grid">
+                <div class="slide-card color-2">
+                    <span class="num orange">❓ Вопрос 5</span>
+                    <div class="title"><span class="emoji">🔔</span> Сигналы оповещения</div>
+                    <div class="body">
+                        <ul>
+                            <li><strong>Сценарии:</strong> на рабочем месте, в столовой, в других помещениях</li>
+                            <li>Действия при получении сигналов</li>
+                        </ul>
+                        <div class="highlight orange" style="margin-top: 6px;">🚨 Особое внимание — сигнал «Ракетная опасность»</div>
+                        <div style="margin-top: 6px;">
+                            <span class="tag">📋 п. 5 письма МЧС № 11-7-605</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slide-card color-3">
+                    <span class="num green">❓ Вопрос 6</span>
+                    <div class="title"><span class="emoji">🧪</span> АХОВ и радиация</div>
+                    <div class="body">
+                        <ul>
+                            <li>Действия при утечке АХОВ и радиоактивном загрязнении</li>
+                            <li>Изготовление подручных средств защиты органов дыхания</li>
+                            <li>Герметизация помещения</li>
+                        </ul>
+                        <div class="highlight green" style="margin-top: 6px;">🛡️ Ватно-марлевые повязки, герметизация окон и дверей</div>
+                    </div>
+                </div>
+
+                <div class="slide-card color-4 full">
+                    <span class="num purple">❓ Вопрос 7</span>
+                    <div class="title"><span class="emoji">🎭</span> СИЗ органов дыхания и кожи</div>
+                    <div class="body" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div>
+                            <strong>🛡️ Что есть:</strong>
+                            <ul>
+                                <li>СИЗ в учреждении и их защитные свойства</li>
+                                <li>Правила применения СИЗ</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <strong>📋 Практика:</strong>
+                            <ul>
+                                <li>Демонстрация порядка применения</li>
+                                <li>Пункт выдачи СИЗ</li>
+                                <li>Ответственное лицо за выдачу</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sub-content" id="sub3-4">
+            <div class="slide-grid">
+                <div class="slide-card color-5">
+                    <span class="num red">❓ Вопрос 8</span>
+                    <div class="title"><span class="emoji">🏛️</span> Средства коллективной защиты</div>
+                    <div class="body">
+                        <ul>
+                            <li>Места расположения убежищ, ПРУ, укрытий</li>
+                            <li>Обязанности укрываемых</li>
+                            <li>Разрешённые и запрещённые вещи в СКЗ</li>
+                            <li>Порядок заполнения и правила поведения</li>
+                        </ul>
+                        <div class="highlight purple" style="margin-top: 6px;">📋 Конкретные места в учреждении или в муниципальном образовании</div>
+                    </div>
+                </div>
+
+                <div class="slide-card color-6">
+                    <span class="num">❓ Вопрос 9</span>
+                    <div class="title"><span class="emoji">⚖️</span> Права и обязанности граждан</div>
+                    <div class="body">
+                        <ul>
+                            <li>Права и обязанности в области ГО и защиты от ЧС</li>
+                            <li>Обязанности по трудовому договору</li>
+                            <li>Дополнительные соглашения</li>
+                        </ul>
+                        <div class="highlight" style="margin-top: 6px;">📄 Федеральные законы и нормативные акты</div>
+                    </div>
+                </div>
+
+                <div class="slide-card color-1 full">
+                    <span class="num">📊 Тематический план</span>
+                    <div class="title"><span class="emoji">📋</span> Структура инструктажа по ЧС</div>
+                    <div class="body">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; font-size: 14px;">
+                            <div><span class="tag">1️⃣</span> Действия работника — 3 мин</div>
+                            <div><span class="tag orange">2️⃣</span> Характерные ЧС — 3 мин</div>
+                            <div><span class="tag green">3️⃣</span> Способы защиты — 3 мин</div>
+                            <div><span class="tag purple">4️⃣</span> Способы оповещения — 3 мин</div>
+                            <div><span class="tag">5️⃣</span> Сигналы оповещения — 3 мин</div>
+                            <div><span class="tag orange">6️⃣</span> АХОВ и радиация — 3 мин</div>
+                            <div><span class="tag green">7️⃣</span> СИЗ — 3 мин</div>
+                            <div><span class="tag purple">8️⃣</span> СКЗ — 3 мин</div>
+                            <div><span class="tag">9️⃣</span> Права и обязанности — 3 мин</div>
+                        </div>
+                        <div style="margin-top: 10px; text-align: center;">
+                            <span class="time">⏱️ Всего: 30 минут</span>
+                        </div>
+                        <div class="highlight orange" style="margin-top: 8px;">📝 По завершении — устный опрос, отметка «ЗАЧЕТ» или «НЕЗАЧЕТ»</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Подвкладка 3.5: Игры и задания -->
+        <div class="sub-content" id="sub3-5">
+            <div class="slide-grid">
+                <div class="slide-card color-game full">
+                    <span class="num game">🎮 Проверка знаний</span>
+                    <div class="title"><span class="emoji">🧩</span> Интерактивные задания</div>
+                    <div class="body" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
+                        <div>
+                            <strong>🔔 Сигнал! Что делать?</strong>
+                            <ul>
+                                <li>Даётся сигнал оповещения (звук или текст)</li>
+                                <li>Задание: назвать правильный алгоритм действий</li>
+                                <li>Варианты: рабочий стол, столовая, другое место</li>
+                            </ul>
+                            <span class="tag game">⏱️ 3 мин</span>
+                        </div>
+                        <div>
+                            <strong>🛡️ Подбери СИЗ</strong>
+                            <ul>
+                                <li>Дана ситуация: утечка АХОВ или радиация</li>
+                                <li>Выбрать правильные средства защиты</li>
+                                <li>Обосновать выбор</li>
+                            </ul>
+                            <span class="tag game">⏱️ 4 мин</span>
+                        </div>
+                        <div>
+                            <strong>🧪 Кейс «Химическая угроза»</strong>
+                            <ul>
+                                <li>Сценарий: разлив неизвестного вещества</li>
+                                <li>Разработать план действий: эвакуация, герметизация, вызов служб</li>
+                            </ul>
+                            <span class="tag game">⏱️ 5 мин</span>
+                        </div>
+                    </div>
+                    <div class="highlight game" style="margin-top: 10px;">🎮 Итого 12 минут на игровой блок. Формат — работа в группах, решение ситуационных задач</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Футер -->
+    <div class="footer-note">
+        <span>📋 Программы инструктажей по безопасности — 2026</span>
+        <span>🏛️ Учреждение культуры</span>
+    </div>
+
+</div>
+
+<script>
+    // Переключение основных вкладок
+    var mainTabs = document.querySelectorAll('.main-tab');
+    var mainContents = {
+        main1: document.getElementById('main1'),
+        main2: document.getElementById('main2'),
+        main3: document.getElementById('main3')
+    };
+
+    mainTabs.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var mainId = this.dataset.main;
+            mainTabs.forEach(function(b) { b.classList.remove('active'); });
+            Object.values(mainContents).forEach(function(c) { c.classList.remove('active'); });
+            this.classList.add('active');
+            if (mainContents[mainId]) mainContents[mainId].classList.add('active');
+
+            var parent = mainContents[mainId];
+            if (parent) {
+                var subTabs = parent.querySelectorAll('.sub-tab');
+                var subContents = parent.querySelectorAll('.sub-content');
+                subTabs.forEach(function(st) { st.classList.remove('active'); });
+                subContents.forEach(function(sc) { sc.classList.remove('active'); });
+                var firstSub = parent.querySelector('.sub-tab');
+                var firstContent = parent.querySelector('.sub-content');
+                if (firstSub) firstSub.classList.add('active');
+                if (firstContent) firstContent.classList.add('active');
+            }
+        });
+    });
+
+    // Переключение подвкладок
+    document.querySelectorAll('.sub-tab').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var parent = this.closest('.main-content');
+            var subId = this.dataset.sub;
+
+            var siblings = parent.querySelectorAll('.sub-tab');
+            var contents = parent.querySelectorAll('.sub-content');
+
+            siblings.forEach(function(s) { s.classList.remove('active'); });
+            contents.forEach(function(c) { c.classList.remove('active'); });
+
+            this.classList.add('active');
+            var target = document.getElementById(subId);
+            if (target) target.classList.add('active');
+        });
+    });
+
+    // PDF
+    document.getElementById('pdfBtn').addEventListener('click', function() {
+        window.print();
+    });
+</script>
+
+</body>
+</html>
