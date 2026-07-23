@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>План руководителя: изменения с сентября 2026</title>
+    
+    <!-- Подключение iframe-resizer (child) для автоподстройки высоты -->
+    <script src="https://cdn.jsdelivr.net/npm/iframe-resizer@4.4.5/js/iframeResizer.contentWindow.min.js"></script>
+    
+    <!-- Подключение html2pdf для экспорта в PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            color: #1a2634;
+            padding: 20px;
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            padding: 28px 30px 36px;
+        }
+
+        /* Кнопка PDF */
+        .pdf-controls {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 16px;
+        }
+
+        .pdf-btn {
+            background: #1a4972;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pdf-btn:hover {
+            background: #0d3352;
+        }
+
+        .pdf-btn:active {
+            transform: scale(0.97);
+        }
+
+        .pdf-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        .header {
+            border-bottom: 3px solid #1a4972;
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0a2538;
+            letter-spacing: -0.2px;
+            line-height: 1.2;
+        }
+
+        .header .subtitle {
+            font-size: 15px;
+            font-weight: 400;
+            color: #3e5e7a;
+            margin-top: 2px;
+        }
+
+        .header .period {
+            background: #e8edf4;
+            color: #1a4972;
+            padding: 6px 18px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            border: 1px solid #c8d6e5;
+        }
+
+        /* Таймлайн */
+        .timeline {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            background: #f0f3f8;
+            padding: 10px 16px;
+            border-radius: 40px;
+            justify-content: center;
+        }
+
+        .timeline .phase {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #2d4b66;
+            background: white;
+            padding: 5px 16px;
+            border-radius: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .timeline .phase:hover {
+            border-color: #c8d6e5;
+        }
+
+        .timeline .phase .num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #c8d6e5;
+            color: #1a3a55;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .timeline .phase.active .num {
+            background: #1e7e34;
+            color: white;
+        }
+
+        .timeline .phase.warning .num {
+            background: #c97d2b;
+            color: white;
+        }
+
+        .timeline .phase.danger .num {
+            background: #b13e3e;
+            color: white;
+        }
+
+        /* Секции с возможностью сворачивания */
+        .section {
+            margin-bottom: 12px;
+            border: 1px solid #e6ecf3;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: border-color 0.2s ease;
+        }
+
+        .section:hover {
+            border-color: #c8d6e5;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 20px;
+            background: #fafcff;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.15s ease;
+            gap: 12px;
+        }
+
+        .section-header:hover {
+            background: #f3f7fd;
+        }
+
+        .section-header .title-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .section-header .title-group .section-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #0a2538;
+        }
+
+        .section-header .title-group .stage {
+            font-size: 13px;
+            font-weight: 500;
+            color: #4a6a85;
+            background: #edf2f8;
+            padding: 2px 12px;
+            border-radius: 20px;
+        }
+
+        .section-header .toggle-icon {
+            font-size: 20px;
+            color: #4a6a85;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+            width: 24px;
+            text-align: center;
+        }
+
+        .section-header .toggle-icon.open {
+            transform: rotate(180deg);
+        }
+
+        .section-body {
+            padding: 0 20px 20px 20px;
+            display: none;
+        }
+
+        .section-body.open {
+            display: block;
+        }
+
+        .task-table {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .task-row {
+            display: grid;
+            grid-template-columns: 1fr 130px 130px;
+            gap: 12px;
+            align-items: center;
+            background: #fafcff;
+            border: 1px solid #e6ecf3;
+            border-radius: 12px;
+            padding: 12px 18px;
+            transition: background 0.1s ease;
+        }
+
+        .task-row:hover {
+            background: #f3f7fd;
+            border-color: #c8d6e5;
+        }
+
+        .task-name {
+            font-size: 15px;
+            font-weight: 500;
+            color: #1c2e40;
+        }
+
+        .task-name .desc {
+            display: block;
+            font-weight: 400;
+            color: #4b637a;
+            font-size: 13px;
+            margin-top: 2px;
+        }
+
+        .task-deadline {
+            font-size: 14px;
+            font-weight: 700;
+            text-align: center;
+            background: #eef3f8;
+            padding: 6px 12px;
+            border-radius: 30px;
+            color: #1a4972;
+            border: 1px solid #d3dfea;
+            white-space: nowrap;
+        }
+
+        .task-deadline.urgent {
+            background: #fce8e8;
+            color: #a13d3d;
+            border-color: #f0cbcb;
+        }
+
+        .task-deadline.critical {
+            background: #fde4d6;
+            color: #aa4f1a;
+            border-color: #f5cdb8;
+        }
+
+        .task-owner {
+            font-size: 13px;
+            font-weight: 500;
+            color: #3d5e7a;
+            text-align: center;
+            background: #f1f5fa;
+            padding: 6px 12px;
+            border-radius: 30px;
+            line-height: 1.4;
+        }
+
+        .task-owner .label {
+            display: block;
+            font-weight: 400;
+            color: #6a8aa5;
+            font-size: 11px;
+            margin-bottom: 2px;
+        }
+
+        .footer-note {
+            margin-top: 28px;
+            font-size: 14px;
+            color: #3d5e7a;
+            background: #f0f5fc;
+            padding: 14px 20px;
+            border-radius: 12px;
+            border-left: 4px solid #1a4972;
+        }
+
+        .footer-note strong {
+            color: #0a2538;
+        }
+
+        /* Состояние для печати / PDF */
+        @media print {
+            body {
+                background: white;
+                padding: 10px;
+            }
+            .container {
+                box-shadow: none;
+                padding: 16px 20px;
+            }
+            .pdf-controls {
+                display: none !important;
+            }
+            .section-body {
+                display: block !important;
+            }
+            .section-header .toggle-icon {
+                display: none !important;
+            }
+            .task-row {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            .section {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                border-color: #c8d6e5;
+            }
+            .timeline .phase {
+                border: 2px solid #c8d6e5;
+            }
+        }
+
+        /* Адаптивность */
+        @media (max-width: 700px) {
+            body {
+                padding: 12px;
+            }
+            .container {
+                padding: 16px 14px 24px;
+            }
+            .header h1 {
+                font-size: 20px;
+            }
+            .header .period {
+                font-size: 12px;
+                padding: 4px 12px;
+            }
+            .task-row {
+                grid-template-columns: 1fr;
+                gap: 8px;
+                padding: 14px 16px;
+            }
+            .task-deadline {
+                text-align: left;
+                justify-self: start;
+                font-size: 13px;
+                padding: 5px 14px;
+                display: inline-block;
+                width: auto;
+            }
+            .task-owner {
+                text-align: left;
+                justify-self: start;
+                font-size: 12px;
+                padding: 5px 14px;
+                display: inline-block;
+                width: auto;
+            }
+            .task-owner .label {
+                display: inline;
+                font-size: 11px;
+            }
+            .task-owner .label::after {
+                content: " ";
+            }
+            .section-header {
+                padding: 12px 16px;
+            }
+            .section-header .title-group .section-title {
+                font-size: 15px;
+            }
+            .section-body {
+                padding: 0 16px 16px 16px;
+            }
+            .timeline {
+                padding: 8px 12px;
+                gap: 6px;
+            }
+            .timeline .phase {
+                font-size: 11px;
+                padding: 3px 10px;
+            }
+            .timeline .phase .num {
+                width: 18px;
+                height: 18px;
+                font-size: 10px;
+            }
+            .pdf-btn {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header .period {
+                white-space: normal;
+            }
+            .task-name {
+                font-size: 14px;
+            }
+            .task-name .desc {
+                font-size: 12px;
+            }
+            .section-header .title-group .stage {
+                font-size: 11px;
+                padding: 1px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="plan-content">
+
+        <!-- Кнопка PDF -->
+        <div class="pdf-controls">
+            <button class="pdf-btn" onclick="downloadPDF()">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/><path d="M8 12l4 4 4-4-1.5-1.5L13 13V9h-2v4l-1.5-1.5L8 12z"/></svg>
+                Скачать PDF
+            </button>
+        </div>
+
+        <!-- Шапка -->
+        <div class="header">
+            <div>
+                <h1>План руководителя</h1>
+                <div class="subtitle">Изменения законодательства с сентября 2026 года</div>
+            </div>
+            <div class="period">Сроки: 15–31 августа</div>
+        </div>
+
+        <!-- Таймлайн (кликабельный) -->
+        <div class="timeline">
+            <span class="phase active" data-target="section1"><span class="num">1</span> Этап: Аудит</span>
+            <span class="phase warning" data-target="section2"><span class="num">2</span> Этап: Документы</span>
+            <span class="phase danger" data-target="section3"><span class="num">3</span> Этап: Отчетность</span>
+        </div>
+
+        <!-- ===== ЭТАП 1 ===== -->
+        <div class="section" id="section1">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="title-group">
+                    <span class="section-title">Этап 1. Срочный аудит и стратегия</span>
+                    <span class="stage">до 20 августа</span>
+                </div>
+                <span class="toggle-icon open">▼</span>
+            </div>
+            <div class="section-body open">
+                <div class="task-table">
+                    <div class="task-row">
+                        <div class="task-name">
+                            Аудит используемых искусственного интеллекта инструментов
+                            <span class="desc">Составить реестр зарубежных и несертифицированных сервисов</span>
+                        </div>
+                        <div class="task-deadline urgent">до 15 августа</div>
+                        <div class="task-owner">
+                            <span class="label">Ответственный</span>
+                            ИТ-отдел
+                        </div>
+                    </div>
+                    <div class="task-row">
+                        <div class="task-name">
+                            Аудит некоммерческих организаций и договоров
+                            <span class="desc">Заменить формулировку "предпринимательская деятельность" на "приносящая доход деятельность"</span>
+                        </div>
+                        <div class="task-deadline urgent">до 20 августа</div>
+                        <div class="task-owner">
+                            <span class="label">Ответственный</span>
+                            Юрист
+                        </div>
+                    </div>
+                    <div class="task-row">
+                        <div class="task-name">
+                            Инвентаризация свободных площадей
+                            <span class="desc">Составить перечень помещений для льготной аренды</span>
+                        </div>
+                        <div class="task-deadline urgent">до 20 августа</div>
+                        <div class="task-owner">
+                            <span class="label">Ответственный</span>
+                            Административно-хозяйственная часть
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== ЭТАП 2 ===== -->
+        <div class="section" id="section2">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="title-group">
+                    <span class="section-title">Этап 2. Подготовка документов и локальных актов</span>
+                    <span class="stage">до 25 августа</span>
+                </div>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-body">
+                <div class="task-table">
+                    <div class="task-row">
+                        <div class="task-name">
+                            Обновить Правила внутреннего трудового распорядка
+                            <span class="desc">Новые лимиты сверхурочной работы и порядок оплаты</span>
+                        </div>
+                        <div class="task-deadline">до 25 августа</div>
+                        <div class="task-owner">
+                            <span class="label">Ответственный</span>
+                            Отдел кадров
+                        </div>
+                    </div>
+                    <div class="task-row">
+                        <div class="task-name">
+                            Внести кадровые изменения
+                            <span class="desc">Запрет испытательного срока для матерей с детьми до 3 лет, новые квоты для инвалидов, дополнительные дни отдыха для проживающих в зоне чрезвычайной ситуации</span>
+                        </div>
+                        <div class="task-deadline">до 25 августа</div>
+                        <div class="task-owner">
+                            <span class="label">Ответственный</span>
+                            Отдел кадров, Юрист
+                        </div>
+                    </div>
+                    <div class="task-row">
+                        <div class="task-name">
+                            Актуализировать охрану труда
+                            <span class="desc">Перечень рабочих мест для специальной оценки условий труда по новым правилам, обновить программу производственного контроля, провести внеплановый инструктаж</span>
+                        </div>
+                        <div class="task-deadline">до 25 августа</div>
+                        <div class="task-owner">
+                            <span class="label">Ответственный</span>
+                            Инженер по охране труда
+                        </div>
+                    </div>
+                    <div class="task-row">
+                        <div class="task-name">
+                            Проверить домены и объекты культурного наследия
+                            <span class="desc">Продлить регистрацию доменов по новым правилам, назначить ответственного за уведомления о работах по содержанию объектов культурного наследия</span>
+                        </div>
+                        <div class="task-deadline">до 25 августа</div>
+                        <div class="task-owner">
+                            <span class="label">Ответственный</span>
+                            ИТ-отдел, Административно-хозяйственная часть
+                        </div>
+                    </div>
+                    <div class="task-row">
+                        <div class="task-name">
+                            Детские школы искусств: новые Федеральные государственные требования
+                            <span class="desc">Актуализировать учебные планы и образовательные программы</span>
+                        </div>
+                        <div class="task-deadline">до 25 августа</div>
+                        <div class="task-owner">
+                            <span class="label">Ответственный</span>
+                            Завуч, Методист
+                        </div>
+                    </div>
+                    <div class="task-row">
+                        <div class="task-name">
+                            Пушкинская карта: новый номинал
+                            <span class="desc">Скорректировать план мероприятий для молодежи, обновить ключевые показатели эффективности, провести инструктаж кассиров</span>
+                        </div>
+                        <div class="task-deadline">до 25 августа</div>
+                        <div class="task-owner">
+                            <span class="label">Ответственный</span>
+                            Маркетинг, Отдел продаж
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== ЭТАП 3 ===== -->
+        <div class="section" id="section3">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="title-group">
+                    <span class="section-title">Этап 3. Финальная отчетность и контроль</span>
+                    <span class="stage">до 31 августа</span>
+                </div>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-body">
+                <div class="task-table">
+                    <div class="task-row">
+                        <div class="task-name">
+                            <strong>Справка о доходах (личная + супруга + несовершеннолетних детей)</strong>
+                            <span class="desc">Заполнить по новой форме, сверить с выписками из банков и Единого государственного реестра недвижимости</span>
+                        </div>
+                        <div class="task-deadline critical">до 31 августа</div>
+                        <div class="task-owner">
+                            <span class="label">Ответственный</span>
+                            Лично руководитель
+                        </div>
+                    </div>
+                    <div class="task-row">
+                        <div class="task-name">
+                            Инструктаж кассиров по работе с Пушкинской картой
+                            <span class="desc">Новый номинал 7 тысяч рублей действует с 1 сентября</span>
+                        </div>
+                        <div class="task-deadline critical">до 31 августа</div>
+                        <div class="task-owner">
+                            <span class="label">Ответственный</span>
+                            Руководитель отдела продаж
+                        </div>
+                    </div>
+                    <div class="task-row">
+                        <div class="task-name">
+                            Запланировать закупку российского искусственного интеллекта
+                            <span class="desc">Заложить в бюджет переход на отечественные модели из реестра Министерства цифрового развития до 1 марта 2027 года</span>
+                        </div>
+                        <div class="task-deadline">до 31 августа</div>
+                        <div class="task-owner">
+                            <span class="label">Ответственный</span>
+                            Финансовый директор
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Подвал -->
+        <div class="footer-note">
+            <strong>Важно:</strong> Все подготовительные мероприятия должны быть завершены до 31 августа. 
+            Проверьте каждый пункт, чтобы избежать штрафов, административной и уголовной ответственности, а также репутационных рисков для учреждения.
+        </div>
+
+    </div>
+
+    <script>
+        // Функция сворачивания/разворачивания секции
+        function toggleSection(headerElement) {
+            const section = headerElement.closest('.section');
+            const body = section.querySelector('.section-body');
+            const icon = headerElement.querySelector('.toggle-icon');
+            
+            if (body.classList.contains('open')) {
+                body.classList.remove('open');
+                icon.classList.remove('open');
+            } else {
+                body.classList.add('open');
+                icon.classList.add('open');
+            }
+        }
+
+        // Клик по таймлайну для открытия соответствующей секции
+        document.querySelectorAll('.timeline .phase').forEach(function(phase) {
+            phase.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                if (targetId) {
+                    const section = document.getElementById(targetId);
+                    if (section) {
+                        const body = section.querySelector('.section-body');
+                        const icon = section.querySelector('.toggle-icon');
+                        if (!body.classList.contains('open')) {
+                            body.classList.add('open');
+                            icon.classList.add('open');
+                        }
+                        // Скролл к секции
+                        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
+            });
+        });
+
+        // Функция скачивания PDF
+        function downloadPDF() {
+            const element = document.getElementById('plan-content');
+            const btn = document.querySelector('.pdf-btn');
+            
+            // Показываем кнопку загрузки
+            btn.textContent = 'Подготовка PDF...';
+            btn.disabled = true;
+            
+            // На время генерации раскрываем все секции
+            const allBodies = document.querySelectorAll('.section-body');
+            const allIcons = document.querySelectorAll('.toggle-icon');
+            const wasOpen = [];
+            
+            allBodies.forEach(function(body, index) {
+                wasOpen[index] = body.classList.contains('open');
+                if (!wasOpen[index]) {
+                    body.classList.add('open');
+                    if (allIcons[index]) {
+                        allIcons[index].classList.add('open');
+                    }
+                }
+            });
+            
+            const opt = {
+                margin:        [0.5, 0.5, 0.5, 0.5],
+                filename:     'Plan_rukovoditelya_sentyabr_2026.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
+                pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+            };
+            
+            html2pdf().set(opt).from(element).save().then(function() {
+                // Восстанавливаем состояние секций
+                allBodies.forEach(function(body, index) {
+                    if (!wasOpen[index]) {
+                        body.classList.remove('open');
+                        if (allIcons[index]) {
+                            allIcons[index].classList.remove('open');
+                        }
+                    }
+                });
+                btn.textContent = 'Скачать PDF';
+                btn.disabled = false;
+            }).catch(function(err) {
+                console.error('Ошибка генерации PDF:', err);
+                // Восстанавливаем состояние даже при ошибке
+                allBodies.forEach(function(body, index) {
+                    if (!wasOpen[index]) {
+                        body.classList.remove('open');
+                        if (allIcons[index]) {
+                            allIcons[index].classList.remove('open');
+                        }
+                    }
+                });
+                btn.textContent = 'Скачать PDF';
+                btn.disabled = false;
+                alert('Произошла ошибка при создании PDF. Пожалуйста, попробуйте снова.');
+            });
+        }
+    </script>
+
+</body>
+</html>
