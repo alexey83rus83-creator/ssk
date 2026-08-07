@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Памятка-чеклист для руководителя учреждения культуры</title>
+    <!-- Подключаем html2pdf для экспорта в PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+        }
+        body {
+            background: #f4f7fc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 20px;
+        }
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 20px 60px rgba(0,20,50,0.12);
+            padding: 40px 45px 50px;
+            margin-bottom: 40px;
+            transition: 0.2s;
+        }
+        /* шапка */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            border-bottom: 2px solid #eef3fa;
+            padding-bottom: 22px;
+            margin-bottom: 28px;
+        }
+        .header h1 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #0b2b4a;
+            letter-spacing: -0.3px;
+            line-height: 1.3;
+            max-width: 80%;
+        }
+        .header h1 small {
+            display: block;
+            font-size: 16px;
+            font-weight: 400;
+            color: #3a5a7a;
+            margin-top: 6px;
+            letter-spacing: 0;
+        }
+        .pdf-btn {
+            background: #1a5c9e;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 60px;
+            font-size: 16px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 10px rgba(26,92,158,0.25);
+            white-space: nowrap;
+        }
+        .pdf-btn:hover {
+            background: #0f4a7e;
+            transform: scale(1.02);
+        }
+        .pdf-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* аккордеон */
+        .section {
+            margin-bottom: 28px;
+            border-radius: 18px;
+            background: #fafcff;
+            border: 1px solid #e4edf6;
+            overflow: hidden;
+            transition: 0.2s;
+        }
+        .section-header {
+            background: #ffffff;
+            padding: 18px 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            font-size: 20px;
+            color: #143752;
+            border-bottom: 1px solid transparent;
+            transition: 0.15s;
+            user-select: none;
+        }
+        .section-header:hover {
+            background: #f2f8ff;
+        }
+        .section-header .arrow {
+            font-size: 24px;
+            transition: transform 0.25s ease;
+            color: #5c7e9e;
+        }
+        .section.open .section-header {
+            border-bottom: 1px solid #d9e5f0;
+        }
+        .section.open .arrow {
+            transform: rotate(180deg);
+        }
+        .section-body {
+            padding: 0 24px 24px 24px;
+            display: none;
+            background: white;
+        }
+        .section.open .section-body {
+            display: block;
+        }
+
+        /* списки */
+        .checklist {
+            list-style: none;
+            margin-top: 12px;
+        }
+        .checklist li {
+            padding: 12px 0 12px 36px;
+            border-bottom: 1px solid #edf3f9;
+            position: relative;
+            line-height: 1.5;
+            font-size: 16px;
+            color: #1e3a5c;
+        }
+        .checklist li:last-child {
+            border-bottom: none;
+        }
+        .checklist li::before {
+            content: "☐";
+            position: absolute;
+            left: 4px;
+            top: 12px;
+            font-size: 20px;
+            color: #1f6eb0;
+            font-weight: 400;
+        }
+        .checklist li strong {
+            color: #0b2b4a;
+        }
+
+        .subnote {
+            margin-top: 16px;
+            padding: 14px 20px;
+            background: #eef5fc;
+            border-radius: 14px;
+            font-size: 15px;
+            color: #1d405f;
+            border-left: 4px solid #2d7bcb;
+        }
+        .subnote i {
+            font-style: italic;
+        }
+
+        /* навигация (листалки) */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            align-items: center;
+            margin: 32px 0 20px;
+        }
+        .pagination button {
+            background: #eaf1fa;
+            border: none;
+            border-radius: 40px;
+            padding: 12px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #143752;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .pagination button:hover {
+            background: #d4e2f2;
+        }
+        .pagination button:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            background: #eaf1fa;
+        }
+        .page-indicator {
+            font-weight: 600;
+            color: #1a4a73;
+            background: #eaf1fa;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-size: 15px;
+        }
+
+        /* адаптив */
+        @media (max-width: 700px) {
+            .container { padding: 25px 18px; }
+            .header { flex-direction: column; align-items: flex-start; gap: 18px; }
+            .header h1 { font-size: 22px; max-width: 100%; }
+            .pdf-btn { width: 100%; justify-content: center; }
+            .section-header { font-size: 18px; padding: 16px 18px; }
+            .checklist li { font-size: 15px; padding-left: 32px; }
+        }
+        @media print {
+            .pdf-btn, .pagination { display: none !important; }
+            .section-body { display: block !important; }
+            .section { break-inside: avoid; border: 1px solid #ccc; }
+            body { background: white; padding: 10px; }
+            .container { box-shadow: none; padding: 20px; }
+            .section-header .arrow { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="checklistContainer">
+        <!-- Шапка -->
+        <div class="header">
+            <h1>
+                📋 Памятка-чеклист для руководителя учреждения культуры
+                <small>Дедлайны и ключевые действия по изменениям с сентября 2026 года</small>
+            </h1>
+            <button class="pdf-btn" id="downloadPdfBtn">
+                ⬇ Скачать PDF
+            </button>
+        </div>
+
+        <!-- Аккордеон-секции -->
+        <!-- Секция 1: До 1 сентября -->
+        <div class="section open" data-section="1">
+            <div class="section-header">
+                <span>📅 До 1 сентября 2026 года</span>
+                <span class="arrow">▾</span>
+            </div>
+            <div class="section-body">
+                <ul class="checklist">
+                    <li>Составьте перечень свободных площадей для сдачи в льготную аренду.</li>
+                    <li>Сформируйте перечень форматов арендаторов по профилю учреждения. Например, книжная лавка, лекторий, коворкинг для творческих проектов.</li>
+                    <li>Поручите юридическому отделу подготовить проект типового договора аренды с жесткими ограничениями. Это запрет на субаренду и использование помещений не по назначению.</li>
+                    <li>Согласуйте с учредителем перечень помещений к сдаче в аренду, а также порядок определения льготной ставки арендной платы.</li>
+                    <li>Проверьте, включен ли ваш текущий регистратор доменных имен в перечень организаций, который утвержденный распоряжением Правительства от 17.04.2026 № 889 р. Если регистратор не входит в список — заранее выберите нового.</li>
+                    <li>Убедитесь, что у ответственного сотрудника есть подтверждённая учётная запись на Госуслугах для процедуры идентификации при регистрации доменных имен.</li>
+                    <li>Внесите изменения в локальные нормативные акты, регулирующие которые регулируют испытательный срок. Исключите его применение в отношении сотрудниц с детьми до трех лет.</li>
+                    <li>Актуализируйте локалку по вопросам сокращения штата. Включите в перечень категорий работников с преимущественным правом на оставление на работ, лиц, с которыми трудовой договор ранее был приостановлен в порядке статьи 351.7 ТК.</li>
+                    <li>Обновите программу производственного контроля с учетом новых санитарно эпидемиологических требований по постановлению Главного государственного санитарного врача РФ от 02.06.2026 № 15.</li>
+                    <li>Составьте перечень рабочих мест в учреждении, которые подпадают под особые правила проведения СОУТ согласно постановлению Правительства от 26.01.2026 № 39.</li>
+                </ul>
+                <div class="subnote">
+                    <i>⚡ Важно:</i> Все пункты фиксируйте в приказе с указанием ответственного лица и даты исполнения.
+                </div>
+            </div>
+        </div>
+
+        <!-- Секция 2: С 1 сентября -->
+        <div class="section" data-section="2">
+            <div class="section-header">
+                <span>🚀 С 1 сентября 2026 года</span>
+                <span class="arrow">▾</span>
+            </div>
+            <div class="section-body">
+                <ul class="checklist">
+                    <li>Применяйте новые лимиты продолжительности сверхурочной работы. Оформите пакет документов: получите письменное согласие работника, обеспечьте прохождение медосмотра либо диспансеризации по его письменному заявлению, издайте приказ о привлечении к сверхурочной работе, ведите корректный учёт отработанных часов в табеле учета рабочего времени.</li>
+                    <li>При расчете выполнения квоты по трудоустройству инвалидов учитывайте двойной зачет рабочего места при приеме на работу инвалида из числа ветеранов боевых действий, принимавших участие в СВО (постановление Правительства от 30.05.2024 № 709 и приказ Минтруда от 12.05.2026 № 204н).</li>
+                    <li>Предоставляйте работникам из зон ЧС новые гарантии: дополнительный оплачиваемый выходной день, а также отпуск без сохранения заработной платы о пяти календарных дней.</li>
+                    <li>Представляйте сведения о доходах по обновленным требованиям. Включите в отчет данные о доходах супруга и несовершеннолетних детей.</li>
+                    <li>Скорректируйте план мероприятий для молодежной аудитории с учетом увеличения номинала «Пушкинской карты» до 7 000 рублей. Расширьте линейку событий средней ценовой категории, чтобы максимально использовать потенциал программы.</li>
+                    <li>Обновите ключевые показатели эффективности для сотрудников, ответственных за работу с молодежной аудиторией. Закрепите целевые значения по количеству проданных билетов по среднему чеку, конверсии в повторные посещения.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Секция 3: До 1 марта -->
+        <div class="section" data-section="3">
+            <div class="section-header">
+                <span>📆 До 1 марта 2027 года</span>
+                <span class="arrow">▾</span>
+            </div>
+            <div class="section-body">
+                <ul class="checklist">
+                    <li>Завершите переход на использование российских и разрешенных моделей искусственного интеллекта. Для этого запросите коммерческие предложения у поставщиков, которые включены в утвержденный реестр, и поэтапно внедряйте.</li>
+                    <li>Актуализируйте внутренние регламенты по работе с технологиями искусственного интеллекта. Закрепите правила маркировки результатов, генерируемых с помощью ИИ, порядок проверки контента на соответствие требованиям, а также правила хранения и обработки данных.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Секция 4: На постоянной основе -->
+        <div class="section" data-section="4">
+            <div class="section-header">
+                <span>🔄 На постоянной основе</span>
+                <span class="arrow">▾</span>
+            </div>
+            <div class="section-body">
+                <ul class="checklist">
+                    <li>Проводите регулярный аудит уставов и договоров с подконтрольными некоммерческими организациями: замените в документах формулировку «предпринимательская деятельность» на «приносящая доход деятельность», проверьте, соответствуют ли цели расходования средств уставным задачам НКО.</li>
+                    <li>Контролируйте соблюдение новых правил при регистрации и продлении доменных имен: обеспечьте проведение идентификации через портал Госуслуги и взаимодействуйте исключительно с регистраторами, которые включены в утвержденный перечень.</li>
+                </ul>
+                <div class="subnote">
+                    ✅ Каждый пункт фиксируйте в приказе с указанием ответственного лица и даты исполнения.
+                </div>
+            </div>
+        </div>
+
+        <!-- Листалка (пагинация) -->
+        <div class="pagination">
+            <button id="prevSection" disabled>◀ Назад</button>
+            <span class="page-indicator" id="pageIndicator">1 / 4</span>
+            <button id="nextSection">Вперед ▶</button>
+        </div>
+        <div style="text-align: center; margin-top: 8px; font-size: 14px; color: #5f7d9a;">
+            👆 Нажмите на заголовок раздела, чтобы раскрыть или скрыть список
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ---- аккордеон (схлопы) ----
+            const sections = document.querySelectorAll('.section');
+            const sectionHeaders = document.querySelectorAll('.section-header');
+            
+            // функция открыть конкретную секцию (по data-section)
+            function openSection(sectionEl) {
+                sections.forEach(sec => sec.classList.remove('open'));
+                sectionEl.classList.add('open');
+                updatePagination();
+            }
+
+            // клик по заголовку
+            sectionHeaders.forEach(header => {
+                header.addEventListener('click', function(e) {
+                    const section = this.closest('.section');
+                    if (section.classList.contains('open')) {
+                        section.classList.remove('open');
+                    } else {
+                        sections.forEach(sec => sec.classList.remove('open'));
+                        section.classList.add('open');
+                    }
+                    updatePagination();
+                });
+            });
+
+            // ---- листалка (навигация) ----
+            const prevBtn = document.getElementById('prevSection');
+            const nextBtn = document.getElementById('nextSection');
+            const pageIndicator = document.getElementById('pageIndicator');
+
+            function getCurrentIndex() {
+                for (let i = 0; i < sections.length; i++) {
+                    if (sections[i].classList.contains('open')) return i;
+                }
+                return 0; // если ничего не открыто — открываем первую
+            }
+
+            function updatePagination() {
+                const idx = getCurrentIndex();
+                pageIndicator.textContent = `${idx+1} / ${sections.length}`;
+                prevBtn.disabled = (idx === 0);
+                nextBtn.disabled = (idx === sections.length - 1);
+            }
+
+            function goToSection(index) {
+                if (index < 0 || index >= sections.length) return;
+                openSection(sections[index]);
+            }
+
+            prevBtn.addEventListener('click', function() {
+                const idx = getCurrentIndex();
+                if (idx > 0) goToSection(idx - 1);
+            });
+
+            nextBtn.addEventListener('click', function() {
+                const idx = getCurrentIndex();
+                if (idx < sections.length - 1) goToSection(idx + 1);
+            });
+
+            // инициализация: если ничего не открыто — открыть первую
+            let anyOpen = false;
+            sections.forEach(sec => { if (sec.classList.contains('open')) anyOpen = true; });
+            if (!anyOpen && sections.length > 0) sections[0].classList.add('open');
+            updatePagination();
+
+            // ---- PDF экспорт (html2pdf) ----
+            document.getElementById('downloadPdfBtn').addEventListener('click', function() {
+                const element = document.getElementById('checklistContainer');
+                // временно раскрываем все секции для печати, чтобы PDF захватил контент
+                const wasOpen = [];
+                sections.forEach((sec, i) => {
+                    wasOpen[i] = sec.classList.contains('open');
+                    sec.classList.add('open');
+                });
+
+                const opt = {
+                    margin:        [0.6, 0.6, 0.6, 0.6], // top, right, bottom, left (in)
+                    filename:     'Pamiatka_cheklist_2026.pdf',
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, letterRendering: true, useCORS: true, logging: false },
+                    jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+                };
+                html2pdf().set(opt).from(element).save().then(() => {
+                    // возвращаем состояние аккордеона
+                    sections.forEach((sec, i) => {
+                        if (!wasOpen[i]) sec.classList.remove('open');
+                    });
+                    updatePagination();
+                }).catch(() => {
+                    // если ошибка — всё равно восстановить
+                    sections.forEach((sec, i) => {
+                        if (!wasOpen[i]) sec.classList.remove('open');
+                    });
+                    updatePagination();
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
