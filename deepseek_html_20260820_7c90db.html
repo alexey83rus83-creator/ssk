@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Чек-лист физической доступности</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #e6f0fa;
+            padding: 24px 16px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 960px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 102, 204, 0.12);
+            padding: 28px 24px;
+            border: 1px solid #c2d9f0;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1a2a3a;
+            letter-spacing: -0.01em;
+        }
+
+        .header .sub {
+            font-size: 14px;
+            color: #0066cc;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .btn-pdf {
+            background: #0066cc;
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            padding: 10px 22px;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .btn-pdf:hover {
+            background: #004d99;
+        }
+
+        .btn-pdf svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        .progress-wrap {
+            background: #e6f0fa;
+            border-radius: 30px;
+            height: 10px;
+            margin: 12px 0 16px 0;
+            overflow: hidden;
+        }
+
+        .progress-wrap .bar {
+            height: 100%;
+            width: 0%;
+            background: #0066cc;
+            border-radius: 30px;
+            transition: width 0.4s ease;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #1a2a3a;
+            margin-bottom: 16px;
+        }
+
+        .stats span {
+            font-weight: 600;
+            color: #0066cc;
+        }
+
+        /* Чек-лист */
+        .checklist {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .checklist-item {
+            border: 1px solid #c2d9f0;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #f6faff;
+            transition: border-color 0.2s;
+        }
+
+        .checklist-item:hover {
+            border-color: #80b5e6;
+        }
+
+        .checklist-item.checked {
+            border-color: #0066cc;
+            background: #f0f7ff;
+        }
+
+        .checklist-header {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 14px 18px;
+            text-align: left;
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a2a3a;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: background 0.15s;
+        }
+
+        .checklist-header:hover {
+            background: #e4eff9;
+        }
+
+        .checklist-header input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            accent-color: #0066cc;
+            cursor: pointer;
+        }
+
+        .checklist-header .arrow {
+            font-size: 12px;
+            color: #0066cc;
+            transition: transform 0.25s ease;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .checklist-item.open .checklist-header .arrow {
+            transform: rotate(180deg);
+        }
+
+        .checklist-body {
+            display: none;
+            padding: 0 18px 18px 18px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #1a2a3a;
+        }
+
+        .checklist-item.open .checklist-body {
+            display: block;
+        }
+
+        .checklist-body .sub-section {
+            margin-bottom: 14px;
+        }
+
+        .checklist-body .sub-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .checklist-body .sub-section h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0066cc;
+            margin-bottom: 4px;
+        }
+
+        .checklist-body .sub-section p {
+            margin-bottom: 4px;
+        }
+
+        .checklist-body .sub-section ul {
+            padding-left: 20px;
+            margin: 4px 0 6px 0;
+        }
+
+        .checklist-body .sub-section ul li {
+            margin-bottom: 3px;
+        }
+
+        .checklist-body .sub-section .metric {
+            display: inline-block;
+            background: #e6f0fa;
+            padding: 0 10px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #0066cc;
+        }
+
+        .checklist-body .sub-section .important {
+            background: #fff3cd;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border-left: 3px solid #ffc107;
+            font-size: 13px;
+            margin: 6px 0;
+        }
+
+        .reset-btn {
+            background: transparent;
+            border: 1px solid #c2d9f0;
+            border-radius: 30px;
+            padding: 8px 20px;
+            font-size: 13px;
+            color: #4a6a8a;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: background 0.15s;
+        }
+
+        .reset-btn:hover {
+            background: #e6f0fa;
+        }
+
+        .footer-note {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #004d99;
+            border-top: 1px solid #c2d9f0;
+            padding-top: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .footer-note span {
+            background: #e6f0fa;
+            padding: 2px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            color: #004d99;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+                padding: 20px;
+                border: 1px solid #ccc;
+            }
+            .btn-pdf {
+                display: none;
+            }
+            .checklist-body {
+                display: block !important;
+            }
+            .checklist-item {
+                border: 1px solid #ccc;
+                page-break-inside: avoid;
+            }
+            .checklist-header .arrow {
+                display: none;
+            }
+            .checklist-header {
+                cursor: default;
+            }
+            .checklist-header:hover {
+                background: transparent;
+            }
+            .stats {
+                display: none;
+            }
+            .progress-wrap {
+                display: none;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 16px 12px;
+            }
+            .header h1 {
+                font-size: 19px;
+            }
+            .checklist-header {
+                padding: 12px 14px;
+                font-size: 14px;
+            }
+            .checklist-body {
+                padding: 0 14px 14px 14px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="referenceContainer">
+
+        <!-- Шапка -->
+        <div class="header">
+            <div>
+                <h1>Чек-лист. Оценка физической доступности объекта для маломобильных граждан и лиц с ОВЗ</h1>
+                <div class="sub">Отметьте проверенные разделы → раскройте подробности</div>
+            </div>
+            <button class="btn-pdf" id="pdfButton">
+                <svg viewBox="0 0 24 24"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>
+                Скачать PDF
+            </button>
+        </div>
+
+        <!-- Прогресс -->
+        <div class="progress-wrap">
+            <div class="bar" id="progressBar"></div>
+        </div>
+        <div class="stats">
+            <span>Проверено: <span id="doneDisplay">0</span> из <span id="totalDisplay">6</span></span>
+            <span id="percentDisplay">0%</span>
+        </div>
+
+        <!-- Чек-лист -->
+        <div class="checklist" id="checklist">
+
+            <!-- 1. Входная группа -->
+            <div class="checklist-item" data-id="0">
+                <button class="checklist-header">
+                    <input type="checkbox"> Входная группа
+                    <span class="arrow">▾</span>
+                </button>
+                <div class="checklist-body">
+                    <div class="sub-section">
+                        <h4>Пандусы при входе</h4>
+                        <ul>
+                            <li><span class="metric">Уклон</span> — не круче 1:20 (5 %). Для временных — не круче 1:12 (8 %) при длине марша до 6 м. Проверяйте рулеткой и уровнем или приложением-инклинометром: уклон (%) = (высота подъёма / длина марша) × 100.</li>
+                            <li><span class="metric">Ширина марша</span> — не менее 0,9–1,0 м (лучше 1,2 м).</li>
+                            <li><span class="metric">Поручни</span> — с обеих сторон, на высоте 0,7 и 0,9 м, с выходом за пределы пандуса на 0,3 м и закруглёнными окончаниями.</li>
+                            <li><span class="metric">Горизонтальные площадки</span> — вверху и внизу не менее 1,5×1,5 м. На каждом повороте — тоже площадка.</li>
+                            <li><span class="metric">Покрытие</span> — нескользкое, рельефное, без зазоров под колёса.</li>
+                        </ul>
+                        <div class="important">Если пандуса нет — укажите срок установки. В акте пропишите план-график работ и приложите письмо-подтверждение от учредителя или смету-ориентир.</div>
+                    </div>
+                    <div class="sub-section">
+                        <h4>Ширина дверных проёмов</h4>
+                        <p>Не менее <strong>90 см</strong> «в свету» (между наличниками, без учёта ручек и петель). Если дверь двустворчатая — хотя бы одна створка ≥ 90 см.</p>
+                    </div>
+                    <div class="sub-section">
+                        <h4>Отсутствие порогов</h4>
+                        <p>Допустимая высота порога — не более <strong>1,4 см</strong>. Если выше — это барьер.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Пути движения внутри здания -->
+            <div class="checklist-item" data-id="1">
+                <button class="checklist-header">
+                    <input type="checkbox"> Пути движения внутри здания
+                    <span class="arrow">▾</span>
+                </button>
+                <div class="checklist-body">
+                    <div class="sub-section">
+                        <h4>Поручни вдоль коридоров и у лестниц</h4>
+                        <ul>
+                            <li><span class="metric">Высота</span> — 0,9 м (допускается 0,85–0,92 м), непрерывные, без разрывов, с закруглёнными концами.</li>
+                            <li><span class="metric">Расстояние от стены</span> — не менее 4–6 см.</li>
+                            <li><span class="metric">Крепление</span> — надёжное, без люфта.</li>
+                        </ul>
+                    </div>
+                    <div class="sub-section">
+                        <h4>Нескользящее покрытие полов</h4>
+                        <ul>
+                            <li>Коэффициент трения <span class="metric">R9–R12</span> (для влажных зон — R11–R12).</li>
+                            <li>Отсутствие незакреплённых ковров, стыков, перепадов высот.</li>
+                            <li>Швы и стыки плит — заподлицо, без выступов.</li>
+                        </ul>
+                    </div>
+                    <div class="sub-section">
+                        <h4>Ширина проходов</h4>
+                        <p>Не менее <strong>1,2 м</strong> для коляски. В узких местах замеряйте «в чистоте» без мебели.</p>
+                    </div>
+                    <div class="sub-section">
+                        <h4>Лифт или подъёмник (если этажей >1)</h4>
+                        <p>Если лифта нет, зафиксируйте наличие альтернативного маршрута на 1-й этаж с полным набором услуг или план по установке подъёмника.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Места для отдыха -->
+            <div class="checklist-item" data-id="2">
+                <button class="checklist-header">
+                    <input type="checkbox"> Места для отдыха
+                    <span class="arrow">▾</span>
+                </button>
+                <div class="checklist-body">
+                    <div class="sub-section">
+                        <h4>Скамьи или кресла в зонах ожидания, коридорах, рядом с залами</h4>
+                        <ul>
+                            <li><span class="metric">Высота сиденья</span> — 42–48 см (удобно вставать).</li>
+                            <li><span class="metric">Глубина сиденья</span> — не менее 45–50 см.</li>
+                            <li><span class="metric">Спинка</span> — обязательно.</li>
+                            <li><span class="metric">Подлокотники</span> — желательно, помогают подняться.</li>
+                        </ul>
+                        <div class="important">Жёсткие скамейки без спинки не считаются полноценными местами отдыха для пожилых. Мягкие стулья должны сохранять форму, не быть слишком низкими или глубокими.</div>
+                        <p><span class="metric">Количество мест</span> — ориентируйтесь на 5–10 % от вместимости зала или ожидаемого потока.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Санузлы -->
+            <div class="checklist-item" data-id="3">
+                <button class="checklist-header">
+                    <input type="checkbox"> Санузлы
+                    <span class="arrow">▾</span>
+                </button>
+                <div class="checklist-body">
+                    <div class="sub-section">
+                        <h4>Широкий проём</h4>
+                        <p>В свету не менее <strong>0,9 м</strong>. Оптимально — 1,2 м.</p>
+                    </div>
+                    <div class="sub-section">
+                        <h4>Поручни</h4>
+                        <ul>
+                            <li>У унитаза — боковой и откидной/стационарный.</li>
+                            <li>В душевой кабине (если есть).</li>
+                            <li>У раковины.</li>
+                            <li><span class="metric">Высота</span> — 0,7–0,8 м у унитаза, 0,9 м у раковины.</li>
+                            <li><span class="metric">Диаметр трубы</span> — 32–40 мм, поверхность — не скользкая.</li>
+                        </ul>
+                    </div>
+                    <div class="sub-section">
+                        <h4>Кнопка вызова персонала</h4>
+                        <ul>
+                            <li>На высоте <span class="metric">0,8–1,1 м</span> от пола.</li>
+                            <li>С понятной пиктограммой и текстом.</li>
+                            <li>Со световой/звуковой индикацией срабатывания.</li>
+                            <li>С выводом сигнала на пост охраны/администратора.</li>
+                        </ul>
+                    </div>
+                    <div class="sub-section">
+                        <h4>План переоборудования (если санузла нет)</h4>
+                        <p>Включите: обследование, проект перепланировки (кабина 1,65×1,8 м), закупку оборудования, сроки и ответственных. Приложите смету и письмо-согласование от учредителя.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Навигация -->
+            <div class="checklist-item" data-id="4">
+                <button class="checklist-header">
+                    <input type="checkbox"> Навигация
+                    <span class="arrow">▾</span>
+                </button>
+                <div class="checklist-body">
+                    <div class="sub-section">
+                        <h4>Крупный шрифт на указателях</h4>
+                        <p>От <span class="metric">16 pt</span> (4–5 мм высоты буквы). Для уличных и коридорных табличек — 18–24 pt.</p>
+                    </div>
+                    <div class="sub-section">
+                        <h4>Контрастные таблички</h4>
+                        <p>Контраст текста и фона — не менее <span class="metric">70 %</span> (тёмный на светлом либо светлый на тёмном). Избегайте градиентов и мелкого орнамента.</p>
+                    </div>
+                    <div class="sub-section">
+                        <h4>Понятные схемы маршрутов</h4>
+                        <ul>
+                            <li>Простые схемы «Вы здесь» с 3–5 ключевыми точками.</li>
+                            <li>Единый стиль пиктограмм и цветов.</li>
+                            <li>Дублирование текста крупным шрифтом.</li>
+                        </ul>
+                    </div>
+                    <div class="sub-section">
+                        <h4>Для слабовидящих — тактильные указатели</h4>
+                        <ul>
+                            <li>Тактильные пиктограммы (туалеты, лифты, выходы).</li>
+                            <li>Тактильная направляющая полоса у ключевых маршрутов (ширина 0,15–0,2 м, высота рельефа 3–5 мм).</li>
+                            <li>Таблички со шрифтом Брайля рядом с основными указателями.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. Освещение -->
+            <div class="checklist-item" data-id="5">
+                <button class="checklist-header">
+                    <input type="checkbox"> Освещение
+                    <span class="arrow">▾</span>
+                </button>
+                <div class="checklist-body">
+                    <div class="sub-section">
+                        <h4>Достаточное освещение в коридорах и помещениях</h4>
+                        <ul>
+                            <li>Коридоры, холлы — не менее <span class="metric">200–300 лк</span>.</li>
+                            <li>Читальные зоны, мастерские — <span class="metric">300–500 лк</span>.</li>
+                            <li>Избегайте резких теней и бликов — используйте матовые рассеиватели.</li>
+                        </ul>
+                    </div>
+                    <div class="sub-section">
+                        <h4>Световые контрасты у лестниц и переходов</h4>
+                        <ul>
+                            <li>Краевые ступени выделяйте контрастной полосой шириной 0,075–0,1 м.</li>
+                            <li>Используйте светильники, подсвечивающие проступь, а не «бьющие в глаза».</li>
+                            <li>Контраст между проступью и подступенком — не менее <span class="metric">30–40 %</span>.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <button class="reset-btn" id="resetBtn">Сбросить все отметки</button>
+
+        <!-- Футер -->
+        <div class="footer-note">
+            <span>Акт обследования доступности — обязательное приложение к заявке</span>
+            <span>Актуально на 2026 год</span>
+        </div>
+
+    </div>
+
+    <script>
+        (function() {
+            const items = document.querySelectorAll('.checklist-item');
+            const progressBar = document.getElementById('progressBar');
+            const doneDisplay = document.getElementById('doneDisplay');
+            const totalDisplay = document.getElementById('totalDisplay');
+            const percentDisplay = document.getElementById('percentDisplay');
+            const resetBtn = document.getElementById('resetBtn');
+
+            const total = items.length;
+            totalDisplay.textContent = total;
+
+            function updateProgress() {
+                let done = 0;
+                items.forEach(item => {
+                    const cb = item.querySelector('.checklist-header input[type="checkbox"]');
+                    if (cb && cb.checked) done++;
+                    item.classList.toggle('checked', cb && cb.checked);
+                });
+                const percent = Math.round((done / total) * 100);
+                progressBar.style.width = percent + '%';
+                doneDisplay.textContent = done;
+                percentDisplay.textContent = percent + '%';
+            }
+
+            // Чек-боксы и аккордеон
+            items.forEach(item => {
+                const header = item.querySelector('.checklist-header');
+                const cb = header.querySelector('input[type="checkbox"]');
+
+                // Клик по чек-боксу обновляет прогресс
+                cb.addEventListener('change', function(e) {
+                    e.stopPropagation();
+                    updateProgress();
+                });
+
+                // Клик по заголовку (кроме чек-бокса) — открыть/закрыть
+                header.addEventListener('click', function(e) {
+                    if (e.target.tagName === 'INPUT') return;
+                    item.classList.toggle('open');
+                });
+            });
+
+            // Сброс
+            resetBtn.addEventListener('click', function() {
+                items.forEach(item => {
+                    const cb = item.querySelector('.checklist-header input[type="checkbox"]');
+                    if (cb) cb.checked = false;
+                    item.classList.remove('checked');
+                });
+                updateProgress();
+            });
+
+            // PDF
+            document.getElementById('pdfButton').addEventListener('click', function() {
+                window.print();
+            });
+
+            updateProgress();
+        })();
+    </script>
+
+</body>
+</html>
