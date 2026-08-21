@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Типичные ошибки в подготовке проекта</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #ffe8e8;
+            padding: 24px 16px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 820px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(200, 60, 60, 0.15);
+            padding: 32px 28px;
+            border: 1px solid #f0c8c8;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #a02020;
+            letter-spacing: -0.01em;
+        }
+
+        .header .sub {
+            font-size: 15px;
+            color: #b04040;
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff0f0;
+            border-radius: 12px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            border: 1px solid #f0c8c8;
+        }
+
+        .status-bar .counter {
+            font-size: 15px;
+            font-weight: 600;
+            color: #a02020;
+        }
+
+        .status-bar .counter span {
+            font-size: 20px;
+        }
+
+        .status-bar .message {
+            font-size: 15px;
+            font-weight: 600;
+            padding: 6px 18px;
+            border-radius: 30px;
+            transition: all 0.3s;
+        }
+
+        .status-bar .message.ok {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-bar .message.fail {
+            background: #f8d7da;
+            color: #721c24;
+            animation: shake 0.4s;
+        }
+
+        .status-bar .message.waiting {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-6px);
+            }
+            75% {
+                transform: translateX(6px);
+            }
+        }
+
+        .game-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .error-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 14px 18px;
+            background: #fff5f5;
+            border-radius: 12px;
+            border: 2px solid #f0c8c8;
+            transition: all 0.25s;
+            cursor: pointer;
+        }
+
+        .error-item:hover {
+            border-color: #d08080;
+            background: #ffefef;
+        }
+
+        .error-item.checked {
+            border-color: #cc3333;
+            background: #ffe0e0;
+            opacity: 0.85;
+        }
+
+        .error-item .flag {
+            flex-shrink: 0;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: 2px solid #cc3333;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: #cc3333;
+            transition: all 0.2s;
+            margin-top: 1px;
+        }
+
+        .error-item.checked .flag {
+            background: #cc3333;
+            color: #ffffff;
+        }
+
+        .error-item .text {
+            font-size: 15px;
+            line-height: 1.5;
+            color: #2a1a1a;
+        }
+
+        .error-item .text strong {
+            color: #a02020;
+        }
+
+        .error-item .text .hint {
+            display: block;
+            font-size: 13px;
+            color: #6a4a4a;
+            margin-top: 3px;
+        }
+
+        .reset-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            background: #cc3333;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-align: center;
+        }
+
+        .reset-btn:hover {
+            background: #aa2222;
+        }
+
+        .reset-btn:active {
+            transform: scale(0.98);
+        }
+
+        .result-box {
+            margin-top: 16px;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 15px;
+            line-height: 1.6;
+            display: none;
+            border: 2px solid;
+        }
+
+        .result-box.show {
+            display: block;
+        }
+
+        .result-box.success {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .result-box.fail {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .result-box ul {
+            padding-left: 22px;
+            margin-top: 6px;
+        }
+
+        .result-box ul li {
+            margin-bottom: 4px;
+        }
+
+        .footer-note {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 13px;
+            color: #8a5a5a;
+            border-top: 1px solid #f0d0d0;
+            padding-top: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px 16px;
+            }
+            .header h1 {
+                font-size: 20px;
+            }
+            .error-item {
+                padding: 12px 14px;
+                gap: 12px;
+            }
+            .error-item .text {
+                font-size: 14px;
+            }
+            .status-bar {
+                flex-wrap: wrap;
+                gap: 8px;
+                justify-content: center;
+            }
+            .status-bar .message {
+                font-size: 13px;
+                padding: 4px 14px;
+            }
+        }
+
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                border: 1px solid #ccc;
+                border-radius: 0;
+            }
+            .error-item.checked .flag {
+                background: #cc3333;
+                color: #fff;
+            }
+            .reset-btn {
+                display: none;
+            }
+            .status-bar .message {
+                background: #fff3cd !important;
+                color: #856404 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>🚩 Типичные ошибки в подготовке проекта для людей старшего возраста</h1>
+            <div class="sub">Отмечайте красные флажки. Если отметили больше одного — проект не пройдёт отбор.</div>
+        </div>
+
+        <div class="status-bar">
+            <div class="counter">🚩 Отмечено: <span id="counterDisplay">0</span></div>
+            <div class="message waiting" id="statusMessage">Выберите ошибки</div>
+        </div>
+
+        <div class="game-grid" id="gameGrid">
+            <div class="error-item" data-id="1">
+                <div class="flag">▢</div>
+                <div class="text">
+                    <strong>Слишком узкая или коммерческая цель.</strong>
+                    <span class="hint">Проект не связан с активным долголетием — например, разовое развлекательное событие без образовательной или оздоровительной составляющей.</span>
+                </div>
+            </div>
+
+            <div class="error-item" data-id="2">
+                <div class="flag">▢</div>
+                <div class="text">
+                    <strong>Отсутствие адаптации для старшего возраста.</strong>
+                    <span class="hint">Активности рассчитаны на молодых и физически подготовленных — силовые и беговые тренировки, квесты на скорость.</span>
+                </div>
+            </div>
+
+            <div class="error-item" data-id="3">
+                <div class="flag">▢</div>
+                <div class="text">
+                    <strong>Неясная целевая аудитория.</strong>
+                    <span class="hint">Люди 60+ и 80+ имеют разные возможности. Если аудитория не конкретизирована — проект отклонят.</span>
+                </div>
+            </div>
+
+            <div class="error-item" data-id="4">
+                <div class="flag">▢</div>
+                <div class="text">
+                    <strong>Слабая проработка деталей.</strong>
+                    <span class="hint">Не описано, как обеспечена безопасность, квалификация ведущего, учёт ограничений участников, логистика и транспорт.</span>
+                </div>
+            </div>
+
+            <div class="error-item" data-id="5">
+                <div class="flag">▢</div>
+                <div class="text">
+                    <strong>Нехватка ресурсов.</strong>
+                    <span class="hint">Нет подтверждения, что у учреждения есть помещения с доступностью, оборудование, партнёры для реализации.</span>
+                </div>
+            </div>
+
+            <div class="error-item" data-id="6">
+                <div class="flag">▢</div>
+                <div class="text">
+                    <strong>Фокус на разовом мероприятии.</strong>
+                    <span class="hint">Проект сводится к одной акции без плана по формированию устойчивого клуба, кружка или программы занятий.</span>
+                </div>
+            </div>
+        </div>
+
+        <button class="reset-btn" id="resetBtn">🔄 Сбросить все флажки</button>
+
+        <div class="result-box" id="resultBox"></div>
+
+        <div class="footer-note">
+            ⚠️ Если в проекте больше одной ошибки — грантодатели отклонят заявку
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const items = document.querySelectorAll('.error-item');
+            const counterDisplay = document.getElementById('counterDisplay');
+            const statusMessage = document.getElementById('statusMessage');
+            const resultBox = document.getElementById('resultBox');
+            const resetBtn = document.getElementById('resetBtn');
+
+            const errorDescriptions = {
+                1: 'Слишком узкая или коммерческая цель — проект не связан с активным долголетием.',
+                2: 'Отсутствие адаптации для старшего возраста — активности рассчитаны на молодых.',
+                3: 'Неясная целевая аудитория — не учтены разные возможности людей 60+ и 80+.',
+                4: 'Слабая проработка деталей — безопасность, квалификация, логистика не описаны.',
+                5: 'Нехватка ресурсов — нет подтверждения доступности помещений и оборудования.',
+                6: 'Фокус на разовом мероприятии — нет плана устойчивого клуба или программы.'
+            };
+
+            let checked = new Set();
+
+            function updateUI() {
+                const count = checked.size;
+                counterDisplay.textContent = count;
+
+                // Обновить статус
+                if (count === 0) {
+                    statusMessage.className = 'message waiting';
+                    statusMessage.textContent = 'Выберите ошибки';
+                    resultBox.className = 'result-box';
+                    resultBox.textContent = '';
+                } else if (count === 1) {
+                    statusMessage.className = 'message ok';
+                    statusMessage.textContent = '✅ Одна ошибка — ещё можно исправить!';
+                    showResult('success');
+                } else {
+                    statusMessage.className = 'message fail';
+                    statusMessage.textContent = '❌ БОЛЬШЕ ОДНОЙ ОШИБКИ — ПРОЕКТ ОТКЛОНЯТ';
+                    showResult('fail');
+                }
+
+                // Обновить флажки
+                items.forEach(item => {
+                    const id = parseInt(item.dataset.id);
+                    const flag = item.querySelector('.flag');
+                    if (checked.has(id)) {
+                        item.classList.add('checked');
+                        flag.textContent = '✓';
+                    } else {
+                        item.classList.remove('checked');
+                        flag.textContent = '▢';
+                    }
+                });
+            }
+
+            function showResult(type) {
+                resultBox.className = 'result-box show';
+                if (type === 'success') {
+                    resultBox.className = 'result-box show success';
+                    const checkedId = Array.from(checked)[0];
+                    resultBox.innerHTML = `
+                        <strong>✅ Вы нашли одну ошибку:</strong>
+                        <ul><li>${errorDescriptions[checkedId] || 'Ошибка'}</li></ul>
+                        <p style="margin-top:8px;">Исправьте её — и проект пройдёт отбор.</p>
+                    `;
+                } else {
+                    resultBox.className = 'result-box show fail';
+                    let html = '<strong>❌ Проект отклонён. Найдены ошибки:</strong><ul>';
+                    const sorted = Array.from(checked).sort();
+                    sorted.forEach(id => {
+                        html += `<li>${errorDescriptions[id] || 'Ошибка'}</li>`;
+                    });
+                    html += '</ul><p style="margin-top:8px;">Устраните все ошибки до подачи заявки.</p>';
+                    resultBox.innerHTML = html;
+                }
+            }
+
+            function toggleItem(id) {
+                if (checked.has(id)) {
+                    checked.delete(id);
+                } else {
+                    checked.add(id);
+                }
+                updateUI();
+            }
+
+            // Клик по элементу
+            items.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    // Если кликнули на флажок или текст — сработает
+                    const id = parseInt(this.dataset.id);
+                    toggleItem(id);
+                });
+            });
+
+            // Сброс
+            resetBtn.addEventListener('click', function() {
+                checked.clear();
+                updateUI();
+                // Прокрутить к началу
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // Инициализация
+            updateUI();
+        })();
+    </script>
+
+</body>
+</html>
