@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Виды и программы финансирования</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #e6f0fa;
+            padding: 24px 16px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 102, 204, 0.12);
+            padding: 28px 24px;
+            border: 1px solid #c2d9f0;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1a2a3a;
+            letter-spacing: -0.01em;
+        }
+
+        .header .sub {
+            font-size: 14px;
+            color: #0066cc;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .btn-pdf {
+            background: #0066cc;
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            padding: 10px 22px;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .btn-pdf:hover {
+            background: #004d99;
+        }
+
+        .btn-pdf svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 6px;
+            border-bottom: 2px solid #c2d9f0;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 12px 20px 10px 20px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #4a6a8a;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.15s ease;
+            border-radius: 0;
+        }
+
+        .tab-btn:hover {
+            color: #1a2a3a;
+            background: #e6f0fa;
+        }
+
+        .tab-btn.active {
+            color: #0066cc;
+            border-bottom-color: #0066cc;
+            background: transparent;
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Accordion */
+        .accordion-item {
+            border: 1px solid #c2d9f0;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            background: #f6faff;
+            transition: border-color 0.2s;
+        }
+
+        .accordion-item:hover {
+            border-color: #80b5e6;
+        }
+
+        .accordion-header {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 16px 20px;
+            text-align: left;
+            font-size: 16px;
+            font-weight: 500;
+            color: #1a2a3a;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            transition: background 0.15s;
+        }
+
+        .accordion-header:hover {
+            background: #e4eff9;
+        }
+
+        .accordion-header .arrow {
+            font-size: 13px;
+            color: #0066cc;
+            transition: transform 0.25s ease;
+            flex-shrink: 0;
+        }
+
+        .accordion-item.open .accordion-header .arrow {
+            transform: rotate(180deg);
+        }
+
+        .accordion-body {
+            padding: 0 20px 18px 20px;
+            display: none;
+            color: #1a2a3a;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .accordion-item.open .accordion-body {
+            display: block;
+        }
+
+        .accordion-body p {
+            margin-bottom: 10px;
+        }
+
+        .accordion-body ul {
+            padding-left: 22px;
+            margin: 6px 0 10px 0;
+        }
+
+        .accordion-body li {
+            margin-bottom: 4px;
+        }
+
+        .accordion-body strong {
+            color: #0066cc;
+            font-weight: 600;
+        }
+
+        .accordion-body .example-block {
+            background: #ffffff;
+            border-left: 3px solid #0066cc;
+            padding: 12px 16px;
+            margin: 8px 0 4px 0;
+            border-radius: 0 6px 6px 0;
+            font-size: 14px;
+        }
+
+        .accordion-body .example-block strong {
+            color: #0066cc;
+        }
+
+        .footer-note {
+            margin-top: 28px;
+            font-size: 14px;
+            color: #004d99;
+            border-top: 1px solid #c2d9f0;
+            padding-top: 18px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .footer-note span {
+            background: #e6f0fa;
+            padding: 2px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            color: #004d99;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+                padding: 20px;
+                border: 1px solid #ccc;
+            }
+            .btn-pdf {
+                display: none;
+            }
+            .accordion-body {
+                display: block !important;
+            }
+            .accordion-item {
+                border: 1px solid #ccc;
+                page-break-inside: avoid;
+            }
+            .accordion-header .arrow {
+                display: none;
+            }
+            .accordion-header {
+                cursor: default;
+            }
+            .accordion-header:hover {
+                background: transparent;
+            }
+            .tab-content {
+                display: block !important;
+            }
+            .tabs {
+                display: none;
+            }
+            .tab-btn {
+                display: none;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 16px 12px;
+            }
+            .header h1 {
+                font-size: 19px;
+            }
+            .tab-btn {
+                padding: 10px 14px;
+                font-size: 14px;
+            }
+            .accordion-header {
+                padding: 14px 16px;
+                font-size: 15px;
+            }
+            .accordion-body {
+                padding: 0 16px 16px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="referenceContainer">
+
+        <!-- Шапка -->
+        <div class="header">
+            <div>
+                <h1>Виды и программы финансирования для культурных проектов по работе со старшим поколением</h1>
+                <div class="sub">Выберите уровень финансирования → разверните условия и примеры</div>
+            </div>
+            <button class="btn-pdf" id="pdfButton">
+                <svg viewBox="0 0 24 24"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>
+                Скачать PDF
+            </button>
+        </div>
+
+        <!-- Вкладки -->
+        <div class="tabs" role="tablist">
+            <button class="tab-btn active" data-tab="federal" role="tab">Федеральное</button>
+            <button class="tab-btn" data-tab="regional" role="tab">Региональное</button>
+            <button class="tab-btn" data-tab="municipal" role="tab">Муниципальное</button>
+        </div>
+
+        <!-- ===== ФЕДЕРАЛЬНОЕ ===== -->
+        <div class="tab-content active" id="tab-federal" role="tabpanel">
+            <div class="accordion">
+                <div class="accordion-item open">
+                    <button class="accordion-header">
+                        <span>Условия получения</span>
+                        <span class="arrow">▾</span>
+                    </button>
+                    <div class="accordion-body">
+                        <p>Гранты и субсидии от федеральных фондов и ведомств. Ориентированы на пилотные проекты, инновации, решение социальных задач — социализация, преодоление изоляции, культурный доступ.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        <span>Реальные программы и примеры</span>
+                        <span class="arrow">▾</span>
+                    </button>
+                    <div class="accordion-body">
+                        <p><strong>Фонд президентских грантов.</strong> Проект «Активное долголетие: настоящее и будущее» от благотворительного фонда «Хорошие истории»: исследование ситуации в 17 регионах, разработка методик работы со старшим поколением, проведение конференций, семинаров и вебинаров. Пример показывает, как системно упаковывать работу с «серебряной» аудиторией и получать федеральную поддержку.</p>
+
+                        <p><strong>Президентский фонд культурных инициатив (ПФКИ).</strong> Проект «Связь поколений» на базе МБУ «ЦКД "Кедр"» поселка Карымкары: любительские объединения по декоративно-прикладному творчеству, вокалу, спорту и компьютерной грамотности, итоговый концерт ко Дню пожилого человека. Демонстрирует, как учреждения культуры могут быть площадками для межпоколенческих форматов.</p>
+
+                        <p><strong>Проект Минкультуры России «Культурное долголетие».</strong> Реализуется в 15 регионах: выставки и творческие лаборатории размещают в центрах активного долголетия, МФЦ, больницах. Например, в Калининграде в отделениях МФЦ работают цифровые выставки Калининградского музея изобразительных искусств («Радости жизни», «Широка страна моя родная»).</p>
+
+                        <p><strong>Нацпроект «Семья» (федеральный проект «Семейные ценности и инфраструктура культуры»).</strong> Субсидии идут на модернизацию учреждений культуры и создание на их базе семейных и межпоколенческих культурно-просветительских центров. В практике регионов такие субсидии используют, чтобы адаптировать пространства под потребности старшего поколения: обустроить зоны отдыха, закупить оборудование для студий, сделать навигацию и освещение более удобными.</p>
+
+                        <p><strong>Нацпроект «Продолжительная и активная жизнь».</strong> Хотя он в первую очередь ориентирован на здравоохранение и профилактику, в связке с учреждениями культуры на средства проекта реализуют просветительские и досуговые проекты. Например, совместные мероприятия поликлиник и домов культуры — школы здоровья, лекции о профилактике когнитивных нарушений, «тихие» активности для маломобильных граждан, а также инфраструктурные решения — обустройство безопасных прогулочных маршрутов рядом с культурными площадками. Учреждения культуры выступают партнерами медучреждений и включают в заявки измеримые социальные эффекты: снижение уровня одиночества, рост вовлеченности в полезную активность, улучшение эмоционального фона.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== РЕГИОНАЛЬНОЕ ===== -->
+        <div class="tab-content" id="tab-regional" role="tabpanel">
+            <div class="accordion">
+                <div class="accordion-item open">
+                    <button class="accordion-header">
+                        <span>Условия получения</span>
+                        <span class="arrow">▾</span>
+                    </button>
+                    <div class="accordion-body">
+                        <p>Финансирование в рамках госпрограмм субъектов РФ. Часто системное: охватывает сферу культуры, соцзащиты, спорта для людей старшего возраста в регионе. Может включать субсидии учреждениям, гранты НКО, возмещение затрат на проведение мероприятий. Условия и бюджеты различаются по регионам.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        <span>Реальные программы и примеры</span>
+                        <span class="arrow">▾</span>
+                    </button>
+                    <div class="accordion-body">
+                        <p><strong>«Балтийское долголетие» (Калининградская область).</strong> Финансируется из областного бюджета в рамках нацпроекта «Демография». В прошлом году поддержано 266 проектов, общий объём финансирования — около 87,4 млн рублей. Гранты получают организации, которые проводят мастер-классы, кружки, тренировки, экскурсии.</p>
+
+                        <p><strong>«Ямальское долголетие» (ЯНАО).</strong> В 2026 году размер гранта увеличен до 750 тысяч рублей на одного участника в одной сфере. Субсидии получают учреждения культуры и НКО, ИП и самозанятые, которые организуют культурные, образовательные, физкультурные и досуговые мероприятия для старшего поколения.</p>
+
+                        <p><strong>«Активное долголетие» (Московская область).</strong> Включает экскурсии, творческие студии, спортивные активности, обучение цифровым навыкам. Финансирование идет через субсидии учреждениям и поддержку НКО.</p>
+
+                        <p><strong>Программа «Серебряный возраст» (Санкт-Петербург).</strong> Городская программа объединяет социальные, культурные и досуговые форматы для старшего поколения: танцевальные веранды, экскурсии, творческие мастерские, лекции. Проекты реализуются на площадках учреждений культуры и финансируются из городского бюджета по поручению губернатора. Пример — проект «Городские танцевальные веранды»: мероприятия проходят в Юсуповском саду и атриуме Музея связи имени Попова, формат включает танцевальные вечера, мастер-классы и концерты для жителей 55+.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== МУНИЦИПАЛЬНОЕ ===== -->
+        <div class="tab-content" id="tab-municipal" role="tabpanel">
+            <div class="accordion">
+                <div class="accordion-item open">
+                    <button class="accordion-header">
+                        <span>Условия получения</span>
+                        <span class="arrow">▾</span>
+                    </button>
+                    <div class="accordion-body">
+                        <p>Средства местных бюджетов или конкурсы, которые запускают администрации городов и районов. Часто решают локальные задачи: доступность досуга в конкретном районе, поддержка местных инициатив.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        <span>Реальные программы и примеры</span>
+                        <span class="arrow">▾</span>
+                    </button>
+                    <div class="accordion-body">
+                        <p><strong>Муниципальный грантовый конкурс для учреждений культуры (на примере одного из городских округов Московской области).</strong> Конкурс ежегодно проводится администрацией муниципалитета для библиотек, домов культуры и музеев. В номинациях есть направление «Проекты для старшего поколения»: поддерживаются клубы по интересам, литературные гостиные, мастер-классы по рукоделию и цифровой грамотности. Типичный объем гранта — до 300–500 тысяч рублей, обязательное условие — софинансирование от учреждения (собственные ресурсы, партнёрские взносы, волонтерский труд).</p>
+
+                        <p><strong>Пример:</strong> библиотека в одном из округов реализовала проект «Книжный клуб 60+»: встречи раз в две недели, обсуждение классики и современной прозы, небольшие выставки, фотоотчёты в соцсетях. Проект получил муниципальный грант, а софинансирование обеспечили за счет предоставления помещения и работы библиотекарей. Такие конкурсы хорошо подходят для «точечных» инициатив, которые закрывают конкретные локальные потребности и легко измеряются количеством участников, повторными посещениями, отзывами.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Футер -->
+        <div class="footer-note">
+            <span>Уровни финансирования: федеральный, региональный, муниципальный</span>
+            <span>Актуально на 2026 год</span>
+        </div>
+
+    </div>
+
+    <script>
+        (function() {
+            // ---- вкладки ----
+            const tabs = document.querySelectorAll('.tab-btn');
+            const contents = {
+                federal: document.getElementById('tab-federal'),
+                regional: document.getElementById('tab-regional'),
+                municipal: document.getElementById('tab-municipal')
+            };
+
+            tabs.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const target = this.dataset.tab;
+                    tabs.forEach(b => b.classList.remove('active'));
+                    Object.values(contents).forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    if (contents[target]) contents[target].classList.add('active');
+                });
+            });
+
+            // ---- аккордеон ----
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const item = this.closest('.accordion-item');
+                    if (!item) return;
+                    item.classList.toggle('open');
+                });
+            });
+
+            // ---- PDF через window.print() ----
+            document.getElementById('pdfButton').addEventListener('click', function() {
+                window.print();
+            });
+        })();
+    </script>
+
+</body>
+</html>
