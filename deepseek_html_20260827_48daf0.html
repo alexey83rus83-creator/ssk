@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Востребованные форматы активного долголетия</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #e6f0fa;
+            padding: 24px 16px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 960px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 102, 204, 0.12);
+            padding: 28px 24px;
+            border: 1px solid #c2d9f0;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1a2a3a;
+            letter-spacing: -0.01em;
+        }
+
+        .header .sub {
+            font-size: 14px;
+            color: #0066cc;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .btn-pdf {
+            background: #0066cc;
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            padding: 10px 22px;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .btn-pdf:hover {
+            background: #004d99;
+        }
+
+        .btn-pdf svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 6px;
+            border-bottom: 2px solid #c2d9f0;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #4a6a8a;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.15s ease;
+            border-radius: 0;
+        }
+
+        .tab-btn:hover {
+            color: #1a2a3a;
+            background: #e6f0fa;
+        }
+
+        .tab-btn.active {
+            color: #0066cc;
+            border-bottom-color: #0066cc;
+            background: transparent;
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Accordion */
+        .accordion-item {
+            border: 1px solid #c2d9f0;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            background: #f6faff;
+            transition: border-color 0.2s;
+        }
+
+        .accordion-item:hover {
+            border-color: #80b5e6;
+        }
+
+        .accordion-header {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 14px 18px;
+            text-align: left;
+            font-size: 15px;
+            font-weight: 500;
+            color: #1a2a3a;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            transition: background 0.15s;
+        }
+
+        .accordion-header:hover {
+            background: #e4eff9;
+        }
+
+        .accordion-header .arrow {
+            font-size: 13px;
+            color: #0066cc;
+            transition: transform 0.25s ease;
+            flex-shrink: 0;
+        }
+
+        .accordion-item.open .accordion-header .arrow {
+            transform: rotate(180deg);
+        }
+
+        .accordion-body {
+            padding: 0 18px 16px 18px;
+            display: none;
+            color: #1a2a3a;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .accordion-item.open .accordion-body {
+            display: block;
+        }
+
+        .accordion-body p {
+            margin-bottom: 8px;
+        }
+
+        .accordion-body ul {
+            padding-left: 22px;
+            margin: 4px 0 8px 0;
+        }
+
+        .accordion-body li {
+            margin-bottom: 4px;
+        }
+
+        .accordion-body strong {
+            color: #0066cc;
+            font-weight: 600;
+        }
+
+        .accordion-body .project-example {
+            background: #ffffff;
+            border-left: 3px solid #0066cc;
+            padding: 10px 14px;
+            margin: 8px 0 4px 0;
+            border-radius: 0 6px 6px 0;
+            font-size: 14px;
+        }
+
+        .accordion-body .project-example strong {
+            color: #0066cc;
+        }
+
+        .footer-note {
+            margin-top: 24px;
+            font-size: 14px;
+            color: #004d99;
+            border-top: 1px solid #c2d9f0;
+            padding-top: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .footer-note span {
+            background: #e6f0fa;
+            padding: 2px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            color: #004d99;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+                padding: 20px;
+                border: 1px solid #ccc;
+            }
+            .btn-pdf {
+                display: none;
+            }
+            .accordion-body {
+                display: block !important;
+            }
+            .accordion-item {
+                border: 1px solid #ccc;
+                page-break-inside: avoid;
+            }
+            .accordion-header .arrow {
+                display: none;
+            }
+            .accordion-header {
+                cursor: default;
+            }
+            .accordion-header:hover {
+                background: transparent;
+            }
+            .tab-content {
+                display: block !important;
+            }
+            .tabs {
+                display: none;
+            }
+            .tab-btn {
+                display: none;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 16px 12px;
+            }
+            .header h1 {
+                font-size: 19px;
+            }
+            .tab-btn {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+            .accordion-header {
+                padding: 12px 14px;
+                font-size: 14px;
+            }
+            .accordion-body {
+                padding: 0 14px 14px 14px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="referenceContainer">
+
+        <!-- Шапка -->
+        <div class="header">
+            <div>
+                <h1>Востребованные форматы активного долголетия</h1>
+                <div class="sub">Выберите тип формата → разверните варианты активностей и примеры проектов</div>
+            </div>
+            <button class="btn-pdf" id="pdfButton">
+                <svg viewBox="0 0 24 24"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>
+                Скачать PDF
+            </button>
+        </div>
+
+        <!-- Вкладки -->
+        <div class="tabs" role="tablist">
+            <button class="tab-btn active" data-tab="sport" role="tab">Спортивно-оздоровительные</button>
+            <button class="tab-btn" data-tab="creative" role="tab">Творческие и досуговые</button>
+            <button class="tab-btn" data-tab="education" role="tab">Социально-образовательные</button>
+            <button class="tab-btn" data-tab="tourism" role="tab">Социальный туризм</button>
+            <button class="tab-btn" data-tab="cognitive" role="tab">Когнитивное здоровье</button>
+            <button class="tab-btn" data-tab="combined" role="tab">Комбинации форматов</button>
+        </div>
+
+        <!-- ===== СПОРТИВНО-ОЗДОРОВИТЕЛЬНЫЕ ===== -->
+        <div class="tab-content active" id="tab-sport" role="tabpanel">
+            <div class="accordion">
+                <div class="accordion-item open">
+                    <button class="accordion-header">
+                        <span>Варианты активностей</span>
+                        <span class="arrow">▾</span>
+                    </button>
+                    <div class="accordion-body">
+                        <p>Суставная гимнастика, адаптивная йога, дыхательные практики, пилатес, северная ходьба, фейсфитнес, лечебная физкультура, настольный теннис, городки. Занятия должны быть посильными и, по возможности, учитывать состояние здоровья участников.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        <span>Примеры проектов</span>
+                        <span class="arrow">▾</span>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="project-example">
+                            <strong>«Серебряный ритм» (Забайкальский край).</strong> Проект включил танцевально-двигательные программы для людей 50+ с разным уровнем подготовки. Занятия проходят в группах начального, среднего и продвинутого уровня. Участники выступают на городских площадках, участвуют в фестивалях. Проект решает задачи социализации и оздоровления через физическую активность.
+                        </div>
+                        <div class="project-example">
+                            <strong>«Движение — жизнь» (в рамках программы «Балтийское долголетие»).</strong> Организация регулярных занятий скандинавской ходьбой и суставной гимнастикой для жителей 55+. Занятия проводят инструкторы по адаптивной физкультуре. Проект получил грант областного бюджета.
+                        </div>
+                        <div class="project-example">
+                            <strong>«Здоровая спина» (муниципальный проект, Московская область).</strong> Цикл занятий лечебной физкультурой и пилатесом для маломобильных участников. Занятия проходят в малых группах до 10 человек, учитывают индивидуальные ограничения здоровья.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== ТВОРЧЕСКИЕ И ДОСУГОВЫЕ ===== -->
+        <div class="tab-content" id="tab-creative" role="tabpanel">
+            <div class="accordion">
+                <div class="accordion-item open">
+                    <button class="accordion-header">
+                        <span>Варианты активностей</span>
+                        <span class="arrow">▾</span>
+                    </button>
+                    <div class="accordion-body">
+                        <p>Мастер-классы — шитье, декупаж, организация пространства, арт-терапия, театральные студии, литературные клубы, хоровое пение, рисование, рукоделие.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        <span>Примеры проектов</span>
+                        <span class="arrow">▾</span>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="project-example">
+                            <strong>«Связь поколений» (МБУ «ЦКД "Кедр"», п. Карымкары).</strong> Проект получил грант Президентского фонда культурных инициатив. В рамках проекта работают любительские объединения по декоративно-прикладному творчеству, вокалу. Итог — концерт ко Дню пожилого человека, объединивший участников всех возрастов.
+                        </div>
+                        <div class="project-example">
+                            <strong>«Яркая осень жизни» (Гвардейская библиотека, Калининградская область).</strong> Проект включает клубы по интересам, творческие мастер-классы. На средства гранта (361,9 тыс. рублей) приобретено звуковое и световое оборудование для мероприятий.
+                        </div>
+                        <div class="project-example">
+                            <strong>«Серебряная молодёжь» (Музеи Выксы).</strong> Творческая лаборатория для людей 55+ и лиц с ОВЗ. Направления: «История семьи в истории Выксы» (работа с архивами), «Выксунские мотивы в современном искусстве», занятия по текстилю, фотографии, арт-медиации. Итог — выставка работ участников в музейном пространстве.
+                        </div>
+                        <div class="project-example">
+                            <strong>«Мечты не стареют!» (Челябинск).</strong> Проект включает хоровые занятия, актёрское мастерство, живопись и хореографию. Итог — спектакль-перформанс с участием «серебряных» артистов для 200+ зрителей.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== СОЦИАЛЬНО-ОБРАЗОВАТЕЛЬНЫЕ ===== -->
+        <div class="tab-content" id="tab-education" role="tabpanel">
+            <div class="accordion">
+                <div class="accordion-item open">
+                    <button class="accordion-header">
+                        <span>Варианты активностей</span>
+                        <span class="arrow">▾</span>
+                    </button>
+                    <div class="accordion-body">
+                        <p>Лекции и семинары с профильными специалистами, например, юристами, психологами, курсы по освоению цифровых сервисов и кибербезопасности, изучение иностранных языков.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        <span>Примеры проектов</span>
+                        <span class="arrow">▾</span>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="project-example">
+                            <strong>«Пульс жизни» (Калининградская библиотека).</strong> Проект по содействию активному образу жизни и культурной занятости пожилых людей. Включает лекции по здоровому образу жизни, встречи с врачами и психологами. Сумма гранта — 365,6 тыс. рублей.
+                        </div>
+                        <div class="project-example">
+                            <strong>«Цифровая грамотность для старшего поколения» (в рамках «Активного долголетия» Московской области).</strong> Курсы по освоению смартфонов, работе с Госуслугами, онлайн-банкингом и правилам кибербезопасности. Занятия проводят волонтёры-студенты на базе библиотек и домов культуры.
+                        </div>
+                        <div class="project-example">
+                            <strong>«Школа здоровья» (совместный проект поликлиники и ДК, Республика Коми).</strong> Лекции о профилактике когнитивных нарушений, «тихие» активности для маломобильных граждан. Проект реализуется в связке с нацпроектом «Продолжительная и активная жизнь».
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== СОЦИАЛЬНЫЙ ТУРИЗМ ===== -->
+        <div class="tab-content" id="tab-tourism" role="tabpanel">
+            <div class="accordion">
+                <div class="accordion-item open">
+                    <button class="accordion-header">
+                        <span>Варианты активностей</span>
+                        <span class="arrow">▾</span>
+                    </button>
+                    <div class="accordion-body">
+                        <p>Организованные поездки и экскурсии по интересным местам региона. Пешеходные, автобусные и водные экскурсии. Посещение музеев, исторических усадеб, природных заповедников, архитектурных памятников. Краеведческие маршруты с профессиональными гидами. Комбинированные туры с мастер-классами и дегустациями местных продуктов.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        <span>Примеры проектов</span>
+                        <span class="arrow">▾</span>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="project-example">
+                            <strong>«Книга позвала в дорогу» (Светловская библиотека, Калининградская область).</strong> Проект получил грант в размере 65 тыс. рублей. Организация литературных экскурсий по местам, связанным с жизнью и творчеством писателей, для людей старшего поколения.
+                        </div>
+                        <div class="project-example">
+                            <strong>«Старина Сибирская» (Омская область).</strong> Экскурсия для пожилых туристов в архитектурно-этнографический комплекс с мастер-классами по гончарному делу, резьбе по дереву, изготовлению кукол-оберегов. Проект сочетает познавательный туризм и практические занятия.
+                        </div>
+                        <div class="project-example">
+                            <strong>Экскурсионная программа «Балтийского долголетия».</strong> Организованные автобусные экскурсии для участников программы по историческим местам Калининградской области. В прошлом году поддержано 266 проектов, общий объём финансирования — около 87,4 млн рублей.
+                        </div>
+                        <div class="project-example">
+                            <strong>«Забайкальское долголетие: вместе, чтобы жить» (Чита).</strong> Проект включает походы в кино и театр, экскурсии по городу и области, туристические выезды на природу с элементами оздоровительных практик.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== КОГНИТИВНОЕ ЗДОРОВЬЕ ===== -->
+        <div class="tab-content" id="tab-cognitive" role="tabpanel">
+            <div class="accordion">
+                <div class="accordion-item open">
+                    <button class="accordion-header">
+                        <span>Варианты активностей</span>
+                        <span class="arrow">▾</span>
+                    </button>
+                    <div class="accordion-body">
+                        <p>Занятия, которые тренируют память, внимание, творческое мышление. Интеллектуальные игры — шахматы, шашки, викторины, квизы. Литературные и поэтические вечера с обсуждением. Творческие задания на воображение — коллажи, эссе, ведение дневников. Нейробика — упражнения на развитие новых нейронных связей. Краеведческие исследования и работа с архивами. Ведение устных и письменных воспоминаний, создание семейных хроник.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        <span>Примеры проектов</span>
+                        <span class="arrow">▾</span>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="project-example">
+                            <strong>«Культурное долголетие» (проект Минкультуры России).</strong> В 15 пилотных регионах выставки и творческие лаборатории размещают в центрах активного долголетия, МФЦ, больницах. Например, в Калининграде в отделениях МФЦ работают цифровые выставки Калининградского музея изобразительных искусств («Радости жизни», «Широка страна моя родная»). Проект направлен на поддержку когнитивного здоровья через творчество.
+                        </div>
+                        <div class="project-example">
+                            <strong>«БИБЛИОПАРК — территория возможностей и творчества» (Советская библиотека, Калининградская область).</strong> Проект включает литературные викторины, интеллектуальные игры, клубы обсуждения книг. Сумма гранта — 497,3 тыс. рублей. Мероприятия направлены на тренировку памяти и внимания.
+                        </div>
+                        <div class="project-example">
+                            <strong>Арт-терапевтические занятия в рамках «Серебряной молодёжи» (Музеи Выксы).</strong> Занятия по арт-медиации и работе с музейными архивами стимулируют когнитивные процессы через творческое осмысление исторического материала.
+                        </div>
+                        <div class="project-example">
+                            <strong>«История семьи в истории города» (краеведческий проект, Республика Татарстан).</strong> Пожилые участники изучают семейные архивы, посещают краеведческие музеи, записывают воспоминания, создают выставки семейных реликвий. Проект тренирует память и укрепляет связь поколений.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== КОМБИНАЦИИ ФОРМАТОВ ===== -->
+        <div class="tab-content" id="tab-combined" role="tabpanel">
+            <div class="accordion">
+                <div class="accordion-item open">
+                    <button class="accordion-header">
+                        <span>Варианты активностей</span>
+                        <span class="arrow">▾</span>
+                    </button>
+                    <div class="accordion-body">
+                        <p>Комбинации форматов. Например, «Формула активного долголетия: ЛФК и творческие мастерские». Такой микс часто оценивают положительно, потому что он комплексно решает задачи программы. Варианты: танцы + мастер-классы, экскурсии + когнитивные упражнения, творческие лаборатории + образовательные лекции.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-header">
+                        <span>Примеры проектов</span>
+                        <span class="arrow">▾</span>
+                    </button>
+                    <div class="accordion-body">
+                        <div class="project-example">
+                            <strong>«Городские танцевальные веранды» (Санкт-Петербург).</strong> Проект сочетает физическую активность (танцы), творчество (концертные выступления коллективов) и социализацию. В программе: танцевальные блоки (вальс, танго, народные, современные), мастер-классы от ведущих, концертные вставки, дополнительные активности (гигантские шахматы, VR-экскурсии). За 10 программ 2026 года площадку посетили 33 911 человек.
+                        </div>
+                        <div class="project-example">
+                            <strong>«Забайкальское долголетие: вместе, чтобы жить» (Чита).</strong> Проект объединяет походы в кино и театр, занятия в «Волшебной мастерской» (рукоделие, настольные игры), экскурсии. Комплексный подход помогает бороться с одиночеством и развивать разные навыки.
+                        </div>
+                        <div class="project-example">
+                            <strong>«Активное долголетие» (Московская область).</strong> Программа включает экскурсии, творческие студии, спортивные активности и обучение цифровым навыкам. Финансирование — через субсидии учреждениям и поддержку НКО. Комбинированный формат позволяет охватить разные потребности аудитории.
+                        </div>
+                        <div class="project-example">
+                            <strong>Программа «Серебряный возраст» (Санкт-Петербург).</strong> Объединяет социальные, культурные и досуговые форматы: танцевальные веранды, экскурсии, творческие мастерские, лекции. Проекты финансируются из городского бюджета по поручению губернатора.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Футер -->
+        <div class="footer-note">
+            <span>Для проектов в сфере культуры и социальной поддержки</span>
+            <span>Актуально на 2026 год</span>
+        </div>
+
+    </div>
+
+    <script>
+        (function() {
+            // ---- вкладки ----
+            const tabs = document.querySelectorAll('.tab-btn');
+            const contents = {};
+            document.querySelectorAll('.tab-content').forEach(el => {
+                contents[el.id] = el;
+            });
+
+            tabs.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const target = this.dataset.tab;
+                    tabs.forEach(b => b.classList.remove('active'));
+                    Object.values(contents).forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    const targetEl = document.getElementById('tab-' + target);
+                    if (targetEl) targetEl.classList.add('active');
+                });
+            });
+
+            // ---- аккордеон ----
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const item = this.closest('.accordion-item');
+                    if (!item) return;
+                    item.classList.toggle('open');
+                });
+            });
+
+            // ---- PDF через window.print() ----
+            document.getElementById('pdfButton').addEventListener('click', function() {
+                window.print();
+            });
+        })();
+    </script>
+
+</body>
+</html>
