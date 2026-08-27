@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Конструктор заявок в программу долголетия</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #e8f5e9;
+            padding: 24px 16px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            align-items: flex-start;
+        }
+
+        .container {
+            max-width: 960px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(46, 125, 50, 0.12);
+            padding: 28px 24px;
+            border: 1px solid #a5d6a7;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1a3a1a;
+            letter-spacing: -0.01em;
+        }
+
+        .header .sub {
+            font-size: 14px;
+            color: #2e7d32;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .btn-pdf {
+            background: #2e7d32;
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            padding: 10px 22px;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .btn-pdf:hover {
+            background: #1b5e20;
+        }
+
+        .btn-pdf svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        .selector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .selector-group {
+            background: #f1f8e9;
+            border-radius: 10px;
+            padding: 14px 16px;
+            border: 1px solid #a5d6a7;
+        }
+
+        .selector-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            color: #1a3a1a;
+            margin-bottom: 6px;
+        }
+
+        .selector-group .desc {
+            font-size: 12px;
+            color: #4a7a4a;
+            margin-bottom: 8px;
+        }
+
+        .selector-group .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .selector-group .options button {
+            background: #ffffff;
+            border: 1.5px solid #a5d6a7;
+            border-radius: 30px;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #1a3a1a;
+            cursor: pointer;
+            transition: all 0.15s;
+            flex: 1 0 auto;
+        }
+
+        .selector-group .options button:hover {
+            border-color: #2e7d32;
+            background: #e8f5e9;
+        }
+
+        .selector-group .options button.selected {
+            border-color: #2e7d32;
+            background: #2e7d32;
+            color: #ffffff;
+        }
+
+        .result-block {
+            display: none;
+            border: 2px solid #2e7d32;
+            border-radius: 12px;
+            padding: 20px 22px;
+            background: #f1f8e9;
+            margin-top: 16px;
+        }
+
+        .result-block.visible {
+            display: block;
+        }
+
+        .result-block h3 {
+            font-size: 18px;
+            color: #2e7d32;
+            margin-bottom: 12px;
+        }
+
+        .result-block .section {
+            margin-bottom: 12px;
+        }
+
+        .result-block .section h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a3a1a;
+            border-bottom: 1px solid #a5d6a7;
+            padding-bottom: 4px;
+            margin-bottom: 6px;
+        }
+
+        .result-block .section p,
+        .result-block .section li {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #1a3a1a;
+        }
+
+        .result-block .section ul {
+            padding-left: 20px;
+        }
+
+        .result-block .section ul li {
+            margin-bottom: 3px;
+        }
+
+        .result-block .section strong {
+            color: #2e7d32;
+        }
+
+        .hint-text {
+            font-size: 14px;
+            color: #4a7a4a;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #f1f8e9;
+            border-radius: 8px;
+            border: 1px dashed #a5d6a7;
+        }
+
+        .hint-text strong {
+            color: #2e7d32;
+        }
+
+        .footer-note {
+            margin-top: 24px;
+            font-size: 14px;
+            color: #1b5e20;
+            border-top: 1px solid #a5d6a7;
+            padding-top: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .footer-note span {
+            background: #e8f5e9;
+            padding: 2px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            color: #1b5e20;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                border: 1px solid #ccc;
+                border-radius: 0;
+            }
+            .btn-pdf {
+                display: none;
+            }
+            .selector-grid {
+                display: none;
+            }
+            .hint-text {
+                display: none;
+            }
+            .result-block {
+                display: block !important;
+                border: 1px solid #000;
+                background: #fff;
+            }
+            .result-block .section h4 {
+                border-bottom-color: #ccc;
+            }
+            .footer-note {
+                border-top-color: #ccc;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 16px 12px;
+            }
+            .header h1 {
+                font-size: 19px;
+            }
+            .selector-grid {
+                grid-template-columns: 1fr;
+            }
+            .selector-group .options button {
+                font-size: 12px;
+                padding: 5px 10px;
+            }
+            .result-block {
+                padding: 16px;
+            }
+            .result-block .section p,
+            .result-block .section li {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="constructorContainer">
+
+        <div class="header">
+            <div>
+                <h1>Конструктор заявок в программу долголетия</h1>
+                <div class="sub">Выберите параметры → получите готовую заявку</div>
+            </div>
+            <button class="btn-pdf" id="pdfButton">
+                <svg viewBox="0 0 24 24"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>
+                Скачать PDF
+            </button>
+        </div>
+
+        <div class="selector-grid">
+
+            <div class="selector-group" data-group="format">
+                <label>Формат проекта</label>
+                <div class="desc">Выберите основной формат</div>
+                <div class="options">
+                    <button data-value="dance">Танцевальная программа</button>
+                    <button data-value="cinema">Киноклуб</button>
+                    <button data-value="excursion">Экскурсия</button>
+                    <button data-value="master">Мастер-класс</button>
+                    <button data-value="bookclub">Книжный клуб</button>
+                    <button data-value="walking">Клуб скандинавской ходьбы</button>
+                </div>
+            </div>
+
+            <div class="selector-group" data-group="institution">
+                <label>Тип учреждения</label>
+                <div class="desc">Где будет проходить проект</div>
+                <div class="options">
+                    <button data-value="library">Библиотека</button>
+                    <button data-value="museum">Музей</button>
+                    <button data-value="dk">Клубно-досуговое</button>
+                    <button data-value="theater">Театр</button>
+                    <button data-value="park">Парк</button>
+                </div>
+            </div>
+
+            <div class="selector-group" data-group="age">
+                <label>Возрастная группа</label>
+                <div class="desc">Целевая аудитория</div>
+                <div class="options">
+                    <button data-value="60">60+</button>
+                    <button data-value="70">70+</button>
+                    <button data-value="80">80+</button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="result-block" id="resultBlock">
+            <h3>Заявка на участие в программе долголетия</h3>
+            <div id="templateContent"></div>
+        </div>
+
+        <div class="hint-text" id="hintText">
+            <strong>Выберите все три параметра</strong> — и получите готовую заявку для вашего учреждения.
+        </div>
+
+        <div class="footer-note">
+            <span>На основе реальных проектов для старшего поколения</span>
+            <span>Актуально на 2026 год</span>
+        </div>
+
+    </div>
+
+    <script>
+        (function() {
+            const groups = document.querySelectorAll('.selector-group');
+            const resultBlock = document.getElementById('resultBlock');
+            const templateContent = document.getElementById('templateContent');
+            const hintText = document.getElementById('hintText');
+
+            const state = {
+                format: null,
+                institution: null,
+                age: null
+            };
+
+            const formatTemplates = {
+                dance: {
+                    name: 'Танцевальная программа',
+                    nameFull: 'Танцевальная программа «Ритм без возраста»',
+                    problem: 'По данным опроса жителей, 68% людей старше 55 лет хотели бы двигаться под музыку, но опасаются интенсивных нагрузок. В рамках программы «Активное долголетие» это напрямую решает задачу вовлечения в культурно-досуговые мероприятия и поддержания физической активности.',
+                    goal: 'Запустить адаптированную танцевальную программу для людей старшего возраста. Ожидаемый охват: 40 уникальных участников за 6 месяцев.',
+                    formatDesc: '12 занятий по 60 минут (1 раз в неделю). Структура: суставная разминка, 3 простые связки по 8 тактов, заминка. Музыка: ретро-хиты 60-90-х, латина в медленном темпе. Ведущий: хореограф с опытом работы с возрастной аудиторией.',
+                    results: 'Количественные: 12 мероприятий, 360 посещений, 40 уникальных участников, 25% повторных посещений. Качественные: по итогам анкетирования 75% участников отметят улучшение настроения, 60% — снижение скованности в движениях.',
+                    resources: 'Бюджет: оплата труда ведущего, аренда аудиооборудования, расходные материалы (коврики). Собственный вклад: помещение, администратор для координации, фотофиксация. Партнёры: местный центр соцобслуживания (для привлечения участников), волонтёрская группа (помощь в организации).',
+                    sustainability: 'После проекта останутся методические материалы (карточки связок, плейлист). Планируется переход на самоорганизуемые встречи 1 раз в месяц под кураторством волонтёра из числа участников.'
+                },
+                cinema: {
+                    name: 'Киноклуб',
+                    nameFull: 'Киноклуб «Кадр и время»',
+                    problem: 'В учреждении нет регулярных кинопоказов с обсуждением. При этом 72% опрошенных посетителей 55+ хотят обсуждать фильмы, но не знают, где это делать. В рамках программы это способствует социализации и приобщению к культурной жизни.',
+                    goal: 'Создать киноклуб для просмотра и обсуждения фильмов с акцентом на советское и постсоветское кино, экранизации классики. Охват: не менее 35 постоянных участников за полгода.',
+                    formatDesc: '8 встреч по 90 минут: 45 минут — просмотр (фрагмент или полный фильм), 45 минут — модерируемое обсуждение. Темы: «Экранизации классики», «Кино и история», «Актёры нашего детства». Модератор: сотрудник учреждения + приглашённый киновед (1-2 раза).',
+                    results: 'Количественные: 8 мероприятий, 280 посещений, 35 уникальных участников. Качественные: 80% участников отметят, что клуб помог почувствовать себя частью сообщества; 65% стали чаще посещать учреждение.',
+                    resources: 'Бюджет: лицензионные права на показ (если требуются), кофе-брейк, печать афиш. Собственный вклад: техника, помещение, подбор фильмов, продвижение в соцсетях. Партнёры: местный кинотеатр (подбор репертуара), ветеранская организация (анонсы).',
+                    sustainability: 'Сформируется «золотой список» фильмов и банк вопросов для обсуждений. Клуб может перейти на формат, где ведущим становится активный участник.'
+                },
+                excursion: {
+                    name: 'Экскурсия',
+                    nameFull: 'Экскурсия «История в деталях»',
+                    problem: 'Жители 55+ хорошо знают центр города, но редко замечают локальные детали и новые культурные смыслы. У учреждения нет регулярных экскурсионных форматов.',
+                    goal: 'Создать серию пешеходных экскурсий, связывающих историю района с деятельностью учреждения. Охват: 60 участников за 3 месяца.',
+                    formatDesc: '6 экскурсий по 75 минут, группы по 15 человек. Маршрут: от учреждения к 5-6 точкам (старое здание, памятная доска, бывшая типография, сквер). На каждой точке — мини-рассказ + показ 1-2 источников из фондов. Финиш: чаепитие и выдача подборки материалов.',
+                    results: 'Количественные: 6 экскурсий, 90 посещений (с учётом повторных), 60 уникальных участников. Качественные: 70% участников скажут, что узнали новое о районе; 50% возьмут материалы по локальной истории.',
+                    resources: 'Бюджет: печать буклетов, бейджи, вода/чай. Собственный вклад: сотрудники учреждения (экскурсоводы), архивные материалы, фотоархив. Партнёры: местный музей (методическая поддержка), совет ветеранов (помощь в анонсах).',
+                    sustainability: 'Создаётся паспорт маршрута и набор карточек с источниками. Экскурсии можно проводить 1 раз в месяц силами волонтёров.'
+                },
+                master: {
+                    name: 'Мастер-класс',
+                    nameFull: 'Мастер-класс «Сделай сам»',
+                    problem: 'У людей старшего возраста снижается мелкая моторика, а творческих мастерских в учреждении почти нет. При этом многие хотят делать подарки своими руками, но не знают, с чего начать.',
+                    goal: 'Провести серию мастер-классов по созданию простых изделий. Охват: 30 участников, не менее 50% — постоянные.',
+                    formatDesc: '4 мастер-класса по 90 минут. Темы: открытка-коллаж, мини-альбом для фото, блокнот для рецептов, декоративная салфетка. Материалы: картон, бумага, клей, нитки, обрезки тканей. Ведущий: художник-прикладник или опытный волонтёр.',
+                    results: 'Количественные: 4 занятия, 120 посещений, 30 уникальных участников. Качественные: 75% отметят улучшение самочувствия и настроения; 40% планируют продолжать заниматься дома.',
+                    resources: 'Бюджет: расходные материалы, инструменты, упаковка для готовых изделий. Собственный вклад: помещение, фотоотчёт, соцсети. Партнёры: магазин канцтоваров (скидка/образцы), НКО по инклюзии (адаптация заданий).',
+                    sustainability: 'Остаются шаблоны и инструкции, а также «уголок творчества» с базовыми материалами. Возможен цикл «Сделай сам» 1 раз в месяц.'
+                },
+                bookclub: {
+                    name: 'Книжный клуб',
+                    nameFull: 'Книжный клуб «60+»',
+                    problem: 'Читатели 55+ редко участвуют в книжных клубах, потому что темы и формат кажутся «слишком молодёжными». При этом спрос на обсуждение литературы есть.',
+                    goal: 'Запустить книжный клуб, где темы и формат адаптированы под интересы и ритм жизни людей старшего возраста. Охват: 25 постоянных участников за полгода.',
+                    formatDesc: '8 встреч по 90 минут. Темы: «Книги о нашем поколении», «Классика, которая актуальна сейчас», «Литературные детективы». На каждой встрече — обсуждение сюжета, персонажей, личных ассоциаций. Ведущий: сотрудник учреждения с опытом модерации дискуссий.',
+                    results: 'Количественные: 8 мероприятий, 200 посещений, 25 уникальных участников. Качественные: 80% участников отметят, что нашли единомышленников; 60% станут чаще брать книги в библиотеке.',
+                    resources: 'Бюджет: печать буклетов и закладок, кофе-брейк. Собственный вклад: помещение, подбор литературы, продвижение. Партнёры: местный центр досуга (совместные анонсы), волонтёрская группа (помощь в организации).',
+                    sustainability: 'Формируется список рекомендованных книг и банк вопросов для обсуждений. Клуб может перейти на самоорганизацию с ротацией ведущих среди участников.'
+                },
+                walking: {
+                    name: 'Клуб скандинавской ходьбы',
+                    nameFull: 'Клуб скандинавской ходьбы «Шаг за шагом»',
+                    problem: 'Среди людей старшего возраста есть запрос на доступную физическую активность на свежем воздухе, но не все знают, как правильно начать заниматься скандинавской ходьбой.',
+                    goal: 'Организовать регулярный клуб для обучения технике и безопасных тренировок. Охват: 30 участников за 6 месяцев.',
+                    formatDesc: '12 занятий по 60 минут (1 раз в неделю). Первые 2-3 встречи — обучение правильной технике держания палок и базовым движениям. Далее — регулярные прогулки по безопасным маршрутам с контролем инструктора.',
+                    results: 'Количественные: 12 занятий, 360 посещений, 30 уникальных участников. Качественные: по итогам анкетирования 70% участников отметят улучшение самочувствия и повышение тонуса; 50% продолжат заниматься самостоятельно.',
+                    resources: 'Бюджет: оплата инструктора, аренда палок (если нет своих), вода. Собственный вклад: подбор безопасных маршрутов, информирование участников о технике безопасности. Партнёры: местный фитнес-центр (методические консультации), центр соцобслуживания (привлечение участников).',
+                    sustainability: 'Создаются безопасные маршруты и чек-листы контроля самочувствия. Клуб может работать как самоорганизуемая группа под периодическим кураторством инструктора.'
+                }
+            };
+
+            const institutionLabels = {
+                library: 'библиотеке',
+                museum: 'музее',
+                dk: 'клубно-досуговом учреждении',
+                theater: 'театре',
+                park: 'парке'
+            };
+
+            const institutionFullLabels = {
+                library: 'Библиотека',
+                museum: 'Музей',
+                dk: 'Клубно-досуговое учреждение',
+                theater: 'Театр',
+                park: 'Парк'
+            };
+
+            const ageLabels = {
+                '60': '60+',
+                '70': '70+',
+                '80': '80+'
+            };
+
+            function generateTemplate() {
+                const formatData = formatTemplates[state.format];
+                if (!formatData) return null;
+
+                const institutionLabel = institutionLabels[state.institution] || 'учреждении культуры';
+                const institutionFull = institutionFullLabels[state.institution] || 'Учреждение культуры';
+                const ageLabel = ageLabels[state.age] || '60+';
+
+                return `
+                    <div class="section">
+                        <h4>Название проекта</h4>
+                        <p><strong>${formatData.nameFull}</strong></p>
+                    </div>
+                    <div class="section">
+                        <h4>Проблема</h4>
+                        <p>${formatData.problem.replace(/учреждения/g, institutionLabel).replace(/учреждение/g, institutionLabel)}</p>
+                    </div>
+                    <div class="section">
+                        <h4>Цель</h4>
+                        <p>${formatData.goal}</p>
+                    </div>
+                    <div class="section">
+                        <h4>Формат</h4>
+                        <p>Площадка: ${institutionFull}. ${formatData.formatDesc}</p>
+                        <p>Целевая аудитория: люди ${ageLabel}.</p>
+                    </div>
+                    <div class="section">
+                        <h4>Ожидаемые результаты</h4>
+                        <p>${formatData.results}</p>
+                    </div>
+                    <div class="section">
+                        <h4>Ресурсы</h4>
+                        <p>${formatData.resources}</p>
+                    </div>
+                    <div class="section">
+                        <h4>Устойчивость</h4>
+                        <p>${formatData.sustainability}</p>
+                    </div>
+                    <div class="section">
+                        <h4>Софинансирование</h4>
+                        <p>Учреждение предоставляет помещение, оборудование и труд сотрудников. Планируем привлечь партнёров для покрытия расходных материалов. Соотношение запрос : софинансирование — 60:40.</p>
+                    </div>
+                `;
+            }
+
+            function updateResult() {
+                const allSelected = state.format && state.institution && state.age;
+
+                if (allSelected) {
+                    const html = generateTemplate();
+                    if (html) {
+                        templateContent.innerHTML = html;
+                        resultBlock.classList.add('visible');
+                        hintText.style.display = 'none';
+                    }
+                } else {
+                    resultBlock.classList.remove('visible');
+                    hintText.style.display = 'block';
+                }
+            }
+
+            groups.forEach(group => {
+                const groupName = group.dataset.group;
+                const buttons = group.querySelectorAll('.options button');
+
+                buttons.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        buttons.forEach(b => b.classList.remove('selected'));
+                        this.classList.add('selected');
+                        state[groupName] = this.dataset.value;
+                        updateResult();
+                    });
+                });
+            });
+
+            document.getElementById('pdfButton').addEventListener('click', function() {
+                window.print();
+            });
+
+            updateResult();
+        })();
+    </script>
+
+</body>
+</html>
