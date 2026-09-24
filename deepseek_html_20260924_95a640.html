@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Чек-лист заявки — игра</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f5f5f7;
+    color: #1d1d1f;
+    line-height: 1.5;
+    padding: 20px;
+  }
+  .container { max-width: 780px; margin: 0 auto; }
+
+  header { margin-bottom: 20px; }
+  h1 { font-size: 24px; margin-bottom: 6px; }
+  .subtitle { color: #6e6e73; font-size: 14px; }
+
+  /* ----- статус-панель ----- */
+  .status-panel {
+    background: #fff; border-radius: 12px; padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    margin-bottom: 16px;
+    position: sticky; top: 12px; z-index: 10;
+    transition: box-shadow .2s;
+  }
+  .status-panel.danger { box-shadow: 0 2px 16px rgba(255,59,48,.18); }
+
+  .status-top {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px;
+  }
+  .status-counter {
+    font-size: 15px; font-weight: 600;
+  }
+  .status-counter .num {
+    font-size: 22px; color: #0071e3;
+  }
+  .status-msg {
+    font-size: 13px; font-weight: 600;
+    padding: 5px 12px; border-radius: 20px;
+  }
+  .msg-red { background: #ffebee; color: #c62828; }
+  .msg-yellow { background: #fff8e1; color: #8d6e00; }
+  .msg-green { background: #e8f5e9; color: #2e7d32; }
+
+  .progress-track {
+    height: 10px; background: #e8e8ed; border-radius: 5px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; border-radius: 5px;
+    transition: width .3s, background .3s;
+    background: #ff3b30;
+  }
+  .progress-fill.warn { background: #ff9500; }
+  .progress-fill.ok { background: #ffcc00; }
+  .progress-fill.great { background: #34c759; }
+
+  .danger-banner {
+    display: none;
+    margin-top: 12px; padding: 12px 14px;
+    background: #ffebee; border-left: 4px solid #ff3b30;
+    border-radius: 8px;
+    font-size: 13px; color: #c62828; font-weight: 600;
+  }
+  .danger-banner.show { display: block; }
+
+  /* ----- чек-лист ----- */
+  .checklist { display: flex; flex-direction: column; gap: 8px; }
+
+  .check-item {
+    background: #fff; border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    overflow: hidden;
+    transition: box-shadow .15s, transform .1s;
+  }
+  .check-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,.10); }
+  .check-item.done { background: #f8fdf9; }
+
+  .check-head {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 14px 16px;
+    cursor: pointer; user-select: none;
+  }
+
+  .check-box {
+    flex-shrink: 0;
+    width: 24px; height: 24px;
+    border: 2px solid #d2d2d7; border-radius: 7px;
+    background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .15s;
+    margin-top: 1px;
+  }
+  .check-box::after {
+    content: '✓';
+    color: #fff; font-size: 15px; font-weight: 700;
+    opacity: 0; transform: scale(.5);
+    transition: all .15s;
+  }
+  .check-item.done .check-box {
+    background: #34c759; border-color: #34c759;
+  }
+  .check-item.done .check-box::after { opacity: 1; transform: scale(1); }
+
+  .check-text {
+    flex: 1; font-size: 14px; font-weight: 500;
+    transition: color .15s;
+  }
+  .check-item.done .check-text {
+    color: #6e6e73;
+    text-decoration: line-through;
+    text-decoration-color: #a0d8a8;
+  }
+
+  .check-arrow {
+    flex-shrink: 0; color: #c0c0c5; font-size: 11px;
+    transition: transform .2s; margin-top: 5px;
+  }
+  .check-item.open .check-arrow { transform: rotate(180deg); }
+
+  .check-body {
+    max-height: 0; overflow: hidden;
+    transition: max-height .25s ease;
+  }
+  .check-item.open .check-body { max-height: 400px; }
+
+  .check-body-inner {
+    padding: 0 16px 16px 52px;
+    font-size: 13px; color: #4a4a4f;
+    border-top: 1px solid #f0f0f2;
+    margin-top: 0;
+    padding-top: 14px;
+  }
+  .check-body-inner .risk {
+    display: inline-block; padding: 2px 8px;
+    border-radius: 5px; font-size: 11px; font-weight: 700;
+    margin-right: 6px;
+  }
+  .risk-low { background: #e8f5e9; color: #2e7d32; }
+  .risk-mid { background: #fff3e0; color: #e65100; }
+  .risk-high { background: #ffebee; color: #c62828; }
+
+  /* ----- кнопки ----- */
+  .toolbar {
+    display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
+  }
+  .btn {
+    padding: 9px 16px; border: 1.5px solid #d2d2d7;
+    background: #fff; border-radius: 8px;
+    font-size: 13px; font-weight: 600;
+    color: #1d1d1f; cursor: pointer;
+    transition: all .15s;
+  }
+  .btn:hover { border-color: #0071e3; color: #0071e3; }
+  .btn:active { background: #f0f7ff; }
+  .btn-primary {
+    background: #0071e3; border-color: #0071e3; color: #fff;
+  }
+  .btn-primary:hover { background: #0077ed; border-color: #0077ed; color: #fff; }
+  .btn-primary:disabled {
+    background: #d2d2d7; border-color: #d2d2d7;
+    cursor: not-allowed; opacity: .7;
+  }
+
+  .footer-actions {
+    display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap;
+  }
+  .footer-actions .btn { flex: 1; min-width: 160px; }
+
+  /* ----- печать ----- */
+  @media print {
+    body { background: #fff; padding: 0; }
+    .toolbar, .footer-actions, .progress-track, .danger-banner { display: none !important; }
+    .status-panel { position: static; box-shadow: none; border-bottom: 1px solid #ddd; border-radius: 0; }
+    .check-item { box-shadow: none; border: 1px solid #e0e0e0; page-break-inside: avoid; }
+    .check-body { max-height: none !important; }
+    .check-arrow { display: none; }
+    .check-item.open .check-body { max-height: none; }
+    .check-body-inner { padding-bottom: 12px; }
+  }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 20px; }
+    .check-body-inner { padding-left: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>Чек-лист заявки</h1>
+    <p class="subtitle">15 пунктов. Меньше 3 — заявка не получит высоких баллов</p>
+  </header>
+
+  <!-- СТАТУС-ПАНЕЛЬ -->
+  <div class="status-panel" id="statusPanel">
+    <div class="status-top">
+      <div class="status-counter">
+        Отмечено: <span class="num" id="counter">0</span> из 15
+      </div>
+      <div class="status-msg msg-red" id="statusMsg">Заявка провалена</div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="danger-banner" id="dangerBanner">
+      ⚠ Отмечено меньше 3 пунктов. Заявка не получит высоких баллов ни по одному критерию. Проверьте уникальность, бюджет и партнёров в первую очередь.
+    </div>
+  </div>
+
+  <!-- КНОПКИ УПРАВЛЕНИЯ -->
+  <div class="toolbar">
+    <button class="btn" onclick="expandAll(true)">Развернуть все</button>
+    <button class="btn" onclick="expandAll(false)">Свернуть все</button>
+    <button class="btn" onclick="resetAll()">Сбросить</button>
+  </div>
+
+  <!-- ЧЕК-ЛИСТ -->
+  <div class="checklist" id="checklist"></div>
+
+  <!-- КНОПКИ ВНИЗУ -->
+  <div class="footer-actions">
+    <button class="btn btn-primary" id="pdfBtn" onclick="downloadPDF()" disabled>
+      Скачать PDF
+    </button>
+  </div>
+
+</div>
+
+<script>
+/* ================= ДАННЫЕ ================= */
+const items = [
+  {
+    text: 'Названы аналоги и отличия',
+    risk: 'high',
+    riskLabel: '0-2 балла',
+    body: 'Формулировка «аналогов нет» без конкретики — 0–2 балла по критерию «Уникальность». Укажите 2–3 организации с похожими проектами и опишите, чем ваш отличается: в подходе, аудитории, формате.'
+  },
+  {
+    text: 'Живые изображения, не стоковые',
+    risk: 'mid',
+    riskLabel: 'Снижение балла',
+    body: 'Стоковые фото снижают балл по концепции. Приложите фотографии команды, локаций, прошлых проектов, собственную инфографику, референсы из реальных источников.'
+  },
+  {
+    text: 'Бюджет подтвержден документами, без завышений',
+    risk: 'mid',
+    riskLabel: 'Снижение балла',
+    body: 'Экспертный совет почти не урезает суммы, но снижает баллы за нереалистичный бюджет. Приложите коммерческие предложения или расчеты к каждой статье. Дублирующиеся и задвоенные расходы уберите.'
+  },
+  {
+    text: 'Цель сформулирована без «посредством» и «через»',
+    risk: 'high',
+    riskLabel: 'Путаница',
+    body: '«Популяризация традиций посредством фестиваля» — это путаница цели и средств. Цель — итоговое состояние, механизм — в задачах.'
+  },
+  {
+    text: 'Задачи — не мероприятия',
+    risk: 'high',
+    riskLabel: 'Смысловая ошибка',
+    body: '«Провести 5 мастер-классов» — это мероприятие, а не задача. Задача отвечает на «что достичь», мероприятие — на «что сделать».'
+  },
+  {
+    text: 'В календарном плане не менее 3 мероприятий, на каждую задачу — не менее 2',
+    risk: 'high',
+    riskLabel: '0-2 балла',
+    body: 'Меньше — 0–2 балла по критерию «Логическая связность». Одна из задач — информационное продвижение.'
+  },
+  {
+    text: 'Сроки конкретные, без «в течение всего проекта»',
+    risk: 'mid',
+    riskLabel: 'Низкий балл',
+    body: 'Размытые сроки — низкий балл по реализуемости. Даты мероприятий покрывают весь период реализации: если аренда и зарплаты запрошены на весь срок, работа должна идти весь срок.'
+  },
+  {
+    text: 'Цифры совпадают во всех разделах',
+    risk: 'high',
+    riskLabel: 'Расхождение',
+    body: 'В описании — 500 участников, в календарном плане — 300, в результатах — 700: эксперт видит расхождение. Одно число — во всех разделах.'
+  },
+  {
+    text: 'Благополучатели не учтены дважды',
+    risk: 'mid',
+    riskLabel: 'Завышение',
+    body: 'Человек посетил 4 занятия — это 1 участник, а не 4. Разделяйте аудитории на непересекающиеся категории.'
+  },
+  {
+    text: 'Письма партнеров индивидуальные, не старше 6 месяцев',
+    risk: 'high',
+    riskLabel: '0-2 балла',
+    body: 'Шаблонное «поддерживаем проект» — 0–2 балла. Каждое письмо — на бланке, с подписью, печатью, указанием конкретного вклада (помещение, оборудование, информподдержка, сумма). Письма старше 6 месяцев — максимум 3–5 баллов, старше 12 — 0–2.'
+  },
+  {
+    text: 'Команда соответствует масштабу проекта',
+    risk: 'mid',
+    riskLabel: 'Недоверие',
+    body: 'Два человека на проект за 15 млн — эксперт не понимает, кто реализует. Один человек «методист, бухгалтер, дизайнер» — нереалистичная нагрузка. Каждый член команды — со своей функцией и в бюджете.'
+  },
+  {
+    text: 'Творческая концепция описана, а не пересказана',
+    risk: 'high',
+    riskLabel: '0-2 балла',
+    body: 'Презентация дополняет заявку визуально: эскизы, раскадровки, референсы — а не дублирует текст. Концепция без визуализации — 0–2 балла.'
+  },
+  {
+    text: 'Традиционная ценность не просто названа, а раскрыта',
+    risk: 'mid',
+    riskLabel: 'Снижение балла',
+    body: 'Выбрана минимум одна из 17 ценностей и описано, как проект ее транслирует. Формальная отписка — снижение балла.'
+  },
+  {
+    text: 'Нет лишних документов',
+    risk: 'low',
+    riskLabel: 'Снижение доверия',
+    body: 'Документы, не относящиеся к проекту, снижают доверие эксперта. Только то, что подтверждает конкретные утверждения заявки.'
+  },
+  {
+    text: 'Заявка подана за 10 рабочих дней до дедлайна',
+    risk: 'high',
+    riskLabel: 'Риск провала',
+    body: 'Если в последние сутки выяснится, что устав не приведен в соответствие или письма просрочены — времени на исправление не останется.'
+  }
+];
+
+/* ================= ОТРИСОВКА ================= */
+const list = document.getElementById('checklist');
+
+items.forEach((item, i) => {
+  const el = document.createElement('div');
+  el.className = 'check-item';
+  el.dataset.index = i;
+  el.innerHTML = `
+    <div class="check-head" onclick="toggleItem(${i}, event)">
+      <div class="check-box"></div>
+      <div class="check-text">${item.text}</div>
+      <div class="check-arrow">▼</div>
+    </div>
+    <div class="check-body">
+      <div class="check-body-inner">
+        <span class="risk risk-${item.risk}">${item.riskLabel}</span>
+        ${item.body}
+      </div>
+    </div>
+  `;
+  list.appendChild(el);
+});
+
+/* ================= ЛОГИКА ================= */
+const checked = new Set();
+
+function toggleItem(i, event) {
+  const el = list.children[i];
+
+  // Клик по чекбоксу — отметить. Клик по стрелке — раскрыть.
+  const isArrow = event.target.classList.contains('check-arrow');
+  const isBody = event.target.closest('.check-body');
+
+  if (isArrow) {
+    el.classList.toggle('open');
+    return;
+  }
+
+  if (isBody) return;
+
+  // Клик по остальной части — переключить отметку
+  if (checked.has(i)) {
+    checked.delete(i);
+    el.classList.remove('done');
+  } else {
+    checked.add(i);
+    el.classList.add('done');
+    // Автоматически раскрыть для показа пояснения при первом клике
+    if (!el.classList.contains('open')) {
+      el.classList.add('open');
+      setTimeout(() => el.classList.remove('open'), 2500);
+    }
+  }
+  updateStatus();
+}
+
+function updateStatus() {
+  const n = checked.size;
+  const total = items.length;
+  const pct = (n / total) * 100;
+
+  document.getElementById('counter').textContent = n;
+
+  const fill = document.getElementById('progressFill');
+  fill.style.width = pct + '%';
+
+  const msg = document.getElementById('statusMsg');
+  const panel = document.getElementById('statusPanel');
+  const banner = document.getElementById('dangerBanner');
+
+  fill.className = 'progress-fill';
+  msg.className = 'status-msg';
+  panel.classList.remove('danger');
+  banner.classList.remove('show');
+
+  if (n < 3) {
+    fill.classList.add(''); // красный по умолчанию
+    msg.classList.add('msg-red');
+    msg.textContent = 'Заявка провалена';
+    panel.classList.add('danger');
+    banner.classList.add('show');
+  } else if (n < 7) {
+    fill.classList.add('warn');
+    msg.classList.add('msg-yellow');
+    msg.textContent = 'Средние шансы';
+  } else if (n < 12) {
+    fill.classList.add('ok');
+    msg.classList.add('msg-yellow');
+    msg.textContent = 'Хорошие шансы';
+  } else {
+    fill.classList.add('great');
+    msg.classList.add('msg-green');
+    msg.textContent = 'Высокие шансы';
+  }
+
+  document.getElementById('pdfBtn').disabled = n === 0;
+}
+
+/* ================= ВСПОМОГАТЕЛЬНЫЕ ================= */
+function expandAll(open) {
+  document.querySelectorAll('.check-item').forEach(el => {
+    if (open) el.classList.add('open');
+    else el.classList.remove('open');
+  });
+}
+
+function resetAll() {
+  if (!confirm('Сбросить все отметки?')) return;
+  checked.clear();
+  document.querySelectorAll('.check-item').forEach(el => {
+    el.classList.remove('done', 'open');
+  });
+  updateStatus();
+}
+
+/* ================= PDF ================= */
+function downloadPDF() {
+  // Формируем печатную версию в новом окне
+  const style = document.querySelector('style').innerHTML;
+
+  let rows = items.map((item, i) => {
+    const mark = checked.has(i) ? '☑' : '☐';
+    return `
+      <div class="pdf-item ${checked.has(i) ? 'pdf-done' : ''}">
+        <div class="pdf-head">
+          <span class="pdf-mark">${mark}</span>
+          <span class="pdf-text">${item.text}</span>
+        </div>
+        <div class="pdf-body">${item.body}</div>
+      </div>
+    `;
+  }).join('');
+
+  const n = checked.size;
+  const status = n < 3
+    ? 'Заявка провалена — отмечено меньше 3 пунктов'
+    : n < 7
+    ? 'Средние шансы — отмечено ' + n + ' пунктов'
+    : n < 12
+    ? 'Хорошие шансы — отмечено ' + n + ' пунктов'
+    : 'Высокие шансы — отмечено ' + n + ' пунктов';
+
+  const html = `
+    <!DOCTYPE html>
+    <html lang="ru">
+    <head>
+      <meta charset="UTF-8">
+      <title>Чек-лист заявки</title>
+      <style>
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          color: #1d1d1f; line-height: 1.5; padding: 30px;
+          max-width: 700px; margin: 0 auto;
+        }
+        h1 { font-size: 22px; margin-bottom: 6px; }
+        .pdf-meta { color: #6e6e73; font-size: 13px; margin-bottom: 20px; }
+        .pdf-status {
+          padding: 12px 16px; border-radius: 8px;
+          font-size: 14px; font-weight: 600; margin-bottom: 20px;
+          background: #f0f7ff; color: #0071e3;
+        }
+        .pdf-status.danger { background: #ffebee; color: #c62828; }
+        .pdf-item {
+          border: 1px solid #e0e0e0; border-radius: 8px;
+          padding: 12px 14px; margin-bottom: 10px;
+          page-break-inside: avoid;
+        }
+        .pdf-done { background: #f8fdf9; border-color: #a0d8a8; }
+        .pdf-head { display: flex; gap: 10px; margin-bottom: 6px; }
+        .pdf-mark { font-size: 18px; line-height: 1; color: #0071e3; }
+        .pdf-done .pdf-mark { color: #34c759; }
+        .pdf-text { font-size: 14px; font-weight: 600; }
+        .pdf-done .pdf-text { color: #2e7d32; }
+        .pdf-body {
+          font-size: 12px; color: #6e6e73;
+          padding-left: 28px; line-height: 1.5;
+        }
+        @media print {
+          body { padding: 0; }
+        }
+      </style>
+    </head>
+    <body>
+      <h1>Чек-лист заявки на грант</h1>
+      <div class="pdf-meta">Сезон 2026–2027 · ${new Date().toLocaleDateString('ru-RU')}</div>
+      <div class="pdf-status ${n < 3 ? 'danger' : ''}">${status}</div>
+      ${rows}
+    </body>
+    </html>
+  `;
+
+  const w = window.open('', '_blank');
+  w.document.write(html);
+  w.document.close();
+  setTimeout(() => { w.print(); }, 300);
+}
+
+updateStatus();
+</script>
+</body>
+</html>
