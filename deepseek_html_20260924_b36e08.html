@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Калькулятор софинансирования — гранты 2027</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f5f5f7;
+    color: #1d1d1f;
+    line-height: 1.5;
+    padding: 20px;
+  }
+  .container { max-width: 780px; margin: 0 auto; }
+
+  header { margin-bottom: 20px; }
+  h1 { font-size: 24px; margin-bottom: 6px; }
+  .subtitle { color: #6e6e73; font-size: 14px; }
+
+  /* ----- карточки ----- */
+  .card {
+    background: #fff; border-radius: 12px; padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .card-head {
+    display: flex; align-items: center; gap: 12px;
+    cursor: pointer; user-select: none;
+    margin: -4px 0;
+  }
+  .card-head:hover .card-title { color: #0071e3; }
+  .card-num {
+    flex-shrink: 0;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: #0071e3; color: #fff;
+    font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .card-title {
+    flex: 1; font-size: 15px; font-weight: 600;
+    transition: color .15s;
+  }
+  .card-sum {
+    font-size: 13px; font-weight: 600; color: #86868b;
+    margin-right: 8px;
+    transition: color .15s;
+  }
+  .card-sum.has-value { color: #0071e3; }
+  .card-arrow {
+    flex-shrink: 0; color: #86868b; font-size: 12px;
+    transition: transform .2s;
+  }
+  .card.open .card-arrow { transform: rotate(180deg); }
+
+  .card-body {
+    max-height: 0; overflow: hidden;
+    transition: max-height .3s ease;
+  }
+  .card.open .card-body { max-height: 800px; }
+
+  .card-body-inner {
+    padding-top: 16px; margin-top: 16px;
+    border-top: 1px solid #f0f0f2;
+  }
+
+  /* ----- поля ----- */
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .field { margin-bottom: 12px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label {
+    display: block; font-size: 13px; color: #6e6e73;
+    margin-bottom: 5px; font-weight: 500;
+  }
+  .field input, .field select {
+    width: 100%; padding: 10px 12px;
+    border: 1.5px solid #d2d2d7; border-radius: 8px;
+    font-size: 15px; background: #fafafa;
+    transition: border-color .15s, background .15s;
+    font-family: inherit;
+  }
+  .field input:focus, .field select:focus {
+    outline: none; border-color: #0071e3; background: #fff;
+  }
+  .field .hint {
+    font-size: 11px; color: #86868b; margin-top: 3px;
+  }
+
+  .add-btn {
+    padding: 8px 14px; border: 1.5px dashed #d2d2d7;
+    background: #fff; border-radius: 8px;
+    font-size: 13px; font-weight: 600; color: #0071e3;
+    cursor: pointer; transition: all .15s;
+    width: 100%; margin-top: 4px;
+  }
+  .add-btn:hover { border-color: #0071e3; background: #f0f7ff; }
+
+  .remove-btn {
+    padding: 8px 10px; border: none; background: transparent;
+    color: #ff3b30; font-size: 18px; font-weight: 600;
+    cursor: pointer; border-radius: 6px;
+    transition: background .15s;
+    align-self: flex-end;
+    margin-bottom: 12px;
+  }
+  .remove-btn:hover { background: #ffebee; }
+
+  .dyn-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 8px; align-items: start;
+  }
+  .dyn-row .field { margin-bottom: 12px; }
+  .dyn-row .remove-btn { margin-bottom: 12px; }
+
+  /* ----- итог ----- */
+  .result-block {
+    position: sticky; top: 20px;
+    background: #fff; border-radius: 12px; padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.08);
+    margin-top: 20px;
+  }
+  .result-header {
+    font-size: 13px; color: #6e6e73; text-transform: uppercase;
+    letter-spacing: .04em; font-weight: 700; margin-bottom: 12px;
+  }
+  .result-total {
+    font-size: 36px; font-weight: 700; line-height: 1.1;
+    margin-bottom: 6px;
+  }
+  .result-share {
+    font-size: 15px; color: #6e6e73; margin-bottom: 16px;
+  }
+  .result-status {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 16px; border-radius: 10px;
+    font-size: 14px; font-weight: 600;
+    margin-bottom: 16px;
+  }
+  .status-green { background: #e8f5e9; color: #2e7d32; }
+  .status-yellow { background: #fff8e1; color: #8d6e00; }
+  .status-orange { background: #fff3e0; color: #e65100; }
+  .status-red { background: #ffebee; color: #c62828; }
+
+  .bar {
+    height: 10px; background: #e8e8ed; border-radius: 5px;
+    overflow: hidden; margin-bottom: 16px;
+  }
+  .bar-fill {
+    height: 100%; border-radius: 5px;
+    transition: width .4s ease, background .3s;
+  }
+  .fill-green { background: #34c759; }
+  .fill-yellow { background: #ffcc00; }
+  .fill-orange { background: #ff9500; }
+  .fill-red { background: #ff3b30; }
+
+  .breakdown { border-top: 1px solid #f0f0f2; padding-top: 14px; }
+  .breakdown-row {
+    display: flex; justify-content: space-between;
+    font-size: 13px; padding: 5px 0;
+    color: #4a4a4f;
+  }
+  .breakdown-row strong { color: #1d1d1f; font-weight: 600; }
+
+  .explain-btn {
+    width: 100%; padding: 12px;
+    border: 1.5px solid #0071e3; background: #fff;
+    color: #0071e3; border-radius: 8px;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer; margin-top: 14px;
+    transition: all .15s;
+  }
+  .explain-btn:hover { background: #f0f7ff; }
+
+  .explain-box {
+    margin-top: 14px; padding: 14px;
+    background: #1d1d1f; color: #f5f5f7;
+    border-radius: 10px;
+    font-family: 'SF Mono', 'Consolas', monospace;
+    font-size: 12px; line-height: 1.7;
+    white-space: pre-wrap; max-height: 400px;
+    overflow-y: auto;
+    display: none;
+  }
+  .explain-box.show { display: block; }
+
+  .copy-note {
+    display: flex; gap: 8px; margin-top: 12px;
+  }
+  .copy-note button {
+    flex: 1; padding: 10px;
+    border: 1.5px solid #d2d2d7; background: #fff;
+    border-radius: 8px;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer; color: #1d1d1f;
+    transition: all .15s;
+  }
+  .copy-note button:hover { border-color: #0071e3; color: #0071e3; }
+  .copy-note button:active { background: #f0f7ff; }
+
+  @media (max-width: 640px) {
+    .row, .row3 { grid-template-columns: 1fr; }
+    .dyn-row { grid-template-columns: 1fr 1fr; }
+    .dyn-row .remove-btn { grid-column: span 2; justify-self: end; }
+    .result-total { font-size: 28px; }
+    body { padding: 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>Калькулятор софинансирования</h1>
+    <p class="subtitle">Расчёт собственного вклада для грантовой заявки · ПФКИ 2027</p>
+  </header>
+
+  <!-- ТРУД ШТАТНЫХ -->
+  <div class="card open" id="card-staff">
+    <div class="card-head" onclick="toggleCard('card-staff')">
+      <div class="card-num">1</div>
+      <div class="card-title">Труд штатных сотрудников</div>
+      <div class="card-sum" id="sum-staff">0 ₽</div>
+      <div class="card-arrow">▼</div>
+    </div>
+    <div class="card-body">
+      <div class="card-body-inner">
+        <div id="staff-rows"></div>
+        <button class="add-btn" onclick="addStaff()">+ Добавить сотрудника</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ВОЛОНТЁРЫ -->
+  <div class="card" id="card-vol">
+    <div class="card-head" onclick="toggleCard('card-vol')">
+      <div class="card-num">2</div>
+      <div class="card-title">Труд волонтёров</div>
+      <div class="card-sum" id="sum-vol">0 ₽</div>
+      <div class="card-arrow">▼</div>
+    </div>
+    <div class="card-body">
+      <div class="card-body-inner">
+        <div id="vol-rows"></div>
+        <button class="add-btn" onclick="addVol()">+ Добавить волонтёра</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- МАТБАЗА -->
+  <div class="card" id="card-asset">
+    <div class="card-head" onclick="toggleCard('card-asset')">
+      <div class="card-num">3</div>
+      <div class="card-title">Материальная база</div>
+      <div class="card-sum" id="sum-asset">0 ₽</div>
+      <div class="card-arrow">▼</div>
+    </div>
+    <div class="card-body">
+      <div class="card-body-inner">
+        <div id="asset-rows"></div>
+        <button class="add-btn" onclick="addAsset()">+ Добавить ресурс</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ИНФОПОДДЕРЖКА -->
+  <div class="card" id="card-info">
+    <div class="card-head" onclick="toggleCard('card-info')">
+      <div class="card-num">4</div>
+      <div class="card-title">Информационная поддержка</div>
+      <div class="card-sum" id="sum-info">0 ₽</div>
+      <div class="card-arrow">▼</div>
+    </div>
+    <div class="card-body">
+      <div class="card-body-inner">
+        <div id="info-rows"></div>
+        <button class="add-btn" onclick="addInfo()">+ Добавить размещение</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- БЮДЖЕТ -->
+  <div class="card" id="card-budget">
+    <div class="card-head" onclick="toggleCard('card-budget')">
+      <div class="card-num">5</div>
+      <div class="card-title">Бюджет проекта</div>
+      <div class="card-sum" id="sum-budget">0 ₽</div>
+      <div class="card-arrow">▼</div>
+    </div>
+    <div class="card-body">
+      <div class="card-body-inner">
+        <div class="field">
+          <label>Запрашиваемая сумма гранта, ₽</label>
+          <input type="number" id="grantSum" value="500000" min="1" oninput="recalc()">
+          <div class="hint">Общая сумма, которую вы просите у фонда</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- РЕЗУЛЬТАТ -->
+  <div class="result-block">
+    <div class="result-header">Итог расчёта</div>
+    <div class="result-total" id="total">0 ₽</div>
+    <div class="result-share" id="share">0% от запрашиваемой суммы</div>
+
+    <div class="bar"><div class="bar-fill fill-red" id="barFill" style="width:0%"></div></div>
+
+    <div class="result-status status-red" id="status">
+      <span id="statusText">Оценка 0–2 балла</span>
+    </div>
+
+    <div class="breakdown">
+      <div class="breakdown-row"><span>Штатные сотрудники</span><strong id="br-staff">0 ₽</strong></div>
+      <div class="breakdown-row"><span>Волонтёры</span><strong id="br-vol">0 ₽</strong></div>
+      <div class="breakdown-row"><span>Материальная база</span><strong id="br-asset">0 ₽</strong></div>
+      <div class="breakdown-row"><span>Информационная поддержка</span><strong id="br-info">0 ₽</strong></div>
+    </div>
+
+    <button class="explain-btn" onclick="toggleExplain()">Показать пояснительную записку</button>
+    <div class="explain-box" id="explain"></div>
+
+    <div class="copy-note">
+      <button onclick="copyExplain()">Скопировать записку</button>
+      <button onclick="resetAll()">Сбросить всё</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ============ СОСТОЯНИЕ ============ */
+let staffItems = [{salary: 50000, share: 0.25, months: 5}];
+let volItems   = [{salary: 45000, share: 0.15, months: 6}];
+let assetItems = [{name: 'Профессиональная камера', rate: 50000, days: 2}];
+let infoItems  = [{name: 'Публикации в СМИ', rate: 15000, count: 3}];
+
+/* ============ ОТРИСОВКА СПИСКОВ ============ */
+function renderAll() {
+  renderStaff();
+  renderVol();
+  renderAsset();
+  renderInfo();
+  recalc();
+}
+
+function renderStaff() {
+  const box = document.getElementById('staff-rows');
+  box.innerHTML = staffItems.map((it, i) => `
+    <div class="dyn-row">
+      <div class="field">
+        <label>Зарплата, ₽/мес</label>
+        <input type="number" value="${it.salary}" min="0"
+          oninput="staffItems[${i}].salary=+this.value; recalc()">
+      </div>
+      <div class="field">
+        <label>Доля времени</label>
+        <select onchange="staffItems[${i}].share=+this.value; recalc()">
+          ${[0.05,0.10,0.15,0.25,0.375,0.50].map(v =>
+            `<option value="${v}" ${v===it.share?'selected':''}>${(v*100).toFixed(v===0.375?1:0)}%</option>`).join('')}
+        </select>
+      </div>
+      <div class="field">
+        <label>Срок, мес</label>
+        <input type="number" value="${it.months}" min="1" max="24"
+          oninput="staffItems[${i}].months=+this.value; recalc()">
+      </div>
+      <button class="remove-btn" title="Удалить" onclick="staffItems.splice(${i},1); renderStaff(); recalc()">×</button>
+    </div>
+  `).join('');
+}
+
+function renderVol() {
+  const box = document.getElementById('vol-rows');
+  box.innerHTML = volItems.map((it, i) => `
+    <div class="dyn-row">
+      <div class="field">
+        <label>Ставка, ₽/мес</label>
+        <input type="number" value="${it.salary}" min="0"
+          oninput="volItems[${i}].salary=+this.value; recalc()">
+      </div>
+      <div class="field">
+        <label>Доля времени</label>
+        <select onchange="volItems[${i}].share=+this.value; recalc()">
+          ${[0.05,0.10,0.15,0.20,0.25].map(v =>
+            `<option value="${v}" ${v===it.share?'selected':''}>${(v*100).toFixed(0)}%</option>`).join('')}
+        </select>
+      </div>
+      <div class="field">
+        <label>Срок, мес</label>
+        <input type="number" value="${it.months}" min="1" max="24"
+          oninput="volItems[${i}].months=+this.value; recalc()">
+      </div>
+      <button class="remove-btn" title="Удалить" onclick="volItems.splice(${i},1); renderVol(); recalc()">×</button>
+    </div>
+  `).join('');
+}
+
+function renderAsset() {
+  const box = document.getElementById('asset-rows');
+  box.innerHTML = assetItems.map((it, i) => `
+    <div class="dyn-row">
+      <div class="field">
+        <label>Наименование</label>
+        <input type="text" value="${it.name}"
+          oninput="assetItems[${i}].name=this.value; recalc()">
+      </div>
+      <div class="field">
+        <label>Аренда аналога, ₽/сутки</label>
+        <input type="number" value="${it.rate}" min="0"
+          oninput="assetItems[${i}].rate=+this.value; recalc()">
+      </div>
+      <div class="field">
+        <label>Дней использования</label>
+        <input type="number" value="${it.days}" min="1"
+          oninput="assetItems[${i}].days=+this.value; recalc()">
+      </div>
+      <button class="remove-btn" title="Удалить" onclick="assetItems.splice(${i},1); renderAsset(); recalc()">×</button>
+    </div>
+  `).join('');
+}
+
+function renderInfo() {
+  const box = document.getElementById('info-rows');
+  box.innerHTML = infoItems.map((it, i) => `
+    <div class="dyn-row">
+      <div class="field">
+        <label>Наименование</label>
+        <input type="text" value="${it.name}"
+          oninput="infoItems[${i}].name=this.value; recalc()">
+      </div>
+      <div class="field">
+        <label>Эквивалент 1 шт., ₽</label>
+        <input type="number" value="${it.rate}" min="0"
+          oninput="infoItems[${i}].rate=+this.value; recalc()">
+      </div>
+      <div class="field">
+        <label>Количество</label>
+        <input type="number" value="${it.count}" min="1"
+          oninput="infoItems[${i}].count=+this.value; recalc()">
+      </div>
+      <button class="remove-btn" title="Удалить" onclick="infoItems.splice(${i},1); renderInfo(); recalc()">×</button>
+    </div>
+  `).join('');
+}
+
+/* ============ ДОБАВЛЕНИЕ ============ */
+function addStaff() {
+  staffItems.push({salary: 50000, share: 0.25, months: 3});
+  renderStaff(); recalc();
+}
+function addVol() {
+  volItems.push({salary: 45000, share: 0.15, months: 6});
+  renderVol(); recalc();
+}
+function addAsset() {
+  assetItems.push({name: 'Оборудование', rate: 10000, days: 1});
+  renderAsset(); recalc();
+}
+function addInfo() {
+  infoItems.push({name: 'Размещение', rate: 10000, count: 1});
+  renderInfo(); recalc();
+}
+
+/* ============ РАСЧЁТ ============ */
+function calcStaff() { return staffItems.reduce((s,it) => s + it.salary*it.share*it.months, 0); }
+function calcVol()   { return volItems.reduce((s,it) => s + it.salary*it.share*it.months, 0); }
+function calcAsset() { return assetItems.reduce((s,it) => s + it.rate*it.days, 0); }
+function calcInfo()  { return infoItems.reduce((s,it) => s + it.rate*it.count, 0); }
+
+function fmt(n) {
+  return Math.round(n).toLocaleString('ru-RU') + ' ₽';
+}
+
+function recalc() {
+  const staff = calcStaff();
+  const vol   = calcVol();
+  const asset = calcAsset();
+  const info  = calcInfo();
+  const total = staff + vol + asset + info;
+
+  const grantSum = +document.getElementById('grantSum').value || 1;
+  const share = (total / grantSum) * 100;
+
+  // Суммы в заголовках карточек
+  setCardSum('sum-staff', staff);
+  setCardSum('sum-vol',   vol);
+  setCardSum('sum-asset', asset);
+  setCardSum('sum-info',  info);
+  setCardSum('sum-budget', grantSum);
+
+  // Итог
+  document.getElementById('total').textContent = fmt(total);
+  document.getElementById('share').textContent = share.toFixed(1) + '% от запрашиваемой суммы';
+
+  // Оценка
+  let cls, fill, text;
+  if (share > 50)       { cls='status-green';  fill='fill-green';  text='Оценка 9–10 баллов'; }
+  else if (share >= 25) { cls='status-yellow'; fill='fill-yellow'; text='Оценка 6–8 баллов'; }
+  else if (share >= 10) { cls='status-orange'; fill='fill-orange'; text='Оценка 3–5 баллов'; }
+  else                  { cls='status-red';    fill='fill-red';    text='Оценка 0–2 балла'; }
+
+  const st = document.getElementById('status');
+  st.className = 'result-status ' + cls;
+  document.getElementById('statusText').textContent = text;
+
+  const bar = document.getElementById('barFill');
+  bar.className = 'bar-fill ' + fill;
+  bar.style.width = Math.min(share, 100) + '%';
+
+  // Разбивка
+  document.getElementById('br-staff').textContent = fmt(staff);
+  document.getElementById('br-vol').textContent   = fmt(vol);
+  document.getElementById('br-asset').textContent = fmt(asset);
+  document.getElementById('br-info').textContent  = fmt(info);
+
+  // Пояснительная записка
+  document.getElementById('explain').textContent = buildExplain(staff, vol, asset, info, total, grantSum, share);
+}
+
+function setCardSum(id, val) {
+  const el = document.getElementById(id);
+  el.textContent = fmt(val);
+  el.classList.toggle('has-value', val > 0);
+}
+
+function buildExplain(staff, vol, asset, info, total, grantSum, share) {
+  let t = 'ПОЯСНИТЕЛЬНАЯ ЗАПИСКА\n';
+  t += 'к расчёту софинансирования по проекту\n';
+  t += '═'.repeat(48) + '\n\n';
+
+  t += `Запрашиваемая сумма гранта: ${fmt(grantSum)}\n\n`;
+
+  t += 'СОБСТВЕННЫЙ И ПРИВЛЕЧЁННЫЙ ВКЛАД\n\n';
+
+  t += '1. Труд штатных сотрудников\n';
+  staffItems.forEach((it, i) => {
+    const s = it.salary * it.share * it.months;
+    t += `   ${i+1}) ${fmt(it.salary)} × ${(it.share*100).toFixed(1)}% × ${it.months} мес. = ${fmt(s)}\n`;
+  });
+  t += `   Итого: ${fmt(staff)}\n\n`;
+
+  t += '2. Труд волонтёров\n';
+  volItems.forEach((it, i) => {
+    const s = it.salary * it.share * it.months;
+    t += `   ${i+1}) ${fmt(it.salary)} × ${(it.share*100).toFixed(1)}% × ${it.months} мес. = ${fmt(s)}\n`;
+  });
+  t += `   Итого: ${fmt(vol)}\n\n`;
+
+  t += '3. Материальная база\n';
+  assetItems.forEach((it, i) => {
+    const s = it.rate * it.days;
+    t += `   ${i+1}) ${it.name}: ${fmt(it.rate)}/сутки × ${it.days} дн. = ${fmt(s)}\n`;
+  });
+  t += `   Итого: ${fmt(asset)}\n\n`;
+
+  t += '4. Информационная поддержка\n';
+  infoItems.forEach((it, i) => {
+    const s = it.rate * it.count;
+    t += `   ${i+1}) ${it.name}: ${fmt(it.rate)} × ${it.count} шт. = ${fmt(s)}\n`;
+  });
+  t += `   Итого: ${fmt(info)}\n\n`;
+
+  t += '─'.repeat(48) + '\n';
+  t += `ВСЕГО СОФИНАНСИРОВАНИЕ: ${fmt(total)}\n`;
+  t += `ДОЛЯ ОТ ГРАНТА: ${share.toFixed(1)}%\n\n`;
+
+  let note;
+  if (share > 50)       note = 'Соответствует оценке 9–10 баллов по критерию «Собственный вклад».';
+  else if (share >= 25) note = 'Соответствует оценке 6–8 баллов. Рекомендуется увеличить долю.';
+  else if (share >= 10) note = 'Соответствует оценке 3–5 баллов. Требуется доработка.';
+  else                  note = 'Соответствует оценке 0–2 балла. Критически низкий уровень.';
+  t += note + '\n\n';
+
+  t += 'Подтверждающие документы:\n';
+  t += '  • письма поддержки партнёров (не старше 6 месяцев);\n';
+  t += '  • справки о материальных ресурсах;\n';
+  t += '  • коммерческие предложения на аренду аналогов;\n';
+  t += '  • справки о среднемесячной зарплате по региону.\n';
+
+  return t;
+}
+
+/* ============ ВКЛАДЫ/СВОРАЧИВАНИЕ ============ */
+function toggleCard(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+function toggleExplain() {
+  document.getElementById('explain').classList.toggle('show');
+  const btn = event.target;
+  const isOpen = document.getElementById('explain').classList.contains('show');
+  btn.textContent = isOpen ? 'Скрыть пояснительную записку' : 'Показать пояснительную записку';
+}
+
+/* ============ СКОПИРОВАТЬ ============ */
+function copyExplain() {
+  const text = document.getElementById('explain').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = '✓ Скопировано';
+    setTimeout(() => btn.textContent = orig, 1500);
+  });
+}
+
+/* ============ СБРОС ============ */
+function resetAll() {
+  if (!confirm('Сбросить все данные и вернуть примеры?')) return;
+  staffItems = [{salary: 50000, share: 0.25, months: 5}];
+  volItems   = [{salary: 45000, share: 0.15, months: 6}];
+  assetItems = [{name: 'Профессиональная камера', rate: 50000, days: 2}];
+  infoItems  = [{name: 'Публикации в СМИ', rate: 15000, count: 3}];
+  document.getElementById('grantSum').value = 500000;
+  renderAll();
+}
+
+/* ============ СТАРТ ============ */
+renderAll();
+</script>
+</body>
+</html>
