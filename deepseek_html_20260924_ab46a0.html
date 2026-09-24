@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Что проверить до подачи заявки — 2027</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f5f5f7;
+    color: #1d1d1f;
+    line-height: 1.5;
+    padding: 20px;
+  }
+  .container { max-width: 820px; margin: 0 auto; }
+
+  header { margin-bottom: 20px; }
+  h1 { font-size: 23px; margin-bottom: 6px; }
+  .subtitle { color: #6e6e73; font-size: 14px; }
+
+  /* ----- статус-панель ----- */
+  .status-panel {
+    background: #fff; border-radius: 12px; padding: 16px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    margin-bottom: 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap;
+  }
+  .status-info { display: flex; align-items: center; gap: 14px; }
+  .status-count {
+    font-size: 22px; font-weight: 700; color: #0071e3;
+    min-width: 48px;
+  }
+  .status-count .total { color: #86868b; font-weight: 500; font-size: 15px; }
+  .status-label { font-size: 13px; color: #6e6e73; }
+
+  .status-badge {
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 13px; font-weight: 600;
+    transition: all .2s;
+  }
+  .badge-red { background: #ffebee; color: #c62828; }
+  .badge-orange { background: #fff3e0; color: #e65100; }
+  .badge-yellow { background: #fff8e1; color: #8d6e00; }
+  .badge-green { background: #e8f5e9; color: #2e7d32; }
+
+  /* ----- карточки ----- */
+  .list { display: flex; flex-direction: column; gap: 8px; }
+
+  .item {
+    background: #fff; border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    overflow: hidden;
+    transition: box-shadow .15s, background .2s;
+  }
+  .item:hover { box-shadow: 0 2px 8px rgba(0,0,0,.10); }
+  .item.reviewed { background: #f8fdf9; }
+
+  .item-head {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 14px 16px;
+    cursor: pointer; user-select: none;
+  }
+
+  /* номер-индикатор */
+  .num {
+    flex-shrink: 0;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: #0071e3; color: #fff;
+    font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .2s;
+    margin-top: 1px;
+  }
+  .item.reviewed .num {
+    background: #34c759;
+  }
+  .item.reviewed .num::after {
+    content: '✓';
+    font-size: 15px;
+  }
+  .item.reviewed .num .num-text { display: none; }
+
+  .item-title {
+    flex: 1; font-size: 14px; font-weight: 600;
+    transition: color .15s;
+  }
+  .item.reviewed .item-title { color: #6e6e73; }
+
+  .item-badge {
+    flex-shrink: 0; padding: 3px 9px; border-radius: 20px;
+    font-size: 11px; font-weight: 700;
+    transition: opacity .2s;
+  }
+  .item.reviewed .item-badge { opacity: .5; }
+  .badge-crit { background: #ffebee; color: #c62828; }
+  .badge-warn { background: #fff3e0; color: #e65100; }
+  .badge-info { background: #e3f2fd; color: #1565c0; }
+
+  .item-arrow {
+    flex-shrink: 0; color: #c0c0c5; font-size: 11px;
+    transition: transform .2s; margin-top: 6px;
+  }
+  .item.open .item-arrow { transform: rotate(180deg); }
+
+  .item-body {
+    max-height: 0; overflow: hidden;
+    transition: max-height .25s ease;
+  }
+  .item.open .item-body { max-height: 500px; }
+
+  .item-body-inner {
+    padding: 0 16px 16px 56px;
+    font-size: 13px;
+    display: flex; flex-direction: column; gap: 10px;
+    border-top: 1px solid #f0f0f2;
+    padding-top: 14px;
+  }
+  .lbl {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .05em; color: #86868b;
+    margin-bottom: 3px;
+  }
+  .val { color: #1d1d1f; font-size: 13px; }
+  .val.risk { color: #c62828; }
+
+  .legal-block {
+    background: #f5f5f7; border-radius: 8px;
+    padding: 10px 12px; font-size: 12px; color: #4a4a4f;
+  }
+
+  .review-btn {
+    margin-top: 6px;
+    padding: 8px 14px; border: 1.5px solid #0071e3;
+    background: #fff; border-radius: 8px;
+    font-size: 12px; font-weight: 600;
+    color: #0071e3; cursor: pointer;
+    transition: all .15s;
+    align-self: flex-start;
+  }
+  .review-btn:hover { background: #f0f7ff; }
+  .item.reviewed .review-btn {
+    border-color: #34c759; color: #34c759;
+  }
+  .item.reviewed .review-btn:hover { background: #f0fdf4; }
+
+  @media (max-width: 600px) {
+    .item-body-inner { padding-left: 16px; }
+    .item-badge { display: none; }
+    .status-panel { padding: 14px 16px; }
+    .status-count { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>Что проверить до подачи заявки</h1>
+    <p class="subtitle">Требования грантового сезона 2026–2027 · 8 пунктов</p>
+  </header>
+
+  <div class="status-panel">
+    <div class="status-info">
+      <div class="status-count">
+        <span id="countDone">0</span><span class="total"> / 8</span>
+      </div>
+      <div class="status-label" id="statusLabel">Отметьте проверенные пункты</div>
+    </div>
+    <div class="status-badge badge-red" id="statusBadge">Не проверено</div>
+  </div>
+
+  <div class="list" id="list">
+
+    <!-- 1 -->
+    <div class="item crit">
+      <div class="item-head" onclick="toggleOpen(this)">
+        <div class="num"><span class="num-text">1</span></div>
+        <div class="item-title">Устав НКО — терминология</div>
+        <span class="item-badge badge-crit">Отказ</span>
+        <div class="item-arrow">▼</div>
+      </div>
+      <div class="item-body">
+        <div class="item-body-inner">
+          <div>
+            <div class="lbl">Требование</div>
+            <div class="val">Замените термин «предпринимательская деятельность» на «приносящая доход деятельность». Уставы, созданные до 3 марта 2026 года, приведите в соответствие.</div>
+          </div>
+          <div class="legal-block">
+            <strong>Основание:</strong> Федеральный закон от 20.02.2026 № 30-ФЗ
+          </div>
+          <div>
+            <div class="lbl">Последствие</div>
+            <div class="val risk">Фонд может отказать в приеме заявки. При перерегистрации устава Минюст вернет документы.</div>
+          </div>
+          <button class="review-btn" onclick="markReviewed(event, this)">Отметить как проверенное</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="item warn">
+      <div class="item-head" onclick="toggleOpen(this)">
+        <div class="num"><span class="num-text">2</span></div>
+        <div class="item-title">Уставные цели и традиционные ценности</div>
+        <span class="item-badge badge-warn">−Баллы</span>
+        <div class="item-arrow">▼</div>
+      </div>
+      <div class="item-body">
+        <div class="item-body-inner">
+          <div>
+            <div class="lbl">Требование</div>
+            <div class="val">Выберите минимум одну из 17 традиционных ценностей и опишите, как она транслируется аудитории. Если уставные цели не связаны с культурой или просвещением — обосновать соответствие сложно.</div>
+          </div>
+          <div class="legal-block">
+            <strong>Основание:</strong> Указ Президента РФ от 09.11.2022 № 809; Положение о конкурсе ПФКИ (I конкурс 2027 года)
+          </div>
+          <div>
+            <div class="lbl">Последствие</div>
+            <div class="val risk">0–2 балла по критерию «Соответствие направлениям и ценностям» (коэффициент до 1,5 для малых грантов).</div>
+          </div>
+          <button class="review-btn" onclick="markReviewed(event, this)">Отметить как проверенное</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="item crit">
+      <div class="item-head" onclick="toggleOpen(this)">
+        <div class="num"><span class="num-text">3</span></div>
+        <div class="item-title">Возраст НКО</div>
+        <span class="item-badge badge-crit">ФПГ: отказ</span>
+        <div class="item-arrow">▼</div>
+      </div>
+      <div class="item-body">
+        <div class="item-body-inner">
+          <div>
+            <div class="lbl">Требование</div>
+            <div class="val">Не менее 6 месяцев для грантов до 1 млн ₽, не менее 1 года — для остальных (ФПГ). ПФКИ возрастного ценза не устанавливает, но оценивает опыт.</div>
+          </div>
+          <div class="legal-block">
+            <strong>Основание:</strong> Положение о конкурсе ФПГ; критерий 8 «Опыт заявителя» ПФКИ
+          </div>
+          <div>
+            <div class="lbl">Последствие</div>
+            <div class="val risk">ФПГ — заявка не принимается. ПФКИ — 0–2 балла по критерию «Опыт заявителя».</div>
+          </div>
+          <button class="review-btn" onclick="markReviewed(event, this)">Отметить как проверенное</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="item warn">
+      <div class="item-head" onclick="toggleOpen(this)">
+        <div class="num"><span class="num-text">4</span></div>
+        <div class="item-title">Внутренние документы учреждения</div>
+        <span class="item-badge badge-warn">Проверка</span>
+        <div class="item-arrow">▼</div>
+      </div>
+      <div class="item-body">
+        <div class="item-body-inner">
+          <div>
+            <div class="lbl">Требование</div>
+            <div class="val">Положение о грантовой деятельности, приказ о назначении ответственного, положение о закупках, учетная политика для грантов с учетом КФО 5.</div>
+          </div>
+          <div class="legal-block">
+            <strong>Основание:</strong> ФЗ от 12.01.1996 № 7-ФЗ; письмо Минфина России от 29.04.2026 № 02-07-08/36315
+          </div>
+          <div>
+            <div class="lbl">Последствие</div>
+            <div class="val risk">Замечания при финансовой проверке. Ошибки в отчетности по форме 0503773.</div>
+          </div>
+          <button class="review-btn" onclick="markReviewed(event, this)">Отметить как проверенное</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="item crit">
+      <div class="item-head" onclick="toggleOpen(this)">
+        <div class="num"><span class="num-text">5</span></div>
+        <div class="item-title">Перенос остатков по грантам на КФО 5</div>
+        <span class="item-badge badge-crit">Искажение</span>
+        <div class="item-arrow">▼</div>
+      </div>
+      <div class="item-body">
+        <div class="item-body-inner">
+          <div>
+            <div class="lbl">Требование</div>
+            <div class="val">С 1 января 2026 года гранты-субсидии учитываются по КФО 5 (вместо КФО 2). Остатки на 1 января 2026 переносятся в межотчетный период с кодом причины 04.</div>
+          </div>
+          <div class="legal-block">
+            <strong>Основание:</strong> Письмо Минфина России от 29.04.2026 № 02-07-08/36315; СГС «Единый план счетов» и «План счетов учреждений»
+          </div>
+          <div>
+            <div class="lbl">Последствие</div>
+            <div class="val risk">Искажение отчетности, замечания от учредителя и Казначейства.</div>
+          </div>
+          <button class="review-btn" onclick="markReviewed(event, this)">Отметить как проверенное</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="item crit">
+      <div class="item-head" onclick="toggleOpen(this)">
+        <div class="num"><span class="num-text">6</span></div>
+        <div class="item-title">Согласие учредителя</div>
+        <span class="item-badge badge-crit">Отказ</span>
+        <div class="item-arrow">▼</div>
+      </div>
+      <div class="item-body">
+        <div class="item-body-inner">
+          <div>
+            <div class="lbl">Требование</div>
+            <div class="val">Для бюджетных и автономных учреждений обязательно с 2027 года — письменно, с указанием объемов софинансирования.</div>
+          </div>
+          <div class="legal-block">
+            <strong>Основание:</strong> Постановление Правительства РФ от 25.10.2023 № 1781; конкурсная документация Минкультуры России на 2027 год
+          </div>
+          <div>
+            <div class="lbl">Последствие</div>
+            <div class="val risk">Заявка не принимается.</div>
+          </div>
+          <button class="review-btn" onclick="markReviewed(event, this)">Отметить как проверенное</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7 -->
+    <div class="item warn">
+      <div class="item-head" onclick="toggleOpen(this)">
+        <div class="num"><span class="num-text">7</span></div>
+        <div class="item-title">Годовые отчеты на сайте</div>
+        <span class="item-badge badge-warn">−Баллы</span>
+        <div class="item-arrow">▼</div>
+      </div>
+      <div class="item-body">
+        <div class="item-body-inner">
+          <div>
+            <div class="lbl">Требование</div>
+            <div class="val">ПФКИ рекомендует экспертам проверять сайт организации на наличие годовых отчетов. Созданная накануне страница с тремя постами не засчитывается.</div>
+          </div>
+          <div class="legal-block">
+            <strong>Основание:</strong> Методические рекомендации ПФКИ по оценке заявок (I конкурс 2027 года), критерий 8 «Опыт заявителя»
+          </div>
+          <div>
+            <div class="lbl">Последствие</div>
+            <div class="val risk">Снижение балла по критерию «Опыт заявителя».</div>
+          </div>
+          <button class="review-btn" onclick="markReviewed(event, this)">Отметить как проверенное</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8 -->
+    <div class="item info">
+      <div class="item-head" onclick="toggleOpen(this)">
+        <div class="num"><span class="num-text">8</span></div>
+        <div class="item-title">Подтвержденные через Госуслуги соцсети</div>
+        <span class="item-badge badge-info">Плюс</span>
+        <div class="item-arrow">▼</div>
+      </div>
+      <div class="item-body">
+        <div class="item-body-inner">
+          <div>
+            <div class="lbl">Требование</div>
+            <div class="val">Активные соцсети с подтверждением через Госуслуги — признак живой аудитории. Охваты можно использовать как доказательство в разделе софинансирования.</div>
+          </div>
+          <div class="legal-block">
+            <strong>Основание:</strong> Методические рекомендации ПФКИ по оценке заявок, критерии 8 «Опыт заявителя» и 7 «Собственный вклад»
+          </div>
+          <div>
+            <div class="lbl">Последствие</div>
+            <div class="val risk">Потеря баллов по опыту и софинансированию. Утраченный аргумент для информационного вклада.</div>
+          </div>
+          <button class="review-btn" onclick="markReviewed(event, this)">Отметить как проверенное</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ============= ОТКРЫТИЕ/ЗАКРЫТИЕ ============= */
+function toggleOpen(head) {
+  const item = head.parentElement;
+  item.classList.toggle('open');
+}
+
+/* ============= ОТМЕТКА "ПРОВЕРЕНО" ============= */
+function markReviewed(event, btn) {
+  event.stopPropagation();
+  const item = btn.closest('.item');
+  item.classList.toggle('reviewed');
+  btn.textContent = item.classList.contains('reviewed')
+    ? '✓ Проверено'
+    : 'Отметить как проверенное';
+  updateStatus();
+}
+
+/* ============= СТАТУС ============= */
+function updateStatus() {
+  const total = document.querySelectorAll('.item').length;
+  const done = document.querySelectorAll('.item.reviewed').length;
+  document.getElementById('countDone').textContent = done;
+
+  const badge = document.getElementById('statusBadge');
+  const label = document.getElementById('statusLabel');
+
+  badge.className = 'status-badge';
+  if (done === 0) {
+    badge.classList.add('badge-red');
+    badge.textContent = 'Не проверено';
+    label.textContent = 'Отметьте проверенные пункты';
+  } else if (done < total / 2) {
+    badge.classList.add('badge-orange');
+    badge.textContent = 'Есть пробелы';
+    label.textContent = 'Проверено меньше половины';
+  } else if (done < total) {
+    badge.classList.add('badge-yellow');
+    badge.textContent = 'Почти готово';
+    label.textContent = 'Проверено большинство пунктов';
+  } else {
+    badge.classList.add('badge-green');
+    badge.textContent = 'Готово';
+    label.textContent = 'Все пункты проверены';
+  }
+}
+</script>
+</body>
+</html>
