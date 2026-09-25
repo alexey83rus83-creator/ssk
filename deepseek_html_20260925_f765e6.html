@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Документы к заявке — чек-лист</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f5f5f7; color: #1d1d1f; line-height: 1.5; padding: 20px;
+  }
+  .container { max-width: 780px; margin: 0 auto; }
+
+  header { margin-bottom: 20px; }
+  h1 { font-size: 23px; margin-bottom: 6px; }
+  .subtitle { color: #6e6e73; font-size: 14px; }
+
+  /* ----- статус-панель ----- */
+  .status-panel {
+    background: #fff; border-radius: 12px; padding: 16px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    margin-bottom: 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap;
+    position: sticky; top: 12px; z-index: 10;
+    transition: box-shadow .2s;
+  }
+  .status-panel.danger { box-shadow: 0 2px 16px rgba(255,59,48,.18); }
+
+  .status-info { display: flex; align-items: center; gap: 14px; }
+  .status-count {
+    font-size: 22px; font-weight: 700; color: #0071e3;
+    min-width: 48px;
+  }
+  .status-count .total { color: #86868b; font-weight: 500; font-size: 15px; }
+  .status-label { font-size: 13px; color: #6e6e73; }
+
+  .status-badge {
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 13px; font-weight: 600;
+    transition: all .2s;
+  }
+  .badge-red { background: #ffebee; color: #c62828; }
+  .badge-orange { background: #fff3e0; color: #e65100; }
+  .badge-yellow { background: #fff8e1; color: #8d6e00; }
+  .badge-green { background: #e8f5e9; color: #2e7d32; }
+
+  /* ----- группы ----- */
+  .group {
+    background: #fff; border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    margin-bottom: 12px; overflow: hidden;
+    transition: box-shadow .15s;
+  }
+  .group.open { box-shadow: 0 2px 10px rgba(0,0,0,.10); }
+
+  .group-head {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 20px; cursor: pointer; user-select: none;
+    transition: background .15s;
+  }
+  .group-head:hover { background: #fafafa; }
+
+  .group-icon {
+    flex-shrink: 0;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #0071e3; color: #fff;
+    font-size: 14px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .group-icon.mid { background: #ff9500; }
+  .group-icon.partner { background: #34c759; }
+
+  .group-title { flex: 1; font-size: 15px; font-weight: 600; }
+  .group-counter {
+    font-size: 13px; font-weight: 600; color: #86868b;
+    margin-right: 6px;
+  }
+  .group-counter.done { color: #34c759; }
+
+  .group-arrow {
+    flex-shrink: 0; color: #c0c0c5; font-size: 12px;
+    transition: transform .2s;
+  }
+  .group.open .group-arrow { transform: rotate(180deg); }
+
+  .group-body {
+    max-height: 0; overflow: hidden;
+    transition: max-height .3s ease;
+  }
+  .group.open .group-body { max-height: 800px; }
+
+  .group-body-inner {
+    padding: 4px 20px 16px;
+    border-top: 1px solid #f0f0f2;
+    padding-top: 12px;
+  }
+
+  /* ----- пункты ----- */
+  .doc-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 4px; border-radius: 8px;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .doc-item:hover { background: #fafafa; }
+
+  .doc-box {
+    flex-shrink: 0;
+    width: 22px; height: 22px;
+    border: 2px solid #d2d2d7; border-radius: 6px;
+    background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .15s; margin-top: 1px;
+  }
+  .doc-box::after {
+    content: '✓';
+    color: #fff; font-size: 14px; font-weight: 700;
+    opacity: 0; transform: scale(.5);
+    transition: all .15s;
+  }
+  .doc-item.done .doc-box {
+    background: #34c759; border-color: #34c759;
+  }
+  .doc-item.done .doc-box::after { opacity: 1; transform: scale(1); }
+
+  .doc-text {
+    flex: 1; font-size: 14px;
+    transition: color .15s;
+  }
+  .doc-item.done .doc-text {
+    color: #6e6e73;
+    text-decoration: line-through;
+    text-decoration-color: #a0d8a8;
+  }
+  .doc-hint {
+    display: block; font-size: 12px; color: #86868b;
+    margin-top: 3px; font-weight: 400;
+    text-decoration: none;
+  }
+  .doc-item.done .doc-hint {
+    text-decoration: none;
+    color: #a8a8ad;
+  }
+
+  /* ----- кнопки ----- */
+  .actions { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+  .btn {
+    padding: 11px 18px; border: 1.5px solid #d2d2d7;
+    background: #fff; border-radius: 8px;
+    font-size: 14px; font-weight: 600; color: #1d1d1f;
+    cursor: pointer; transition: all .15s;
+  }
+  .btn:hover { border-color: #0071e3; color: #0071e3; }
+  .btn-primary { background: #0071e3; border-color: #0071e3; color: #fff; }
+  .btn-primary:hover { background: #0077ed; border-color: #0077ed; color: #fff; }
+
+  .danger-banner {
+    display: none;
+    margin-top: 12px; padding: 12px 14px;
+    background: #ffebee; border-left: 4px solid #ff3b30;
+    border-radius: 8px;
+    font-size: 13px; color: #c62828; font-weight: 600;
+  }
+  .danger-banner.show { display: block; }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 20px; }
+    .group-head { padding: 14px 16px; }
+    .group-body-inner { padding: 4px 16px 14px; }
+    .status-panel { padding: 14px 16px; }
+    .status-count { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>Документы к заявке</h1>
+    <p class="subtitle">12 обязательных документов для трех типов заявителей</p>
+  </header>
+
+  <div class="status-panel" id="statusPanel">
+    <div class="status-info">
+      <div class="status-count">
+        <span id="countDone">0</span><span class="total"> / 12</span>
+      </div>
+      <div class="status-label" id="statusLabel">Отметьте подготовленные документы</div>
+    </div>
+    <div class="status-badge badge-red" id="statusBadge">Не готово</div>
+  </div>
+
+  <div class="danger-banner" id="dangerBanner">
+    ⚠ Подготовлено меньше половины документов. Без полного пакета заявка не пройдет формальную проверку фонда.
+  </div>
+
+  <!-- ===== ГРУППА 1. НКО ===== -->
+  <div class="group open" id="grp1">
+    <div class="group-head" onclick="toggleGroup('grp1')">
+      <div class="group-icon">Н</div>
+      <div class="group-title">НКО</div>
+      <div class="group-counter" id="counter-grp1">0 / 5</div>
+      <div class="group-arrow">▼</div>
+    </div>
+    <div class="group-body">
+      <div class="group-body-inner" id="list-grp1"></div>
+    </div>
+  </div>
+
+  <!-- ===== ГРУППА 2. УЧРЕЖДЕНИЕ КУЛЬТУРЫ ===== -->
+  <div class="group open" id="grp2">
+    <div class="group-head" onclick="toggleGroup('grp2')">
+      <div class="group-icon mid">У</div>
+      <div class="group-title">Учреждение культуры</div>
+      <div class="group-counter" id="counter-grp2">0 / 3</div>
+      <div class="group-arrow">▼</div>
+    </div>
+    <div class="group-body">
+      <div class="group-body-inner" id="list-grp2"></div>
+    </div>
+  </div>
+
+  <!-- ===== ГРУППА 3. ПАРТНЕРЫ ===== -->
+  <div class="group open" id="grp3">
+    <div class="group-head" onclick="toggleGroup('grp3')">
+      <div class="group-icon partner">П</div>
+      <div class="group-title">Партнеры</div>
+      <div class="group-counter" id="counter-grp3">0 / 4</div>
+      <div class="group-arrow">▼</div>
+    </div>
+    <div class="group-body">
+      <div class="group-body-inner" id="list-grp3"></div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn" onclick="expandAll(true)">Развернуть все</button>
+    <button class="btn" onclick="expandAll(false)">Свернуть все</button>
+    <button class="btn" onclick="resetAll()">Сбросить</button>
+  </div>
+
+</div>
+
+<script>
+/* ================= ДАННЫЕ ================= */
+const groups = {
+  grp1: {
+    title: 'НКО',
+    docs: [
+      { text: 'Свидетельство о регистрации', hint: 'Актуальная выписка из ЕГРЮЛ' },
+      { text: 'Устав (актуальная редакция с учетом 30-ФЗ)', hint: 'Термин «приносящая доход деятельность»' },
+      { text: 'Протокол о назначении руководителя', hint: 'Не старше срока полномочий' },
+      { text: 'Бухгалтерская отчетность за год', hint: 'Формы 1–6 или упрощенный пакет' },
+      { text: 'Справка об отсутствии задолженностей', hint: 'Из ФНС, не старше 30 дней' }
+    ]
+  },
+  grp2: {
+    title: 'Учреждение культуры',
+    docs: [
+      { text: 'Положение о грантовой деятельности', hint: 'Внутренний документ учреждения' },
+      { text: 'Приказ о назначении ответственного', hint: 'За подготовку и подачу заявки' },
+      { text: 'Согласие учредителя на участие в конкурсе', hint: 'Обязательно для бюджетных и автономных учреждений при подаче на театральные гранты Минкультуры с 2027 года' }
+    ]
+  },
+  grp3: {
+    title: 'Партнеры',
+    docs: [
+      { text: 'Письма поддержки не старше 6 месяцев', hint: 'Старше 6 месяцев — 3–5 баллов, старше 12 — 0–2 балла' },
+      { text: 'Индивидуальные, на бланках с подписью и печатью', hint: 'Без шаблонных формулировок' },
+      { text: 'Договоры о сотрудничестве', hint: 'С указанием конкретного вклада' },
+      { text: 'Справки о материальных ресурсах', hint: 'Оборудование, помещения — с рыночной оценкой' }
+    ]
+  }
+};
+
+const done = new Set();
+
+/* ================= ОТРИСОВКА ================= */
+Object.keys(groups).forEach(grpId => {
+  const box = document.getElementById('list-' + grpId);
+  box.innerHTML = groups[grpId].docs.map((d, i) => {
+    const key = grpId + ':' + i;
+    const isDone = done.has(key);
+    return `
+      <div class="doc-item ${isDone ? 'done' : ''}" onclick="toggleDoc('${key}', this)">
+        <div class="doc-box"></div>
+        <div class="doc-text">
+          ${d.text}
+          <span class="doc-hint">${d.hint}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+  updateGroupCounter(grpId);
+});
+
+/* ================= ЛОГИКА ================= */
+function toggleDoc(key, el) {
+  if (done.has(key)) {
+    done.delete(key);
+    el.classList.remove('done');
+  } else {
+    done.add(key);
+    el.classList.add('done');
+  }
+  const grpId = key.split(':')[0];
+  updateGroupCounter(grpId);
+  updateStatus();
+}
+
+function updateGroupCounter(grpId) {
+  const total = groups[grpId].docs.length;
+  const cnt = [...done].filter(k => k.startsWith(grpId + ':')).length;
+  const el = document.getElementById('counter-' + grpId);
+  el.textContent = cnt + ' / ' + total;
+  el.classList.toggle('done', cnt === total);
+}
+
+function updateStatus() {
+  const total = 12;
+  const cnt = done.size;
+  document.getElementById('countDone').textContent = cnt;
+
+  const badge = document.getElementById('statusBadge');
+  const label = document.getElementById('statusLabel');
+  const panel = document.getElementById('statusPanel');
+  const banner = document.getElementById('dangerBanner');
+
+  badge.className = 'status-badge';
+  panel.classList.remove('danger');
+  banner.classList.remove('show');
+
+  if (cnt === 0) {
+    badge.classList.add('badge-red');
+    badge.textContent = 'Не готово';
+    label.textContent = 'Отметьте подготовленные документы';
+  } else if (cnt < total / 2) {
+    badge.classList.add('badge-red');
+    badge.textContent = 'Много пробелов';
+    label.textContent = 'Подготовлено меньше половины';
+    panel.classList.add('danger');
+    banner.classList.add('show');
+  } else if (cnt < total) {
+    badge.classList.add('badge-orange');
+    badge.textContent = 'Почти готово';
+    label.textContent = 'Не хватает ' + (total - cnt) + ' документов';
+  } else {
+    badge.classList.add('badge-green');
+    badge.textContent = 'Все готовы';
+    label.textContent = 'Пакет документов собран полностью';
+  }
+}
+
+/* ================= СВОРАЧИВАНИЕ ================= */
+function toggleGroup(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+function expandAll(open) {
+  document.querySelectorAll('.group').forEach(g => {
+    if (open) g.classList.add('open');
+    else g.classList.remove('open');
+  });
+}
+
+function resetAll() {
+  if (!confirm('Сбросить все отметки?')) return;
+  done.clear();
+  document.querySelectorAll('.doc-item').forEach(el => el.classList.remove('done'));
+  Object.keys(groups).forEach(updateGroupCounter);
+  updateStatus();
+}
+
+updateStatus();
+</script>
+</body>
+</html>
