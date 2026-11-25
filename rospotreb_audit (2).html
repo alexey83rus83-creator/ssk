@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Самоаудит: риск проверки Роспотребнадзора для учреждения культуры</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f5f6f8;
+    padding: 12px;
+    display: flex;
+    justify-content: center;
+    color: #1a2b4a;
+  }
+  .widget {
+    max-width: 680px;
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+  .header {
+    background: #b45309;
+    color: #fff;
+    padding: 18px 20px 16px;
+  }
+  .header h2 { font-size: 17px; font-weight: 600; margin-bottom: 4px; line-height: 1.3; }
+  .header p { font-size: 12.5px; opacity: 0.85; line-height: 1.45; }
+  .body { padding: 14px 20px 20px; }
+  .field { margin-bottom: 14px; }
+  .field-label { font-size: 13px; font-weight: 600; color: #1a2b4a; margin-bottom: 6px; display: block; line-height: 1.35; }
+  .field-label .hint { font-weight: 400; color: #7a8290; font-size: 11.5px; display: block; margin-top: 2px; }
+  .options { display: flex; flex-wrap: wrap; gap: 5px; }
+  .options label {
+    flex: 1 1 auto; min-width: 60px; text-align: center; padding: 7px 8px;
+    border: 1.5px solid #d0d5dd; border-radius: 8px; font-size: 12px;
+    cursor: pointer; transition: all 0.15s; color: #344054; background: #fff;
+    user-select: none; line-height: 1.3;
+  }
+  .options label:hover { border-color: #b45309; }
+  .options input[type="radio"] { display: none; }
+  .options label:has(input:checked) { border-color: #b45309; background: #fdf0f0; font-weight: 600; }
+  .btn {
+    width: 100%; padding: 12px; background: #b45309; color: #fff; border: none;
+    border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px;
+    transition: background 0.15s;
+  }
+  .btn:hover { background: #d97706; }
+  .result { margin-top: 16px; padding: 16px; border-radius: 10px; display: none; }
+  .result.visible { display: block; }
+  .result.low { background: #ecfdf3; border: 1.5px solid #a6f4c5; }
+  .result.medium { background: #fff7ed; border: 1.5px solid #fdba74; }
+  .result.high { background: #fff1f0; border: 1.5px solid #fb923c; }
+  .result-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .risk-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+  .low .risk-badge { background: #d1fadf; color: #05603a; }
+  .medium .risk-badge { background: #ffedd5; color: #c2410c; }
+  .high .risk-badge { background: #fed7aa; color: #c2410c; }
+  .btn-reset-top {
+    background: #fff; border: 1.5px solid #b45309; color: #b45309;
+    padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  }
+  .btn-reset-top:hover { background: #b45309; color: #fff; }
+  .diagnosis { font-size: 13.5px; line-height: 1.5; color: #344054; margin-bottom: 12px; }
+  .recs-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; color: #667085; margin-bottom: 6px; }
+  .recs { list-style: none; padding: 0; }
+  .recs li { font-size: 12.5px; line-height: 1.45; color: #344054; padding: 5px 0 5px 18px; position: relative; border-bottom: 1px solid rgba(0,0,0,0.05); }
+  .recs li:last-child { border-bottom: none; }
+  .recs li::before { content: "→"; position: absolute; left: 0; color: #667085; font-weight: 600; }
+  .result-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .btn-copy {
+    flex: 1 1 140px; padding: 9px 14px; background: #fff; border: 1.5px solid #d0d5dd;
+    color: #1a2b4a; border-radius: 8px; font-size: 12.5px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .btn-copy:hover { border-color: #1a2b4a; }
+  .btn-copy.copied { background: #d1fadf; border-color: #05603a; color: #05603a; }
+  .btn-new {
+    flex: 1 1 140px; padding: 9px 14px; background: #b45309; border: 1.5px solid #b45309;
+    color: #fff; border-radius: 8px; font-size: 12.5px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .btn-new:hover { background: #d97706; }
+  .checklist-toggle { margin-top: 10px; background: #ffedd5; border: 1.5px solid #fb923c; color: #7c2d12; padding: 8px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; width: 100%; text-align: left; display: flex; justify-content: space-between; align-items: center; }
+  .checklist-toggle:hover { border-color: #b45309; color: #b45309; }
+  .checklist { margin-top: 8px; display: none; background: #fff7ed; border-radius: 8px; padding: 6px 6px 8px; }
+  .checklist.open { display: block; }
+  .checklist-item { background: #fff7ed; border-left: 3px solid #b45309; padding: 7px 10px; margin-bottom: 5px; font-size: 11.5px; line-height: 1.45; color: #7c2d12; border-radius: 0 6px 6px 0; }
+  .checklist-item .norm { display: block; margin-top: 2px; font-size: 10.5px; color: #9a3412; }
+  .section-divider { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: #98a2b3; margin: 16px 0 8px; padding-top: 10px; border-top: 1px solid #f2f4f7; }
+  .section-divider:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+  @media (max-width: 480px) {
+    body { padding: 6px; }
+    .header { padding: 14px; }
+    .header h2 { font-size: 15px; }
+    .body { padding: 10px 14px 16px; }
+    .options label { font-size: 11px; padding: 6px; min-width: 50px; }
+  }
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="header">
+    <h2>Самоаудит: риск проверки Роспотребнадзора для учреждения культуры</h2>
+    <p>Индикаторы риска по приказу Роспотребнадзора от 17.08.2026 № 644 (данные «Честного знака») и санэпиднадзорному перечню Минздрава. Отметьте состояние буфета, киоска и детского лагеря — получите оценку риска и план первоочередных мер. О внеплановой проверке по индикатору предупреждают за 24 часа.</p>
+  </div>
+  <div class="body">
+    <form id="auditForm">
+
+      <div class="section-divider">Буфет, киоск и общепит (маркированные товары)</div>
+
+      <div class="field">
+        <span class="field-label">Продажа безалкогольных напитков и соков без проверки кода «Честного знака» <span class="hint">Новый индикатор ЗПП: &gt;10% от среднемесячного объёма реализации — без сканирования кода на кассе</span></span>
+        <div class="options">
+          <label><input type="radio" name="juice_noscan" value="0" checked><span>Сканируем все</span></label>
+          <label><input type="radio" name="juice_noscan" value="3"><span>Касса не сканирует</span></label>
+          <label><input type="radio" name="juice_noscan" value="2"><span>Частично</span></label>
+          <label><input type="radio" name="juice_noscan" value="0"><span>Нет торговли напитками</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Коды напитков: не введены в оборот / выведены из оборота / отсутствуют в ГИС МТ <span class="hint">Новый индикатор ЗПП: &gt;1% при запросе запрета (без запроса — &gt;10% / &gt;5% / &gt;10%)</span></span>
+        <div class="options">
+          <label><input type="radio" name="juice_codes" value="0" checked><span>Все коды в порядке</span></label>
+          <label><input type="radio" name="juice_codes" value="3"><span>Есть «мёртвые» коды</span></label>
+          <label><input type="radio" name="juice_codes" value="2"><span>Не проверяли</span></label>
+          <label><input type="radio" name="juice_codes" value="0"><span>Нет торговли напитками</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Продажа пива и слабоалкогольных напитков без проверки кода <span class="hint">Новый индикатор ЗПП: &gt;350% среднемесячного объёма — продажа «мимо кассы с проверкой»</span></span>
+        <div class="options">
+          <label><input type="radio" name="beer" value="0" checked><span>Сканируем / не продаём</span></label>
+          <label><input type="radio" name="beer" value="3"><span>Продаём без проверки</span></label>
+          <label><input type="radio" name="beer" value="2"><span>Частично</span></label>
+          <label><input type="radio" name="beer" value="0"><span>Нет продажи пива</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Антисептики для рук в киоске и на входе <span class="hint">Новый индикатор ЗПП: продажа без проверки кода &gt;200%; код выведен из оборота — 20%/10%</span></span>
+        <div class="options">
+          <label><input type="radio" name="antisept" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="antisept" value="3"><span>Продаём без сканирования</span></label>
+          <label><input type="radio" name="antisept" value="2"><span>Не проверяли</span></label>
+          <label><input type="radio" name="antisept" value="0"><span>Не продаём антисептики</span></label>
+        </div>
+      </div>
+
+      <div class="section-divider">Санэпиднадзор: инфекции, лагеря, вода</div>
+
+      <div class="field">
+        <span class="field-label">Повторный случай кишечной инфекции в объекте общепита <span class="hint">Второе экстренное извещение об ОКИ в том же объекте в течение 7 календарных дней после первого</span></span>
+        <div class="options">
+          <label><input type="radio" name="oki_repeat" value="0" checked><span>Не было</span></label>
+          <label><input type="radio" name="oki_repeat" value="3"><span>Было два за неделю</span></label>
+          <label><input type="radio" name="oki_repeat" value="2"><span>Был один случай</span></label>
+          <label><input type="radio" name="oki_repeat" value="0"><span>Нет общепита</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Рост кишечных инфекций в муниципалитете, связанный с вашим объектом <span class="hint">Прирост ОКИ за неделю на 20% (не менее 3 новых случаев) с общим фактором передачи — пищевой продукцией или питьевой водой</span></span>
+        <div class="options">
+          <label><input type="radio" name="oki_growth" value="0" checked><span>Не связывают</span></label>
+          <label><input type="radio" name="oki_growth" value="3"><span>Вспышку связывают с нашим киоском</span></label>
+          <label><input type="radio" name="oki_growth" value="2"><span>Есть подозрение</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Детский лагерь дневного пребывания в реестре <span class="hint">Сведения о работе организации отдыха и оздоровления детей, не включённой в реестр, либо по адресу, которого в реестре нет</span></span>
+        <div class="options">
+          <label><input type="radio" name="camp" value="0" checked><span>В реестре, адрес совпадает</span></label>
+          <label><input type="radio" name="camp" value="3"><span>Работаем без реестра / адрес не совпадает</span></label>
+          <label><input type="radio" name="camp" value="2"><span>Не проверяли статус</span></label>
+          <label><input type="radio" name="camp" value="0"><span>Нет детского лагеря</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Питьевая вода: собственная скважина или источник <span class="hint">Химическое вещество выше верхней 95-процентной доверительной границы в двух пробах с интервалом не менее 10 дней при социально-гигиеническом мониторинге</span></span>
+        <div class="options">
+          <label><input type="radio" name="water" value="0" checked><span>Вода в порядке</span></label>
+          <label><input type="radio" name="water" value="3"><span>Скважина, пробы не контролируются</span></label>
+          <label><input type="radio" name="water" value="2"><span>Не проверяли</span></label>
+          <label><input type="radio" name="water" value="0"><span>Централизованное водоснабжение</span></label>
+        </div>
+      </div>
+
+      <div class="section-divider">Новые санитарные правила с 1 сентября 2026 года</div>
+
+      <div class="field">
+        <span class="field-label">Переход на СП 2.1.4284-26 (услуги в области культуры, досуга, развлечений) <span class="hint">Постановление Главного санврача от 02.06.2026 № 20; действует до 1 сентября 2032 года. С октября проверяют по обновлённым листам</span></span>
+        <div class="options">
+          <label><input type="radio" name="sp" value="0" checked><span>Перешли, сверились</span></label>
+          <label><input type="radio" name="sp" value="2"><span>Частично</span></label>
+          <label><input type="radio" name="sp" value="3"><span>Ещё на СП 2.1.3678-20</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Переход на СанПиН 2.3/2.4.4282-26 (общественное питание) <span class="hint">Постановление Главного санврача от 02.06.2026 № 18; журналы: гигиенический, температурный режим, бракераж</span></span>
+        <div class="options">
+          <label><input type="radio" name="sanpin" value="0" checked><span>Перешли, журналы ведём</span></label>
+          <label><input type="radio" name="sanpin" value="2"><span>Журналы частично</span></label>
+          <label><input type="radio" name="sanpin" value="3"><span>Ещё на СанПиН 2.3/2.4.3590-20</span></label>
+          <label><input type="radio" name="sanpin" value="0"><span>Нет общепита</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Плановые проверки до 2030 года <span class="hint">Плановых проверок по-прежнему нет — кроме объектов чрезвычайно высокого и высокого риска. Главные поводы для внепланового визита — индикаторы, жалобы посетителей и угроза здоровью</span></span>
+        <div class="options">
+          <label><input type="radio" name="plan" value="0" checked><span>Не относимся к высшему риску</span></label>
+          <label><input type="radio" name="plan" value="2"><span>Относимся к высокому риску</span></label>
+          <label><input type="radio" name="plan" value="1"><span>Не знаем категорию</span></label>
+        </div>
+      </div>
+
+      <button type="button" class="btn" onclick="calculate()">Оценить риск</button>
+    </form>
+
+    <div id="result" class="result">
+      <div class="result-header">
+        <div id="riskBadge" class="risk-badge"></div>
+        <button type="button" class="btn-reset-top" onclick="resetForm()">↻ Пройти заново</button>
+      </div>
+      <div id="diagnosis" class="diagnosis"></div>
+      <div class="recs-title">Срочные меры</div>
+      <ul id="recs" class="recs"></ul>
+      <div class="result-actions">
+        <button type="button" class="btn-copy" id="copyBtn" onclick="copyResult()">Скопировать результат</button>
+        <button type="button" class="btn-new" onclick="resetForm()">Пройти заново</button>
+      </div>
+      <button type="button" class="checklist-toggle" onclick="toggleChecklist()">Показать ключевые вопросы проверочных листов <span id="arrow">▼</span></button>
+      <div id="checklist" class="checklist">
+        <div class="checklist-item">Сканирует ли касса коды «Честного знака» на безалкогольных напитках и соках, и не превышает ли доля продаж без проверки кода 10% среднемесячного объёма? <span class="norm">Приказ Роспотребнадзора от 17.08.2026 № 644 (внесён в перечень № 635); ГИС МТ «Честный знак»</span></div>
+        <div class="checklist-item">Нет ли «мёртвых» кодов на напитках: не введены в оборот, выведены из оборота, отсутствуют в ГИС МТ (порог 1% при запросе запрета, 10%/5%/10% без запроса)? <span class="norm">Приказ № 644; продажа без проверки кода — более 350% по пиву</span></div>
+        <div class="checklist-item">Не было ли второго экстренного извещения об ОКИ в том же объекте общепита в течение 7 календарных дней? <span class="norm">Перечень индикаторов Минздрава; СП 2.1.4284-26, СанПиН 2.3/2.4.4282-26</span></div>
+        <div class="checklist-item">Включён ли детский лагерь дневного пребывания при ДК, библиотеке или парке в реестр организаций отдыха и оздоровления детей, совпадает ли адрес? <span class="norm">Санэпиднадзорный перечень Минздрава</span></div>
+        <div class="checklist-item">Переход с 1 сентября 2026 года на СП 2.1.4284-26 и СанПиН 2.3/2.4.4282-26 — ведётся ли документация по новым правилам? <span class="norm">Постановления Главного санврача РФ от 02.06.2026 № 20 и № 18; действуют до 01.09.2032</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let lastResultText = '';
+
+function getVal(name) {
+  const el = document.querySelector('input[name="' + name + '"]:checked');
+  return el ? parseInt(el.value) : 0;
+}
+
+function calculate() {
+  const juice_noscan = getVal('juice_noscan');
+  const juice_codes = getVal('juice_codes');
+  const beer = getVal('beer');
+  const antisept = getVal('antisept');
+  const oki_repeat = getVal('oki_repeat');
+  const oki_growth = getVal('oki_growth');
+  const camp = getVal('camp');
+  const water = getVal('water');
+  const sp = getVal('sp');
+  const sanpin = getVal('sanpin');
+  const plan = getVal('plan');
+
+  const total = juice_noscan + juice_codes + beer + antisept + oki_repeat + oki_growth + camp + water + sp + sanpin + plan;
+
+  let level, badgeText, badgeClass, diag;
+  const recs = [];
+
+  if (total <= 4) {
+    level = 'low'; badgeText = 'Низкий риск'; badgeClass = 'low';
+    diag = 'По индикаторам риска Роспотребнадзор не видит оснований для внепланового мероприятия: маркировка сканируется, повторных ОКИ нет, лагерь в реестре. Помните: сигнал по «Честному знаку» снимается автоматически, без жалобы покупателя, а о внеплановой проверке предупреждают всего за 24 часа. Полностью без предупреждения инспектор приходит только при непосредственной угрозе жизни и здоровью посетителей.';
+    recs.push('Ежемесячно сверяйте долю продаж напитков без проверки кода в личном кабинете «Честного знака» — держите её ниже 10% среднемесячного объёма, по кодам «не в обороте» — ниже 1% при запросе запрета.');
+    recs.push('Проверьте, что касса сканирует коды на антисептиках: порог по ним 200% без проверки кода, по выведенным из оборота — 20% при запросе.');
+  } else if (total <= 10) {
+    level = 'medium'; badgeText = 'Средний риск'; badgeClass = 'medium';
+    diag = 'Есть блоки, по которым индикатор может сработать автоматически из данных «Честного знака». Наиболее уязвимое направление — ' +
+      (juice_noscan >= 3 ? 'продажа напитков без сканирования кода (порог 10%)' : beer >= 3 ? 'пиво без проверки кода (порог 350%)' : oki_repeat >= 3 ? 'повторная кишечная инфекция в буфете (7 дней)' : camp >= 3 ? 'детский лагерь вне реестра' : 'переход на новые санитарные правила') +
+      '. Рекомендуем закрыть отклонение до того, как его увидит система: индикатор срабатывает без жалобы покупателя, уведомление о проверке приходит за 24 часа.';
+    if (juice_noscan >= 3 || juice_codes >= 3) {
+      recs.push('Настройте разрешительный режим на кассе: сканирование кода «Честного знака» при каждой продаже напитков и соков. Проверьте в ГИС МТ, что коды введены в оборот и не выведены из него — порог 1% при запросе запрета, 10%/5%/10% без запроса.');
+    }
+    if (beer >= 3) {
+      recs.push('Если продаёте пиво на летней веранде или открытой площадке — включите проверку кода на кассе. Продажа без проверки кода свыше 350% среднемесячного объёма — самостоятельный индикатор.');
+    }
+    if (oki_repeat >= 3) {
+      recs.push('Разберите два экстренных извещения об ОКИ за 7 дней в одном объекте общепита: проведите внеплановый инструктаж буфета, проверьте гигиенический журнал и журнал бракеража по новому СанПиН 2.3/2.4.4282-26.');
+    }
+    if (camp >= 3) {
+      recs.push('Проверьте включение лагеря дневного пребывания при ДК, библиотеке или парке в реестр организаций отдыха и оздоровления детей и совпадение адреса. Работа вне реестра — индикатор высокого риска.');
+    }
+    if (water >= 3) {
+      recs.push('При собственной скважине загородного ДК, парка или усадьбы организуйте производственный контроль воды: две пробы с интервалом не менее 10 дней, чтобы не выйти за верхнюю 95-процентную доверительную границу.');
+    }
+    if (sp >= 3 || sanpin >= 3) {
+      recs.push('С 1 сентября 2026 года перешли на СП 2.1.4284-26 и СанПиН 2.3/2.4.4282-26 (действуют до 1 сентября 2032 года). С октября проверяют по обновлённым проверочным листам — актуализируйте журналы: гигиенический, температурного режима холодильников, бракеража готовой продукции.');
+    }
+  } else {
+    level = 'high'; badgeText = 'Высокий риск'; badgeClass = 'high';
+    diag = 'Сочетание отклонений — это автоматический сигнал из «Честного знака» плюс санэпиднадзорный повод: инспектор может прийти уже через 24 часа после срабатывания индикатора, а при непосредственной угрозе жизни и здоровью посетителей — без предупреждения. По маркированным товарам штрафуют по ст. 14.43, 14.45, 14.46 КоАП, по санитарным правилам — по ст. 6.3–6.6 КоАП. Необходим срочный аудит: начните с кассы и кодов напитков, затем — буфет и детский лагерь.';
+    recs.push('Немедленно включите проверку кодов «Честного знака» на кассе для напитков и соков: доля продаж без проверки кода не должна превышать 10% среднемесячного объёма, по пиву — 350%. Сверьте коды «не в обороте» и «выведенные из оборота» — порог 1% при запросе запрета.');
+    recs.push('Проверьте буфет на повторные ОКИ: второе экстренное извещение в том же объекте в течение 7 календарных дней — самостоятельный индикатор. Проведите внеплановую уборку, инструктаж и бракераж по СанПиН 2.3/2.4.4282-26.');
+    recs.push('Сверьте детский лагерь дневного пребывания с реестром: работа вне реестра или по адресу, которого в реестре нет, — индикатор высокого риска для учреждений, принимающих детей.');
+    recs.push('Переведите объект на СП 2.1.4284-26 и СанПиН 2.3/2.4.4282-26: с 1 сентября 2026 года старые СП 2.1.3678-20 и СанПиН 2.3/2.4.3590-20 не применяются, с октября проверяют по новым листам.');
+  }
+
+  if (recs.length === 0) {
+    recs.push('Поддерживайте текущий уровень: ежемесячная сверка доли продаж без проверки кода в «Честном знаке» и ежеквартальная проверка статуса лагеря в реестре. Один день в квартал — минимальная защита от внеплановой проверки за 24 часа.');
+  }
+
+  const recsText = recs.slice(0, 4).map((r, i) => (i + 1) + '. ' + r).join('\n');
+  lastResultText = 'САМОАУДИТ РОСПОТРЕБНАДЗОР — РЕЗУЛЬТАТ\n\nУровень риска: ' + badgeText + '\n\n' + diag + '\n\nСрочные меры:\n' + recsText + '\n\n(Сервис журнала «Справочник руководителя учреждения культуры»; индикаторы риска — приказ Роспотребнадзора от 17.08.2026 № 644 к перечню № 635, санэпиднадзорный перечень Минздрава; проверочные листы по новым СП 2.1.4284-26 и СанПиН 2.3/2.4.4282-26)';
+
+  document.getElementById('riskBadge').textContent = badgeText;
+  document.getElementById('riskBadge').className = 'risk-badge ' + badgeClass;
+  document.getElementById('diagnosis').textContent = diag;
+  const recsList = document.getElementById('recs');
+  recsList.innerHTML = '';
+  recs.slice(0, 4).forEach(r => {
+    const li = document.createElement('li');
+    li.textContent = r;
+    recsList.appendChild(li);
+  });
+
+  const result = document.getElementById('result');
+  result.className = 'result visible ' + level;
+  result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  const copyBtn = document.getElementById('copyBtn');
+  copyBtn.textContent = 'Скопировать результат';
+  copyBtn.classList.remove('copied');
+}
+
+function copyResult() {
+  if (!lastResultText) return;
+  const btn = document.getElementById('copyBtn');
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(lastResultText).then(() => {
+      btn.textContent = '✓ Скопировано';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Скопировать результат'; btn.classList.remove('copied'); }, 2500);
+    }).catch(() => fallbackCopy(lastResultText, btn));
+  } else {
+    fallbackCopy(lastResultText, btn);
+  }
+}
+
+function fallbackCopy(text, btn) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand('copy');
+    btn.textContent = '✓ Скопировано';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Скопировать результат'; btn.classList.remove('copied'); }, 2500);
+  } catch (e) {
+    alert('Не удалось скопировать. Выделите текст вручную.');
+  }
+  document.body.removeChild(ta);
+}
+
+function toggleChecklist() {
+  const cl = document.getElementById('checklist');
+  const arrow = document.getElementById('arrow');
+  cl.classList.toggle('open');
+  arrow.textContent = cl.classList.contains('open') ? '▲' : '▼';
+}
+
+function resetForm() {
+  document.getElementById('result').className = 'result';
+  document.getElementById('checklist').classList.remove('open');
+  document.getElementById('arrow').textContent = '▼';
+  document.getElementById('auditForm').reset();
+  lastResultText = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
