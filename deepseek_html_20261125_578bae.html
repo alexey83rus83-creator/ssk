@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Самоаудит: риск проверки Роскомнадзора по персональным данным</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f5f6f8;
+    padding: 12px;
+    display: flex;
+    justify-content: center;
+    color: #1a2b4a;
+  }
+  .widget {
+    max-width: 680px;
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+  .header {
+    background: #1a5f7a;
+    color: #fff;
+    padding: 18px 20px 16px;
+  }
+  .header h2 { font-size: 17px; font-weight: 600; margin-bottom: 4px; line-height: 1.3; }
+  .header p { font-size: 12.5px; opacity: 0.85; line-height: 1.45; }
+  .body { padding: 14px 20px 20px; }
+  .field { margin-bottom: 14px; }
+  .field-label { font-size: 13px; font-weight: 600; color: #1a2b4a; margin-bottom: 6px; display: block; line-height: 1.35; }
+  .field-label .hint { font-weight: 400; color: #7a8290; font-size: 11.5px; display: block; margin-top: 2px; }
+  .options { display: flex; flex-wrap: wrap; gap: 5px; }
+  .options label {
+    flex: 1 1 auto; min-width: 60px; text-align: center; padding: 7px 8px;
+    border: 1.5px solid #d0d5dd; border-radius: 8px; font-size: 12px;
+    cursor: pointer; transition: all 0.15s; color: #344054; background: #fff;
+    user-select: none; line-height: 1.3;
+  }
+  .options label:hover { border-color: #1a5f7a; }
+  .options input[type="radio"] { display: none; }
+  .options label:has(input:checked) { border-color: #1a5f7a; background: #eaf4f8; font-weight: 600; }
+  .btn {
+    width: 100%; padding: 12px; background: #1a5f7a; color: #fff; border: none;
+    border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px;
+    transition: background 0.15s;
+  }
+  .btn:hover { background: #256f8f; }
+  .result { margin-top: 16px; padding: 16px; border-radius: 10px; display: none; }
+  .result.visible { display: block; }
+  .result.low { background: #ecfdf3; border: 1.5px solid #a6f4c5; }
+  .result.medium { background: #fffaeb; border: 1.5px solid #fedf89; }
+  .result.high { background: #fef3f2; border: 1.5px solid #fda29b; }
+  .result-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .risk-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+  .low .risk-badge { background: #d1fadf; color: #05603a; }
+  .medium .risk-badge { background: #fef0c7; color: #93370d; }
+  .high .risk-badge { background: #fee4e2; color: #b42318; }
+  .btn-reset-top {
+    background: #fff; border: 1.5px solid #1a5f7a; color: #1a5f7a;
+    padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  }
+  .btn-reset-top:hover { background: #1a5f7a; color: #fff; }
+  .diagnosis { font-size: 13.5px; line-height: 1.5; color: #344054; margin-bottom: 12px; }
+  .recs-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; color: #667085; margin-bottom: 6px; }
+  .recs { list-style: none; padding: 0; }
+  .recs li { font-size: 12.5px; line-height: 1.45; color: #344054; padding: 5px 0 5px 18px; position: relative; border-bottom: 1px solid rgba(0,0,0,0.05); }
+  .recs li:last-child { border-bottom: none; }
+  .recs li::before { content: "→"; position: absolute; left: 0; color: #667085; font-weight: 600; }
+  .result-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .btn-copy {
+    flex: 1 1 140px; padding: 9px 14px; background: #fff; border: 1.5px solid #d0d5dd;
+    color: #1a2b4a; border-radius: 8px; font-size: 12.5px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .btn-copy:hover { border-color: #1a2b4a; }
+  .btn-copy.copied { background: #d1fadf; border-color: #05603a; color: #05603a; }
+  .btn-new {
+    flex: 1 1 140px; padding: 9px 14px; background: #1a5f7a; border: 1.5px solid #1a5f7a;
+    color: #fff; border-radius: 8px; font-size: 12.5px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .btn-new:hover { background: #256f8f; }
+  .checklist-toggle { margin-top: 10px; background: none; border: 1.5px solid #d0d5dd; color: #1a2b4a; padding: 8px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; width: 100%; text-align: left; display: flex; justify-content: space-between; align-items: center; }
+  .checklist-toggle:hover { border-color: #1a2b4a; }
+  .checklist { margin-top: 8px; display: none; }
+  .checklist.open { display: block; }
+  .checklist-item { background: #f9fafb; border-left: 3px solid #1a5f7a; padding: 7px 10px; margin-bottom: 5px; font-size: 11.5px; line-height: 1.45; color: #344054; border-radius: 0 6px 6px 0; }
+  .checklist-item .norm { display: block; margin-top: 2px; font-size: 10.5px; color: #667085; }
+  .section-divider { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: #98a2b3; margin: 16px 0 8px; padding-top: 10px; border-top: 1px solid #f2f4f7; }
+  .section-divider:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+  @media (max-width: 480px) {
+    body { padding: 6px; }
+    .header { padding: 14px; }
+    .header h2 { font-size: 15px; }
+    .body { padding: 10px 14px 16px; }
+    .options label { font-size: 11px; padding: 6px; min-width: 50px; }
+  }
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="header">
+    <h2>Самоаудит: риск проверки Роскомнадзора по персданным</h2>
+    <p>Проверочный лист по приказу РКН № 253. Отметьте состояние блоков — получите оценку риска и план первоочередных мер.</p>
+  </div>
+  <div class="body">
+    <form id="auditForm">
+
+      <div class="section-divider">Политика и согласия</div>
+
+      <div class="field">
+        <span class="field-label">Политика обработки ПДн опубликована и актуальна <span class="hint">ч. 2 ст. 18.1 № 152-ФЗ; ссылка работаети из подвала и форм</span></span>
+        <div class="options">
+          <label><input type="radio" name="policy" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="policy" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="policy" value="3"><span>Нет / устарела</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Согласия в формах: отдельные, не предустановленные, с перечнем данных <span class="hint">ч. 1, 4 ст. 9; ч. 1 ст. 13.11 КоАП — штраф до 300 тыс. руб.</span></span>
+        <div class="options">
+          <label><input type="radio" name="consent" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="consent" value="3"><span>Есть замечания</span></label>
+          <label><input type="radio" name="consent" value="3"><span>Не проверяли</span></label>
+        </div>
+      </div>
+
+      <div class="section-divider">Сайт и цифровой мониторинг</div>
+
+      <div class="field">
+        <span class="field-label">Нет зарубежных счётчиков и сервисов, передающих данные за рубеж <span class="hint">локализация: ч. 8 ст. 13.11 КоАП — штраф от 1 до 6 млн руб.</span></span>
+        <div class="options">
+          <label><input type="radio" name="foreign" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="foreign" value="3"><span>Есть замечания</span></label>
+          <label><input type="radio" name="foreign" value="3"><span>Не проверяли</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Персональные данные не публикуются открыто без согласия <span class="hint">списки детей, телефоны, фото с мероприятий; ст. 10.1 № 152-ФЗ</span></span>
+        <div class="options">
+          <label><input type="radio" name="publication" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="publication" value="3"><span>Есть замечания</span></label>
+          <label><input type="radio" name="publication" value="3"><span>Не проверяли</span></label>
+        </div>
+      </div>
+
+      <div class="section-divider">Уведомление в реестре операторов</div>
+
+      <div class="field">
+        <span class="field-label">Уведомление в реестре операторов подано и актуально <span class="hint">цели, категории, ответственный; ч. 10 ст. 13.11 КоАП — штраф до 300 тыс. руб.</span></span>
+        <div class="options">
+          <label><input type="radio" name="registry" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="registry" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="registry" value="3"><span>Не подано / устарело</span></label>
+        </div>
+      </div>
+
+      <div class="section-divider">Подрядчики и ответственный</div>
+
+      <div class="field">
+        <span class="field-label">С подрядчиками заключены поручения на обработку ПДн <span class="hint">ч. 3 ст. 6 № 152-ФЗ; конфиденциальность, перечень действий, срок</span></span>
+        <div class="options">
+          <label><input type="radio" name="contractors" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="contractors" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="contractors" value="3"><span>Не проверяли</span></label>
+          <label><input type="radio" name="contractors" value="0"><span>Неприменимо</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Назначен ответственный за организацию обработки ПДн <span class="hint">ч. 1 ст. 22.1 № 152-ФЗ; приказ, обязанности, ознакомление</span></span>
+        <div class="options">
+          <label><input type="radio" name="dpo" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="dpo" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="dpo" value="3"><span>Нет</span></label>
+        </div>
+      </div>
+
+      <div class="section-divider">Права субъектов и инциденты</div>
+
+      <div class="field">
+        <span class="field-label">Обращения субъектов ПДн обрабатываются в срок <span class="hint">10 рабочих дней на ответ; ст. 14, 20 № 152-ФЗ</span></span>
+        <div class="options">
+          <label><input type="radio" name="rights" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="rights" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="rights" value="3"><span>Не проверяли</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Регламент реагирования на утечки утверждён <span class="hint">24 часа на первичное уведомление, 72 часа на расследование; ч. 11 ст. 13.11 КоАП — от 1 до 3 млн руб.</span></span>
+        <div class="options">
+          <label><input type="radio" name="incident" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="incident" value="3"><span>Есть замечания</span></label>
+          <label><input type="radio" name="incident" value="3"><span>Нет / не проверяли</span></label>
+        </div>
+      </div>
+
+      <div class="section-divider">Биометрия и специальные категории</div>
+
+      <div class="field">
+        <span class="field-label">Биометрические данные обрабатываются только с отдельным согласием <span class="hint">ч. 1 ст. 11 № 152-ФЗ; с 2027 — только УНЭП; СКУД, распознавание лиц</span></span>
+        <div class="options">
+          <label><input type="radio" name="biometry" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="biometry" value="3"><span>Есть замечания</span></label>
+          <label><input type="radio" name="biometry" value="2"><span>Не проверяли</span></label>
+          <label><input type="radio" name="biometry" value="0"><span>Неприменимо</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Данные детей (кружки, студии, конкурсы) обрабатываются с согласия законных представителей <span class="hint">ст. 9, 10.1 № 152-ФЗ; группы тяжести «Б» и «А»</span></span>
+        <div class="options">
+          <label><input type="radio" name="children" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="children" value="3"><span>Есть замечания</span></label>
+          <label><input type="radio" name="children" value="2"><span>Не проверяли</span></label>
+          <label><input type="radio" name="children" value="0"><span>Неприменимо</span></label>
+        </div>
+      </div>
+
+      <button type="button" class="btn" onclick="calculate()">Оценить риск</button>
+    </form>
+
+    <div id="result" class="result">
+      <div class="result-header">
+        <div id="riskBadge" class="risk-badge"></div>
+        <button type="button" class="btn-reset-top" onclick="resetForm()">↻ Пройти заново</button>
+      </div>
+      <div id="diagnosis" class="diagnosis"></div>
+      <div class="recs-title">Срочные меры</div>
+      <ul id="recs" class="recs"></ul>
+      <div class="result-actions">
+        <button type="button" class="btn-copy" id="copyBtn" onclick="copyResult()">Скопировать результат</button>
+        <button type="button" class="btn-new" onclick="resetForm()">Пройти заново</button>
+      </div>
+      <button type="button" class="checklist-toggle" onclick="toggleChecklist()">Показать ключевые вопросы проверочного листа <span id="arrow">▼</span></button>
+      <div id="checklist" class="checklist">
+        <div class="checklist-item">Соблюдаются ли требования к содержанию и объёму ПДн в части соответствия заявленным целям? <span class="norm">ч. 5 ст. 5 № 152-ФЗ</span></div>
+        <div class="checklist-item">Соблюдаются ли требования по нераскрытию третьим лицам ПДн без согласия субъекта? <span class="norm">ст. 7 № 152-ФЗ</span></div>
+        <div class="checklist-item">Предоставлены ли доказательства получения согласия субъекта на обработку ПДн? <span class="norm">ч. 3 ст. 9 № 152-ФЗ</span></div>
+        <div class="checklist-item">Соблюдаются ли требования к содержанию письменного согласия? <span class="norm">ч. 4 ст. 9 № 152-ФЗ</span></div>
+        <div class="checklist-item">Опубликована ли политика обработки ПДн и обеспечен ли неограниченный доступ к ней? <span class="norm">ч. 2 ст. 18.1 № 152-ФЗ</span></div>
+        <div class="checklist-item">Назначено ли лицо, ответственное за организацию обработки ПДн? <span class="norm">ч. 1 ст. 22.1 № 152-ФЗ</span></div>
+        <div class="checklist-item">Соблюдаются ли требования по уведомлению РКН об инциденте в течение 24 и 72 часов? <span class="norm">ч. 3.1 ст. 21 № 152-ФЗ</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let lastResultText = '';
+
+function getVal(name) {
+  const el = document.querySelector(`input[name="${name}"]:checked`);
+  return el ? parseInt(el.value) : 0;
+}
+
+function calculate() {
+  const policy = getVal('policy');
+  const consent = getVal('consent');
+  const foreign = getVal('foreign');
+  const publication = getVal('publication');
+  const registry = getVal('registry');
+  const contractors = getVal('contractors');
+  const dpo = getVal('dpo');
+  const rights = getVal('rights');
+  const incident = getVal('incident');
+  const biometry = getVal('biometry');
+  const children = getVal('children');
+
+  const total = policy + consent + foreign + publication + registry + contractors + dpo + rights + incident + biometry + children;
+
+  let level, badgeText, badgeClass, diag;
+  const recs = [];
+
+  if (total <= 4) {
+    level = 'low'; badgeText = 'Низкий риск'; badgeClass = 'low';
+    diag = 'По проверочному листу РКН учреждение в зоне низкого риска. Однако помните: цифровой мониторинг работает круглосуточно и без предупреждения, а жалоба субъекта ПДн — самостоятельное основание для внеплановой проверки. Держите документы в актуальном состоянии.';
+    recs.push('Поддерживайте ежеквартальную сверку: политика, согласия в формах, уведомление в реестре операторов, поручения с подрядчиками.');
+    recs.push('Проверьте сайт на наличие зарубежных счётчиков и сервисов — автоматика РКН находит их быстрее, чем инспектор.');
+  } else if (total <= 10) {
+    level = 'medium'; badgeText = 'Средний риск'; badgeClass = 'medium';
+    diag = 'Есть блоки, где Роскомнадзор найдёт замечания. Наиболее уязвимые направления — ' +
+      (consent >= 3 ? 'согласия в формах на сайте' : policy >= 3 ? 'политика обработки ПДн' : registry >= 3 ? 'уведомление в реестре операторов' : foreign >= 3 ? 'зарубежные сервисы и локализация' : 'документация') +
+      '. Рекомендуем провести внутренний аудит до конца новогодних каникул.';
+    if (consent >= 3) {
+      recs.push('Проверьте каждую форму на сайте: чекбокс согласия должен быть пустым по умолчанию, с отдельным перечнем данных и ссылкой на текст согласия. Для рассылки, фото и данных ребёнка — разные формы.');
+    }
+    if (policy >= 3) {
+      recs.push('Актуализируйте политику обработки ПДн: цели, категории, сроки, порядок уничтожения. Сверьте текст с фактическими процессами (сайт, касса, видеонаблюдение, кадры).');
+    }
+    if (registry >= 3) {
+      recs.push('Проверьте карточку учреждения в реестре операторов на портале ПДн РКН. Если обработка изменилась — обновите уведомление не позднее 15-го числа следующего месяца.');
+    }
+    if (foreign >= 3) {
+      recs.push('Проведите инвентаризацию внешних сервисов: метрики, шрифты, формы, CRM, облачные хранилища. Замените зарубежные сервисы, обрабатывающие данные граждан РФ, на отечественные аналоги.');
+    }
+  } else {
+    level = 'high'; badgeText = 'Высокий риск'; badgeClass = 'high';
+    diag = 'Сочетание замечаний создаёт реальную угрозу предписания и штрафа по ст. 13.11 КоАП. Для учреждения культуры особенно опасны штрафы за локализацию (до 6 млн руб.) и утечки (до 15 млн руб.). Необходим срочный аудит: начните с согласий, политики и зарубежных сервисов.';
+    recs.push('Немедленно проверьте формы на сайте: предустановленные галочки и отсутствие согласия — самое частое нарушение, которое находит автоматика РКН. Штраф — до 300 тыс. руб. по ч. 1 ст. 13.11 КоАП.');
+    recs.push('Проверьте, не передаются ли данные за рубеж через счётчики, шрифты или виджеты. Нарушение локализации — штраф от 1 до 6 млн руб. по ч. 8 ст. 13.11 КоАП.');
+    recs.push('Актуализируйте политику и уведомление в реестре операторов: расхождение с фактической обработкой — готовый индикатор риска для внеплановой проверки.');
+    recs.push('Утвердите регламент реагирования на утечки: 24 часа на первичное уведомление, 72 часа на расследование. Неуведомление об инциденте — штраф от 1 до 3 млн руб.');
+  }
+
+  if (recs.length === 0) {
+    recs.push('Поддерживайте текущий уровень: ежеквартальная сверка политики, согласий, уведомления и договоров с подрядчиками. Один день в квартал — минимальная инвестиция в защиту от проверки.');
+  }
+
+  const recsText = recs.slice(0, 4).map((r, i) => `${i + 1}. ${r}`).join('\n');
+  lastResultText = `САМОАУДИТ РОСКОМНАДЗОРА — РЕЗУЛЬТАТ\n\nУровень риска: ${badgeText}\n\n${diag}\n\nСрочные меры:\n${recsText}\n\n(Сервис журнала «Справочник руководителя учреждения культуры»; проверочный лист по приказу РКН № 253)`;
+
+  document.getElementById('riskBadge').textContent = badgeText;
+  document.getElementById('riskBadge').className = 'risk-badge ' + badgeClass;
+  document.getElementById('diagnosis').textContent = diag;
+  const recsList = document.getElementById('recs');
+  recsList.innerHTML = '';
+  recs.slice(0, 4).forEach(r => {
+    const li = document.createElement('li');
+    li.textContent = r;
+    recsList.appendChild(li);
+  });
+
+  const result = document.getElementById('result');
+  result.className = 'result visible ' + level;
+  result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  const copyBtn = document.getElementById('copyBtn');
+  copyBtn.textContent = 'Скопировать результат';
+  copyBtn.classList.remove('copied');
+}
+
+function copyResult() {
+  if (!lastResultText) return;
+  const btn = document.getElementById('copyBtn');
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(lastResultText).then(() => {
+      btn.textContent = '✓ Скопировано';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Скопировать результат'; btn.classList.remove('copied'); }, 2500);
+    }).catch(() => fallbackCopy(lastResultText, btn));
+  } else {
+    fallbackCopy(lastResultText, btn);
+  }
+}
+
+function fallbackCopy(text, btn) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand('copy');
+    btn.textContent = '✓ Скопировано';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Скопировать результат'; btn.classList.remove('copied'); }, 2500);
+  } catch (e) {
+    alert('Не удалось скопировать. Выделите текст вручную.');
+  }
+  document.body.removeChild(ta);
+}
+
+function toggleChecklist() {
+  const cl = document.getElementById('checklist');
+  const arrow = document.getElementById('arrow');
+  cl.classList.toggle('open');
+  arrow.textContent = cl.classList.contains('open') ? '▲' : '▼';
+}
+
+function resetForm() {
+  document.getElementById('result').className = 'result';
+  document.getElementById('checklist').classList.remove('open');
+  document.getElementById('arrow').textContent = '▼';
+  document.getElementById('auditForm').reset();
+  lastResultText = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
