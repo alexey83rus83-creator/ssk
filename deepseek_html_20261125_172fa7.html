@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Самоаудит: риск проверки МЧС по пожарной безопасности</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f5f6f8;
+    padding: 12px;
+    display: flex;
+    justify-content: center;
+    color: #1a2b4a;
+  }
+  .widget {
+    max-width: 680px;
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+  .header {
+    background: #7a1f1f;
+    color: #fff;
+    padding: 18px 20px 16px;
+  }
+  .header h2 { font-size: 17px; font-weight: 600; margin-bottom: 4px; line-height: 1.3; }
+  .header p { font-size: 12.5px; opacity: 0.85; line-height: 1.45; }
+  .body { padding: 14px 20px 20px; }
+  .field { margin-bottom: 14px; }
+  .field-label { font-size: 13px; font-weight: 600; color: #1a2b4a; margin-bottom: 6px; display: block; line-height: 1.35; }
+  .field-label .hint { font-weight: 400; color: #7a8290; font-size: 11.5px; display: block; margin-top: 2px; }
+  .options { display: flex; flex-wrap: wrap; gap: 5px; }
+  .options label {
+    flex: 1 1 auto; min-width: 60px; text-align: center; padding: 7px 8px;
+    border: 1.5px solid #d0d5dd; border-radius: 8px; font-size: 12px;
+    cursor: pointer; transition: all 0.15s; color: #344054; background: #fff;
+    user-select: none; line-height: 1.3;
+  }
+  .options label:hover { border-color: #7a1f1f; }
+  .options input[type="radio"] { display: none; }
+  .options label:has(input:checked) { border-color: #7a1f1f; background: #fdf0f0; font-weight: 600; }
+  .btn {
+    width: 100%; padding: 12px; background: #7a1f1f; color: #fff; border: none;
+    border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px;
+    transition: background 0.15s;
+  }
+  .btn:hover { background: #9b2c2c; }
+  .result { margin-top: 16px; padding: 16px; border-radius: 10px; display: none; }
+  .result.visible { display: block; }
+  .result.low { background: #ecfdf3; border: 1.5px solid #a6f4c5; }
+  .result.medium { background: #fffaeb; border: 1.5px solid #fedf89; }
+  .result.high { background: #fef3f2; border: 1.5px solid #fda29b; }
+  .result-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .risk-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+  .low .risk-badge { background: #d1fadf; color: #05603a; }
+  .medium .risk-badge { background: #fef0c7; color: #93370d; }
+  .high .risk-badge { background: #fee4e2; color: #b42318; }
+  .btn-reset-top {
+    background: #fff; border: 1.5px solid #7a1f1f; color: #7a1f1f;
+    padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  }
+  .btn-reset-top:hover { background: #7a1f1f; color: #fff; }
+  .diagnosis { font-size: 13.5px; line-height: 1.5; color: #344054; margin-bottom: 12px; }
+  .recs-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; color: #667085; margin-bottom: 6px; }
+  .recs { list-style: none; padding: 0; }
+  .recs li { font-size: 12.5px; line-height: 1.45; color: #344054; padding: 5px 0 5px 18px; position: relative; border-bottom: 1px solid rgba(0,0,0,0.05); }
+  .recs li:last-child { border-bottom: none; }
+  .recs li::before { content: "→"; position: absolute; left: 0; color: #667085; font-weight: 600; }
+  .result-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .btn-copy {
+    flex: 1 1 140px; padding: 9px 14px; background: #fff; border: 1.5px solid #d0d5dd;
+    color: #1a2b4a; border-radius: 8px; font-size: 12.5px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .btn-copy:hover { border-color: #1a2b4a; }
+  .btn-copy.copied { background: #d1fadf; border-color: #05603a; color: #05603a; }
+  .btn-new {
+    flex: 1 1 140px; padding: 9px 14px; background: #7a1f1f; border: 1.5px solid #7a1f1f;
+    color: #fff; border-radius: 8px; font-size: 12.5px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .btn-new:hover { background: #9b2c2c; }
+  .checklist-toggle { margin-top: 10px; background: none; border: 1.5px solid #d0d5dd; color: #1a2b4a; padding: 8px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; width: 100%; text-align: left; display: flex; justify-content: space-between; align-items: center; }
+  .checklist-toggle:hover { border-color: #1a2b4a; }
+  .checklist { margin-top: 8px; display: none; }
+  .checklist.open { display: block; }
+  .checklist-item { background: #f9fafb; border-left: 3px solid #7a1f1f; padding: 7px 10px; margin-bottom: 5px; font-size: 11.5px; line-height: 1.45; color: #344054; border-radius: 0 6px 6px 0; }
+  .checklist-item .norm { display: block; margin-top: 2px; font-size: 10.5px; color: #667085; }
+  .section-divider { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: #98a2b3; margin: 16px 0 8px; padding-top: 10px; border-top: 1px solid #f2f4f7; }
+  .section-divider:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+  @media (max-width: 480px) {
+    body { padding: 6px; }
+    .header { padding: 14px; }
+    .header h2 { font-size: 15px; }
+    .body { padding: 10px 14px 16px; }
+    .options label { font-size: 11px; padding: 6px; min-width: 50px; }
+  }
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="header">
+    <h2>Самоаудит: риск проверки МЧС по пожарной безопасности</h2>
+    <p>Проверочный лист по приказу МЧС № 525. Отметьте состояние блоков объекта — получите оценку риска и план первоочередных мер.</p>
+  </div>
+  <div class="body">
+    <form id="auditForm">
+
+      <div class="section-divider">Условия соответствия и общие требования</div>
+
+      <div class="field">
+        <span class="field-label">Выбрано и выполняется условие соответствия объекта <span class="hint">п. 1.1–1.6 проверочного листа: НПА, пожарный риск, СТУ, стандарт организации, расчёты, проектная документация</span></span>
+        <div class="options">
+          <label><input type="radio" name="cond" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="cond" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="cond" value="3"><span>Не проверяли</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Декларация пожарной безопасности представлена <span class="hint">п. 3: ч. 5, 6 ст. 6, ст. 64 № 123-ФЗ</span></span>
+        <div class="options">
+          <label><input type="radio" name="decl" value="0" checked><span>Да</span></label>
+          <label><input type="radio" name="decl" value="2"><span>Не уверен</span></label>
+          <label><input type="radio" name="decl" value="3"><span>Нет</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Порядок поведения людей, обучение, содержание территорий и помещений <span class="hint">п. 4: ст. 25 № 69-ФЗ, п. 1–64 Правил № 1479, приказ № 1120</span></span>
+        <div class="options">
+          <label><input type="radio" name="order" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="order" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="order" value="3"><span>Не проверяли</span></label>
+        </div>
+      </div>
+
+      <div class="section-divider">Инженерные системы и пути эвакуации</div>
+
+      <div class="field">
+        <span class="field-label">Противопожарные расстояния, проезды и подъезды для пожарной техники <span class="hint">п. 2.1, 2.3</span></span>
+        <div class="options">
+          <label><input type="radio" name="dist" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="dist" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="dist" value="3"><span>Не проверяли</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Наружное и внутреннее противопожарное водоснабжение <span class="hint">п. 2.2: акты перекатки рукавов, проверки на водоотдачу</span></span>
+        <div class="options">
+          <label><input type="radio" name="water" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="water" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="water" value="3"><span>Не проверяли</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Конструктивные решения, огнестойкость, ограничение распространения пожара <span class="hint">п. 2.4, 2.5</span></span>
+        <div class="options">
+          <label><input type="radio" name="constr" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="constr" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="constr" value="3"><span>Не проверяли</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Безопасная эвакуация людей, эвакуационные пути и выходы <span class="hint">п. 2.6: ширина, количество выходов, захламлённость, решётки</span></span>
+        <div class="options">
+          <label><input type="radio" name="evac" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="evac" value="3"><span>Есть замечания</span></label>
+          <label><input type="radio" name="evac" value="2"><span>Не проверяли</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Автоматические установки пожаротушения и пожарная сигнализация <span class="hint">п. 2.9: договор с лицензиатом, акты работоспособности</span></span>
+        <div class="options">
+          <label><input type="radio" name="auto" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="auto" value="3"><span>Есть замечания</span></label>
+          <label><input type="radio" name="auto" value="2"><span>Не проверяли</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">СОУЭ и иные системы противопожарной защиты <span class="hint">п. 2.10–2.12: оповещение, дымоудаление, алгоритм работы</span></span>
+        <div class="options">
+          <label><input type="radio" name="soue" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="soue" value="3"><span>Есть замечания</span></label>
+          <label><input type="radio" name="soue" value="2"><span>Не проверяли</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Исходные данные для расчёта пожарных рисков и исследований <span class="hint">п. 2.14, 2.15</span></span>
+        <div class="options">
+          <label><input type="radio" name="riskdata" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="riskdata" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="riskdata" value="3"><span>Не проверяли</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Соответствие продукции требованиям ТР ЕАЭС 043/2017 <span class="hint">п. 2.16: сертификаты на рукава, шкафы, двери, огнетушители</span></span>
+        <div class="options">
+          <label><input type="radio" name="product" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="product" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="product" value="3"><span>Не проверяли</span></label>
+        </div>
+      </div>
+
+      <div class="section-divider">Объекты и территории (для учреждения культуры)</div>
+
+      <div class="field">
+        <span class="field-label">Территория поселений и населённых пунктов <span class="hint">п. 5: п. 65–76 Правил № 1479</span></span>
+        <div class="options">
+          <label><input type="radio" name="terr" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="terr" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="terr" value="3"><span>Не проверяли</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Системы теплоснабжения и отопления <span class="hint">п. 6: п. 77–83</span></span>
+        <div class="options">
+          <label><input type="radio" name="heat" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="heat" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="heat" value="3"><span>Не проверяли</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Культурно-просветительные и зрелищные учреждения <span class="hint">п. 9: п. 93–102 — основной блок для музеев, театров, ДК</span></span>
+        <div class="options">
+          <label><input type="radio" name="culture" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="culture" value="3"><span>Есть замечания</span></label>
+          <label><input type="radio" name="culture" value="2"><span>Не проверяли</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Научные и образовательные организации <span class="hint">п. 8: п. 88–92 — для ДШИ и школ при учреждениях</span></span>
+        <div class="options">
+          <label><input type="radio" name="edu" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="edu" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="edu" value="3"><span>Не проверяли</span></label>
+          <label><input type="radio" name="edu" value="0"><span>Неприменимо</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Объекты хранения <span class="hint">п. 17: п. 286–307 — фондохранилища, склады декораций</span></span>
+        <div class="options">
+          <label><input type="radio" name="storage" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="storage" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="storage" value="3"><span>Не проверяли</span></label>
+          <label><input type="radio" name="storage" value="0"><span>Неприменимо</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Строительно-монтажные и реставрационные работы <span class="hint">п. 18: п. 308–336</span></span>
+        <div class="options">
+          <label><input type="radio" name="repair" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="repair" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="repair" value="3"><span>Не проверяли</span></label>
+          <label><input type="radio" name="repair" value="0"><span>Неприменимо</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Пожароопасные работы <span class="hint">п. 19: п. 337–372 — сварка, резка при монтаже экспозиций</span></span>
+        <div class="options">
+          <label><input type="radio" name="hot" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="hot" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="hot" value="3"><span>Не проверяли</span></label>
+          <label><input type="radio" name="hot" value="0"><span>Неприменимо</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Спецэффекты, пиротехника и огневые эффекты на мероприятиях <span class="hint">п. 27: п. 449–458 — концерты, спектакли с массовым пребыванием</span></span>
+        <div class="options">
+          <label><input type="radio" name="pyro" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="pyro" value="3"><span>Есть замечания</span></label>
+          <label><input type="radio" name="pyro" value="2"><span>Не проверяли</span></label>
+          <label><input type="radio" name="pyro" value="0"><span>Неприменимо</span></label>
+        </div>
+      </div>
+
+      <div class="section-divider">Документы и средства пожаротушения</div>
+
+      <div class="field">
+        <span class="field-label">Инструкция о мерах пожарной безопасности <span class="hint">п. 21: п. 392–394</span></span>
+        <div class="options">
+          <label><input type="radio" name="instr" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="instr" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="instr" value="3"><span>Нет / устарела</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Первичные средства пожаротушения <span class="hint">п. 22: п. 395–413 — огнетушители, щиты, бирки, журнал СПЗ</span></span>
+        <div class="options">
+          <label><input type="radio" name="primary" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="primary" value="3"><span>Есть замечания</span></label>
+          <label><input type="radio" name="primary" value="2"><span>Не проверяли</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Объекты религиозного назначения <span class="hint">п. 24: п. 419–428</span></span>
+        <div class="options">
+          <label><input type="radio" name="relig" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="relig" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="relig" value="3"><span>Не проверяли</span></label>
+          <label><input type="radio" name="relig" value="0"><span>Неприменимо</span></label>
+        </div>
+      </div>
+
+      <button type="button" class="btn" onclick="calculate()">Оценить риск</button>
+    </form>
+
+    <div id="result" class="result">
+      <div class="result-header">
+        <div id="riskBadge" class="risk-badge"></div>
+        <button type="button" class="btn-reset-top" onclick="resetForm()">↻ Пройти заново</button>
+      </div>
+      <div id="diagnosis" class="diagnosis"></div>
+      <div class="recs-title">Срочные меры</div>
+      <ul id="recs" class="recs"></ul>
+      <div class="result-actions">
+        <button type="button" class="btn-copy" id="copyBtn" onclick="copyResult()">Скопировать результат</button>
+        <button type="button" class="btn-new" onclick="resetForm()">Пройти заново</button>
+      </div>
+      <button type="button" class="checklist-toggle" onclick="toggleChecklist()">Показать ключевые вопросы проверочного листа <span id="arrow">▼</span></button>
+      <div id="checklist" class="checklist">
+        <div class="checklist-item">Выбрано ли условие соответствия объекта требованиям пожарной безопасности и выполняется ли оно? <span class="norm">п. 1.1–1.6, ч. 4, 6 ст. 4, ч. 1 ст. 6 № 123-ФЗ</span></div>
+        <div class="checklist-item">Представлена ли декларация пожарной безопасности в органы ГПН? <span class="norm">п. 3, ст. 64 № 123-ФЗ</span></div>
+        <div class="checklist-item">Обеспечена ли безопасная эвакуация людей, свободны ли пути и выходы? <span class="norm">п. 2.6, п. 93–102 Правил № 1479</span></div>
+        <div class="checklist-item">Исправны ли автоматические установки пожаротушения и пожарная сигнализация, есть ли договор с лицензиатом? <span class="norm">п. 2.9, п. 2.10</span></div>
+        <div class="checklist-item">Выполняются ли требования к культурно-просветительным и зрелищным учреждениям? <span class="norm">п. 9, п. 93–102 Правил № 1479</span></div>
+        <div class="checklist-item">Обеспечены ли объекты первичными средствами пожаротушения, актуальны ли бирки и журнал? <span class="norm">п. 22, п. 395–413 Правил № 1479</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let lastResultText = '';
+
+function getVal(name) {
+  const el = document.querySelector(`input[name="${name}"]:checked`);
+  return el ? parseInt(el.value) : 0;
+}
+
+function calculate() {
+  const cond = getVal('cond');
+  const decl = getVal('decl');
+  const order = getVal('order');
+  const dist = getVal('dist');
+  const water = getVal('water');
+  const constr = getVal('constr');
+  const evac = getVal('evac');
+  const auto = getVal('auto');
+  const soue = getVal('soue');
+  const riskdata = getVal('riskdata');
+  const product = getVal('product');
+  const terr = getVal('terr');
+  const heat = getVal('heat');
+  const culture = getVal('culture');
+  const edu = getVal('edu');
+  const storage = getVal('storage');
+  const repair = getVal('repair');
+  const hot = getVal('hot');
+  const pyro = getVal('pyro');
+  const instr = getVal('instr');
+  const primary = getVal('primary');
+  const relig = getVal('relig');
+
+  const total = cond + decl + order + dist + water + constr + evac + auto + soue + riskdata + product + terr + heat + culture + edu + storage + repair + hot + pyro + instr + primary + relig;
+
+  let level, badgeText, badgeClass, diag;
+  const recs = [];
+
+  if (total <= 6) {
+    level = 'low'; badgeText = 'Низкий риск'; badgeClass = 'low';
+    diag = 'По проверочному листу МЧС учреждение в зоне низкого риска. Однако помните: плановая проверка не единственная угроза — внеплановая может прийти по жалобе, требованию прокурора или при срабатывании индикатора риска. Держите документы в актуальном состоянии.';
+    recs.push('Поддерживайте ежеквартальную сверку: декларация пожарной безопасности, инструкция о мерах ПБ, журналы инструктажей и эксплуатации систем противопожарной защиты.');
+    recs.push('Проверьте актуальность договора на техобслуживание пожарной автоматики и наличие лицензии у подрядчика — это первый документ, который запросит инспектор.');
+  } else if (total <= 14) {
+    level = 'medium'; badgeText = 'Средний риск'; badgeClass = 'medium';
+    diag = 'Есть блоки, где инспектор найдёт замечания. Наиболее уязвимые направления — ' +
+      (evac >= 3 ? 'эвакуационные пути и выходы' : auto >= 3 ? 'пожарная автоматика' : culture >= 3 ? 'требования к культурно-просветительным учреждениям' : primary >= 3 ? 'первичные средства пожаротушения' : 'документация') +
+      '. Рекомендуем провести внутренний аудит до конца новогодних каникул.';
+    if (evac >= 3) {
+      recs.push('Освободите эвакуационные пути и выходы: уберите посторонние предметы из проходов, проверьте, что двери открываются изнутри без ключа, установите защёлки-барашки.');
+    }
+    if (auto >= 3) {
+      recs.push('Заключите договор на техобслуживание пожарной автоматики с лицензиатом; присутствуйте при проверке работоспособности, просите подрядчика провести сработку систем всеми способами.');
+    }
+    if (culture >= 3) {
+      recs.push('Пройдитесь по п. 93–102 Правил № 1479: требования к культурно-просветительным и зрелищным учреждениям — это основной блок для музеев, театров и ДК.');
+    }
+    if (primary >= 3) {
+      recs.push('Проверьте первичные средства пожаротушения: исправность огнетушителей, бирки со сроком перезарядки, журнал СПЗ, акты перезарядки от подрядчика.');
+    }
+    if (instr >= 3) {
+      recs.push('Актуализируйте инструкцию о мерах пожарной безопасности и приказы о назначении ответственных — без них проверка не проходит.');
+    }
+  } else {
+    level = 'high'; badgeText = 'Высокий риск'; badgeClass = 'high';
+    diag = 'Сочетание замечаний создаёт реальную угрозу предписания и штрафа по ст. 20.4 КоАП. При повторном нарушении возможно административное приостановление деятельности до 90 суток. Необходим срочный аудит: начните с эвакуационных путей, автоматики и документов.';
+    recs.push('Немедленно проверьте эвакуационные пути и выходы: захламлённость, ширина, количество выходов, решётки на окнах. Это первое, что осматривает инспектор.');
+    recs.push('Проверьте работоспособность пожарной автоматики и сигнализации, наличие договора с лицензиатом. При отсутствии — заключите договор в кратчайший срок.');
+    recs.push('Подготовьте пакет документов: декларация пожарной безопасности, приказы о назначении ответственных, инструкция о мерах ПБ, журналы инструктажей и эксплуатации систем противопожарной защиты.');
+    recs.push('Пройдитесь по блокам проверочного листа: культурно-просветительные учреждения (п. 93–102), первичные средства (п. 395–413), территория (п. 65–76).');
+  }
+
+  if (recs.length === 0) {
+    recs.push('Поддерживайте текущий уровень: ежеквартальная сверка документов и систем противопожарной защиты. Один день в квартал — минимальная инвестиция в защиту от проверки.');
+  }
+
+  const recsText = recs.slice(0, 4).map((r, i) => `${i + 1}. ${r}`).join('\n');
+  lastResultText = `САМОАУДИТ МЧС — РЕЗУЛЬТАТ\n\nУровень риска: ${badgeText}\n\n${diag}\n\nСрочные меры:\n${recsText}\n\n(Сервис журнала «Справочник руководителя учреждения культуры»; проверочный лист по приказу МЧС № 525)`;
+
+  document.getElementById('riskBadge').textContent = badgeText;
+  document.getElementById('riskBadge').className = 'risk-badge ' + badgeClass;
+  document.getElementById('diagnosis').textContent = diag;
+  const recsList = document.getElementById('recs');
+  recsList.innerHTML = '';
+  recs.slice(0, 4).forEach(r => {
+    const li = document.createElement('li');
+    li.textContent = r;
+    recsList.appendChild(li);
+  });
+
+  const result = document.getElementById('result');
+  result.className = 'result visible ' + level;
+  result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  const copyBtn = document.getElementById('copyBtn');
+  copyBtn.textContent = 'Скопировать результат';
+  copyBtn.classList.remove('copied');
+}
+
+function copyResult() {
+  if (!lastResultText) return;
+  const btn = document.getElementById('copyBtn');
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(lastResultText).then(() => {
+      btn.textContent = '✓ Скопировано';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Скопировать результат'; btn.classList.remove('copied'); }, 2500);
+    }).catch(() => fallbackCopy(lastResultText, btn));
+  } else {
+    fallbackCopy(lastResultText, btn);
+  }
+}
+
+function fallbackCopy(text, btn) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand('copy');
+    btn.textContent = '✓ Скопировано';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Скопировать результат'; btn.classList.remove('copied'); }, 2500);
+  } catch (e) {
+    alert('Не удалось скопировать. Выделите текст вручную.');
+  }
+  document.body.removeChild(ta);
+}
+
+function toggleChecklist() {
+  const cl = document.getElementById('checklist');
+  const arrow = document.getElementById('arrow');
+  cl.classList.toggle('open');
+  arrow.textContent = cl.classList.contains('open') ? '▲' : '▼';
+}
+
+function resetForm() {
+  document.getElementById('result').className = 'result';
+  document.getElementById('checklist').classList.remove('open');
+  document.getElementById('arrow').textContent = '▼';
+  document.getElementById('auditForm').reset();
+  lastResultText = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
