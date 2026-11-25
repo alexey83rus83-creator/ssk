@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Самоаудит: риск проверки МЧС по ГО и ЧС</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f5f6f8;
+    padding: 12px;
+    display: flex;
+    justify-content: center;
+    color: #1a2b4a;
+  }
+  .widget {
+    max-width: 680px;
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+  .header {
+    background: #2d4a1f;
+    color: #fff;
+    padding: 18px 20px 16px;
+  }
+  .header h2 { font-size: 17px; font-weight: 600; margin-bottom: 4px; line-height: 1.3; }
+  .header p { font-size: 12.5px; opacity: 0.85; line-height: 1.45; }
+  .body { padding: 14px 20px 20px; }
+  .field { margin-bottom: 14px; }
+  .field-label { font-size: 13px; font-weight: 600; color: #1a2b4a; margin-bottom: 6px; display: block; line-height: 1.35; }
+  .field-label .hint { font-weight: 400; color: #7a8290; font-size: 11.5px; display: block; margin-top: 2px; }
+  .options { display: flex; flex-wrap: wrap; gap: 5px; }
+  .options label {
+    flex: 1 1 auto; min-width: 60px; text-align: center; padding: 7px 8px;
+    border: 1.5px solid #d0d5dd; border-radius: 8px; font-size: 12px;
+    cursor: pointer; transition: all 0.15s; color: #344054; background: #fff;
+    user-select: none; line-height: 1.3;
+  }
+  .options label:hover { border-color: #2d4a1f; }
+  .options input[type="radio"] { display: none; }
+  .options label:has(input:checked) { border-color: #2d4a1f; background: #f0f7ea; font-weight: 600; }
+  .btn {
+    width: 100%; padding: 12px; background: #2d4a1f; color: #fff; border: none;
+    border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px;
+    transition: background 0.15s;
+  }
+  .btn:hover { background: #3d6329; }
+  .result { margin-top: 16px; padding: 16px; border-radius: 10px; display: none; }
+  .result.visible { display: block; }
+  .result.low { background: #ecfdf3; border: 1.5px solid #a6f4c5; }
+  .result.medium { background: #fffaeb; border: 1.5px solid #fedf89; }
+  .result.high { background: #fef3f2; border: 1.5px solid #fda29b; }
+  .result-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .risk-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+  .low .risk-badge { background: #d1fadf; color: #05603a; }
+  .medium .risk-badge { background: #fef0c7; color: #93370d; }
+  .high .risk-badge { background: #fee4e2; color: #b42318; }
+  .btn-reset-top {
+    background: #fff; border: 1.5px solid #2d4a1f; color: #2d4a1f;
+    padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  }
+  .btn-reset-top:hover { background: #2d4a1f; color: #fff; }
+  .diagnosis { font-size: 13.5px; line-height: 1.5; color: #344054; margin-bottom: 12px; }
+  .recs-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; color: #667085; margin-bottom: 6px; }
+  .recs { list-style: none; padding: 0; }
+  .recs li { font-size: 12.5px; line-height: 1.45; color: #344054; padding: 5px 0 5px 18px; position: relative; border-bottom: 1px solid rgba(0,0,0,0.05); }
+  .recs li:last-child { border-bottom: none; }
+  .recs li::before { content: "→"; position: absolute; left: 0; color: #667085; font-weight: 600; }
+  .result-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .btn-copy {
+    flex: 1 1 140px; padding: 9px 14px; background: #fff; border: 1.5px solid #d0d5dd;
+    color: #1a2b4a; border-radius: 8px; font-size: 12.5px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .btn-copy:hover { border-color: #1a2b4a; }
+  .btn-copy.copied { background: #d1fadf; border-color: #05603a; color: #05603a; }
+  .btn-new {
+    flex: 1 1 140px; padding: 9px 14px; background: #2d4a1f; border: 1.5px solid #2d4a1f;
+    color: #fff; border-radius: 8px; font-size: 12.5px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .btn-new:hover { background: #3d6329; }
+  .checklist-toggle { margin-top: 10px; background: none; border: 1.5px solid #d0d5dd; color: #1a2b4a; padding: 8px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; width: 100%; text-align: left; display: flex; justify-content: space-between; align-items: center; }
+  .checklist-toggle:hover { border-color: #1a2b4a; }
+  .checklist { margin-top: 8px; display: none; }
+  .checklist.open { display: block; }
+  .checklist-item { background: #f9fafb; border-left: 3px solid #2d4a1f; padding: 7px 10px; margin-bottom: 5px; font-size: 11.5px; line-height: 1.45; color: #344054; border-radius: 0 6px 6px 0; }
+  .checklist-item .norm { display: block; margin-top: 2px; font-size: 10.5px; color: #667085; }
+  .section-divider { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: #98a2b3; margin: 16px 0 8px; padding-top: 10px; border-top: 1px solid #f2f4f7; }
+  .section-divider:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+  @media (max-width: 480px) {
+    body { padding: 6px; }
+    .header { padding: 14px; }
+    .header h2 { font-size: 15px; }
+    .body { padding: 10px 14px 16px; }
+    .options label { font-size: 11px; padding: 6px; min-width: 50px; }
+  }
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="header">
+    <h2>Самоаудит: риск проверки МЧС по ГО и ЧС</h2>
+    <p>Проверочные листы по приказам МЧС № 61 (ГО) и № 639 (защита от ЧС). Отметьте состояние блоков — получите оценку риска и план первоочередных мер.</p>
+  </div>
+  <div class="body">
+    <form id="auditForm">
+
+      <div class="section-divider">Гражданская оборона (приказ № 61)</div>
+
+      <div class="field">
+        <span class="field-label">Назначены ответственные и созданы структурные подразделения по ГО <span class="hint">п. 8 Положения о структурных подразделениях; приказ о назначении уполномоченного</span></span>
+        <div class="options">
+          <label><input type="radio" name="go_resp" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="go_resp" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="go_resp" value="3"><span>Не проверяли</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Разработан и утверждён план гражданской обороны <span class="hint">план ГО организации; актуализация раз в 5 лет</span></span>
+        <div class="options">
+          <label><input type="radio" name="go_plan" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="go_plan" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="go_plan" value="3"><span>Нет / устарел</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Проводится обучение работников по ГО и курсовое обучение <span class="hint">программы курсового обучения; журналы учёта</span></span>
+        <div class="options">
+          <label><input type="radio" name="go_train" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="go_train" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="go_train" value="3"><span>Не проверяли</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Созданы и поддерживаются в готовности нештатные формирования по ГО (НФГО) <span class="hint">если организация отнесена к категории по ГО; приказ о создании НФГО</span></span>
+        <div class="options">
+          <label><input type="radio" name="go_nfgo" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="go_nfgo" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="go_nfgo" value="3"><span>Не проверяли</span></label>
+          <label><input type="radio" name="go_nfgo" value="0"><span>Неприменимо</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Накоплены запасы материально-технических средств для ГО <span class="hint">Положение о накоплении запасов; номенклатура и объёмы</span></span>
+        <div class="options">
+          <label><input type="radio" name="go_stock" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="go_stock" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="go_stock" value="3"><span>Не проверяли</span></label>
+          <label><input type="radio" name="go_stock" value="0"><span>Неприменимо</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Объекты гражданской обороны (убежища, ПРУ) учтены и содержатся <span class="hint">паспорта ЗС ГО, журнал учёта, поддержание в готовности</span></span>
+        <div class="options">
+          <label><input type="radio" name="go_shelter" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="go_shelter" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="go_shelter" value="3"><span>Не проверяли</span></label>
+          <label><input type="radio" name="go_shelter" value="0"><span>Неприменимо</span></label>
+        </div>
+      </div>
+
+      <div class="section-divider">Защита от чрезвычайных ситуаций (приказ № 639)</div>
+
+      <div class="field">
+        <span class="field-label">Разработан план действий по предупреждению и ликвидации ЧС <span class="hint">План действий; актуализация; согласование</span></span>
+        <div class="options">
+          <label><input type="radio" name="chs_plan" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="chs_plan" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="chs_plan" value="3"><span>Нет / устарел</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Созданы силы и средства для ликвидации ЧС (силы постоянной готовности) <span class="hint">п. 14–17 проверочного листа № 639; аттестация раз в 3 года</span></span>
+        <div class="options">
+          <label><input type="radio" name="chs_forces" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="chs_forces" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="chs_forces" value="3"><span>Не проверяли</span></label>
+          <label><input type="radio" name="chs_forces" value="0"><span>Неприменимо</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Создана и поддерживается локальная система оповещения о ЧС <span class="hint">п. 18–45; для объектов с массовым пребыванием людей</span></span>
+        <div class="options">
+          <label><input type="radio" name="chs_alert" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="chs_alert" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="chs_alert" value="3"><span>Нет / не проверяли</span></label>
+          <label><input type="radio" name="chs_alert" value="0"><span>Неприменимо</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Проводятся учения и тренировки по ГО и защите от ЧС <span class="hint">объектовые тренировки, тактико-специальные учения; график и журналы</span></span>
+        <div class="options">
+          <label><input type="radio" name="chs_drill" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="chs_drill" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="chs_drill" value="3"><span>Не проверяли</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Обеспечено информирование и оповещение работников об угрозе ЧС <span class="hint">подпункт «з» ч. 1 ст. 14 № 68-ФЗ; схемы оповещения</span></span>
+        <div class="options">
+          <label><input type="radio" name="chs_info" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="chs_info" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="chs_info" value="3"><span>Не проверяли</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Финансирование мероприятий по защите от ЧС предусмотрено <span class="hint">подпункт «е» ч. 1 ст. 14 № 68-ФЗ; смета/план финансирования</span></span>
+        <div class="options">
+          <label><input type="radio" name="chs_fin" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="chs_fin" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="chs_fin" value="3"><span>Не проверяли</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Представляется информация в области защиты от ЧС в органы власти <span class="hint">п. 68–69; порядок сбора и обмена информацией</span></span>
+        <div class="options">
+          <label><input type="radio" name="chs_report" value="0" checked><span>В порядке</span></label>
+          <label><input type="radio" name="chs_report" value="2"><span>Есть замечания</span></label>
+          <label><input type="radio" name="chs_report" value="3"><span>Не проверяли</span></label>
+        </div>
+      </div>
+
+      <button type="button" class="btn" onclick="calculate()">Оценить риск</button>
+    </form>
+
+    <div id="result" class="result">
+      <div class="result-header">
+        <div id="riskBadge" class="risk-badge"></div>
+        <button type="button" class="btn-reset-top" onclick="resetForm()">↻ Пройти заново</button>
+      </div>
+      <div id="diagnosis" class="diagnosis"></div>
+      <div class="recs-title">Срочные меры</div>
+      <ul id="recs" class="recs"></ul>
+      <div class="result-actions">
+        <button type="button" class="btn-copy" id="copyBtn" onclick="copyResult()">Скопировать результат</button>
+        <button type="button" class="btn-new" onclick="resetForm()">Пройти заново</button>
+      </div>
+      <button type="button" class="checklist-toggle" onclick="toggleChecklist()">Показать ключевые вопросы проверочных листов <span id="arrow">▼</span></button>
+      <div id="checklist" class="checklist">
+        <div class="checklist-item">Назначены ли ответственные за ГО, созданы ли структурные подразделения (работники) по ГО? <span class="norm">приказ № 61, п. 8 Положения о структурных подразделениях</span></div>
+        <div class="checklist-item">Разработан ли и актуализирован план гражданской обороны организации? <span class="norm">приказ № 61, Положение о ГО</span></div>
+        <div class="checklist-item">Проводится ли обучение работников по ГО и курсовое обучение? <span class="norm">приказ № 61, п. 14–15</span></div>
+        <div class="checklist-item">Разработан ли план действий по предупреждению и ликвидации ЧС? <span class="norm">приказ № 639</span></div>
+        <div class="checklist-item">Создана ли локальная система оповещения о ЧС и поддерживается ли она в готовности? <span class="norm">приказ № 639, п. 18–45</span></div>
+        <div class="checklist-item">Проводятся ли объектовые тренировки и учения по ГО и защите от ЧС? <span class="norm">приказ № 61, п. 21–23</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let lastResultText = '';
+
+function getVal(name) {
+  const el = document.querySelector(`input[name="${name}"]:checked`);
+  return el ? parseInt(el.value) : 0;
+}
+
+function calculate() {
+  const goResp = getVal('go_resp');
+  const goPlan = getVal('go_plan');
+  const goTrain = getVal('go_train');
+  const goNfgo = getVal('go_nfgo');
+  const goStock = getVal('go_stock');
+  const goShelter = getVal('go_shelter');
+  const chsPlan = getVal('chs_plan');
+  const chsForces = getVal('chs_forces');
+  const chsAlert = getVal('chs_alert');
+  const chsDrill = getVal('chs_drill');
+  const chsInfo = getVal('chs_info');
+  const chsFin = getVal('chs_fin');
+  const chsReport = getVal('chs_report');
+
+  const total = goResp + goPlan + goTrain + goNfgo + goStock + goShelter + chsPlan + chsForces + chsAlert + chsDrill + chsInfo + chsFin + chsReport;
+
+  let level, badgeText, badgeClass, diag;
+  const recs = [];
+
+  if (total <= 4) {
+    level = 'low'; badgeText = 'Низкий риск'; badgeClass = 'low';
+    diag = 'По проверочным листам ГО и ЧС учреждение в зоне низкого риска. Однако помните: внеплановая проверка может прийти по жалобе, требованию прокурора или при срабатывании индикатора риска. Держите документы по ГО и ЧС в актуальном состоянии.';
+    recs.push('Поддерживайте ежеквартальную сверку: план ГО, план действий по ЧС, журналы обучения и учений, документы по НФГО и запасам.');
+    recs.push('Проверьте актуальность локальной системы оповещения — для объектов с массовым пребыванием людей это первый вопрос инспектора.');
+  } else if (total <= 9) {
+    level = 'medium'; badgeText = 'Средний риск'; badgeClass = 'medium';
+    diag = 'Есть блоки, где инспектор найдёт замечания. Наиболее уязвимые направления — ' +
+      (goPlan >= 3 ? 'план гражданской обороны' : chsPlan >= 3 ? 'план действий по ЧС' : goTrain >= 3 ? 'обучение по ГО' : chsAlert >= 3 ? 'локальная система оповещения' : 'документация') +
+      '. Рекомендуем провести внутренний аудит до конца новогодних каникул.';
+    if (goPlan >= 3) {
+      recs.push('Разработайте и утвердите план гражданской обороны; актуализируйте его с учётом изменений в структуре учреждения.');
+    }
+    if (chsPlan >= 3) {
+      recs.push('Разработайте план действий по предупреждению и ликвидации ЧС; согласуйте с уполномоченным органом.');
+    }
+    if (goTrain >= 3) {
+      recs.push('Организуйте обучение работников по ГО и курсовое обучение; заведите журналы учёта и сохраните программы.');
+    }
+    if (chsAlert >= 3) {
+      recs.push('Проверьте наличие и работоспособность локальной системы оповещения; при отсутствии — инициируйте создание.');
+    }
+    if (goResp >= 3) {
+      recs.push('Издайте приказ о назначении ответственных за ГО; при необходимости создайте структурное подразделение (работника) по ГО.');
+    }
+  } else {
+    level = 'high'; badgeText = 'Высокий риск'; badgeClass = 'high';
+    diag = 'Сочетание замечаний создаёт реальную угрозу предписания и штрафа. Проверки по ГО и ЧС могут завершиться не только штрафом, но и предписанием с жёсткими сроками устранения. Необходим срочный аудит: начните с планов ГО и ЧС, обучения и оповещения.';
+    recs.push('Немедленно проверьте наличие и актуальность плана ГО и плана действий по ЧС — это первые документы, которые запросит инспектор.');
+    recs.push('Организуйте обучение работников по ГО и защите от ЧС; без журналов обучения проверка не проходит.');
+    recs.push('Проверьте локальную систему оповещения и силы постоянной готовности; при отсутствии — запланируйте создание в кратчайший срок.');
+    recs.push('Подготовьте пакет документов: приказы о назначении ответственных, программы обучения, журналы учений, документы по НФГО и запасам.');
+  }
+
+  if (recs.length === 0) {
+    recs.push('Поддерживайте текущий уровень: ежеквартальная сверка документов по ГО и ЧС. Один день в квартал — минимальная инвестиция в защиту от проверки.');
+  }
+
+  const recsText = recs.slice(0, 4).map((r, i) => `${i + 1}. ${r}`).join('\n');
+  lastResultText = `САМОАУДИТ МЧС (ГО и ЧС) — РЕЗУЛЬТАТ\n\nУровень риска: ${badgeText}\n\n${diag}\n\nСрочные меры:\n${recsText}\n\n(Сервис журнала «Справочник руководителя учреждения культуры»; проверочные листы по приказам МЧС № 61 и № 639)`;
+
+  document.getElementById('riskBadge').textContent = badgeText;
+  document.getElementById('riskBadge').className = 'risk-badge ' + badgeClass;
+  document.getElementById('diagnosis').textContent = diag;
+  const recsList = document.getElementById('recs');
+  recsList.innerHTML = '';
+  recs.slice(0, 4).forEach(r => {
+    const li = document.createElement('li');
+    li.textContent = r;
+    recsList.appendChild(li);
+  });
+
+  const result = document.getElementById('result');
+  result.className = 'result visible ' + level;
+  result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  const copyBtn = document.getElementById('copyBtn');
+  copyBtn.textContent = 'Скопировать результат';
+  copyBtn.classList.remove('copied');
+}
+
+function copyResult() {
+  if (!lastResultText) return;
+  const btn = document.getElementById('copyBtn');
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(lastResultText).then(() => {
+      btn.textContent = '✓ Скопировано';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Скопировать результат'; btn.classList.remove('copied'); }, 2500);
+    }).catch(() => fallbackCopy(lastResultText, btn));
+  } else {
+    fallbackCopy(lastResultText, btn);
+  }
+}
+
+function fallbackCopy(text, btn) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand('copy');
+    btn.textContent = '✓ Скопировано';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Скопировать результат'; btn.classList.remove('copied'); }, 2500);
+  } catch (e) {
+    alert('Не удалось скопировать. Выделите текст вручную.');
+  }
+  document.body.removeChild(ta);
+}
+
+function toggleChecklist() {
+  const cl = document.getElementById('checklist');
+  const arrow = document.getElementById('arrow');
+  cl.classList.toggle('open');
+  arrow.textContent = cl.classList.contains('open') ? '▲' : '▼';
+}
+
+function resetForm() {
+  document.getElementById('result').className = 'result';
+  document.getElementById('checklist').classList.remove('open');
+  document.getElementById('arrow').textContent = '▼';
+  document.getElementById('auditForm').reset();
+  lastResultText = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
